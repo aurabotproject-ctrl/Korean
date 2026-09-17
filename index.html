@@ -9,7 +9,7 @@
 <title>한글 Quest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&family=Jua&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&family=Jua&family=Anton&family=Black+Han+Sans&display=swap">
 <style>
 :root{
   --paper:#FBF6EC; --paper-2:#F3EBDB; --card:#FFFFFF; --ink:#2A2238; --muted:#6C6480; --line:#E6DAC4;
@@ -37,6 +37,55 @@
   --green:#4CD08E; --green-soft:#1C4033; --gold:#FFC857; --plum:#B99AF0; --plum-soft:#352A58;
   --shadow:0 2px 0 rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.7);
 }
+/* ---------- anime style (data-style="anime") ---------- */
+:root[data-style="anime"]{
+  --paper:#F4EFF9; --paper-2:#E6DCF2; --card:#FFFFFF; --ink:#1A1030; --muted:#6A5A86; --line:#D5C7EA;
+  --con:#E8175D; --con-soft:#FFDCE8; --vow:#1E7FD6; --vow-soft:#D8ECFB; --fin:#F0A80C; --fin-soft:#FCEFD0;
+  --green:#12A57E; --green-soft:#D2F5EA; --gold:#F5C518; --plum:#7B2CBF; --plum-soft:#EDE0FA;
+  --shadow:0 3px 0 rgba(26,16,48,.18), 0 10px 26px -14px rgba(123,44,191,.5);
+  --r-lg:16px; --r-md:10px; --r-sm:7px;
+  --f-display:"Anton","Black Han Sans",system-ui,sans-serif;
+  --f-ko-fun:"Black Han Sans","Noto Sans KR",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-style="anime"]:not([data-theme="light"]){
+    --paper:#120B22; --paper-2:#1D1136; --card:#221441; --ink:#F6EEFF; --muted:#AC9BD0; --line:#3E2A68;
+    --con:#FF2E74; --con-soft:#45102C; --vow:#34B4FF; --vow-soft:#102E4D; --fin:#FFC01E; --fin-soft:#3E2E0C;
+    --green:#1FE0A0; --green-soft:#0A3A2E; --gold:#FFD84D; --plum:#B072FF; --plum-soft:#2E1A55;
+    --shadow:0 3px 0 rgba(0,0,0,.55), 0 14px 34px -16px rgba(232,23,93,.55);
+  }
+}
+:root[data-style="anime"][data-theme="dark"]{
+  --paper:#120B22; --paper-2:#1D1136; --card:#221441; --ink:#F6EEFF; --muted:#AC9BD0; --line:#3E2A68;
+  --con:#FF2E74; --con-soft:#45102C; --vow:#34B4FF; --vow-soft:#102E4D; --fin:#FFC01E; --fin-soft:#3E2E0C;
+  --green:#1FE0A0; --green-soft:#0A3A2E; --gold:#FFD84D; --plum:#B072FF; --plum-soft:#2E1A55;
+  --shadow:0 3px 0 rgba(0,0,0,.55), 0 14px 34px -16px rgba(232,23,93,.55);
+}
+:root[data-style="anime"] h1,:root[data-style="anime"] h2,:root[data-style="anime"] h3{letter-spacing:.02em;text-transform:uppercase}
+:root[data-style="anime"] h1{font-size:clamp(2rem,5vw,2.9rem)}
+:root[data-style="anime"] h1 .ko,:root[data-style="anime"] h3 .ko{text-transform:none}
+:root[data-style="anime"] .eyebrow{letter-spacing:.16em}
+:root[data-style="anime"] .dancheong{height:7px;background:repeating-linear-gradient(115deg,var(--con) 0 24px,#160A26 24px 30px,var(--gold) 30px 50px,#160A26 50px 56px,var(--plum) 56px 78px,#160A26 78px 84px)}
+/* halftone dots: the printed-manga texture */
+:root[data-style="anime"] .greet,:root[data-style="anime"] .dday,:root[data-style="anime"] .gicon{background-image:radial-gradient(currentColor .8px,transparent .9px);background-size:7px 7px;background-blend-mode:soft-light}
+:root[data-style="anime"] .greet{background-color:var(--card)}
+:root[data-style="anime"] .stage.open .num,:root[data-style="anime"] .pin.here{box-shadow:0 0 0 4px var(--gold)}
+:root[data-style="anime"] .btn{border-radius:10px;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem}
+:root[data-style="anime"] .btn.red{box-shadow:0 4px 0 #8C0B36,0 0 20px -6px var(--con)}
+:root[data-style="anime"] .btn.blue{box-shadow:0 4px 0 #10497E,0 0 20px -6px var(--vow)}
+:root[data-style="anime"] .btn.green{box-shadow:0 4px 0 #076A51}
+:root[data-style="anime"] .btn{border:2px solid rgba(0,0,0,.25)}
+:root[data-style="anime"] .card{border-width:2px}
+:root[data-style="anime"] .opt{border-radius:12px}
+:root[data-style="anime"] .jamo{border-radius:10px}
+:root[data-style="anime"] .glyph-card,:root[data-style="anime"] .mn-pic{border-radius:14px}
+:root[data-style="anime"] .mback{background:linear-gradient(135deg,var(--vow),var(--plum))}
+:root[data-style="anime"] .bar i{background:linear-gradient(90deg,var(--vow),var(--con))}
+.style-tog{display:flex;gap:2px;background:var(--paper-2);border-radius:999px;padding:3px}
+.style-tog button{border:0;background:none;border-radius:999px;padding:4px 9px;font-size:1rem;line-height:1;opacity:.5}
+.style-tog button[aria-pressed="true"]{background:var(--card);opacity:1;box-shadow:var(--shadow)}
+@media (max-width:420px){.style-tog{display:none}}
+
 *{box-sizing:border-box}
 html,body{min-height:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
@@ -61,7 +110,7 @@ p{margin:0}
 .topbar-in{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
 .brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0}
 .brand img{width:42px;height:42px}
-.brand b{font-family:var(--f-ko-fun);font-size:1.45rem;font-weight:400;letter-spacing:.01em}
+.brand b{font-family:var(--f-ko-fun);font-size:1.45rem;font-weight:400;letter-spacing:.01em;white-space:nowrap}
 .brand b span{font-family:var(--f-display);font-weight:800}
 .tabs{display:flex;gap:4px;margin-left:12px}
 .tab{border:0;background:none;padding:8px 14px;border-radius:999px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
@@ -369,6 +418,10 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
       <button class="tab" data-go="parent"><span class="ti">🔒</span>Grown-ups</button>
     </nav>
     <div class="spacer"></div>
+    <div class="style-tog" id="style-tog" hidden role="group" aria-label="Art style">
+      <button data-style="cute" aria-pressed="true" title="Cute style">🧸</button>
+      <button data-style="anime" aria-pressed="false" title="Anime style">⚡</button>
+    </div>
     <div class="row" id="mebar" hidden style="gap:14px">
       <span class="stat hide-sm" title="Day streak">🔥 <span id="st-streak">0</span></span>
       <span class="stat" title="Experience points">⭐ <span id="st-xp">0</span></span>
@@ -527,18 +580,40 @@ function burst() {
   for (let i = 0; i < 28; i++) { const s = document.createElement('span'); s.textContent = pick(items); s.style.left = Math.random() * 100 + '%'; s.style.animationDelay = Math.random() * .6 + 's'; b.appendChild(s); }
   document.body.appendChild(b); setTimeout(() => b.remove(), 2600);
 }
-const avatarSrc = id => `assets/avatars/${id}.webp`;
-const tiger = pose => `assets/mascot/horangi-${pose}.webp`;
+// Art style: 'cute' or 'anime'. Anime images live in assets/anime/… (stamps are shared).
+// If an anime picture hasn't been added yet, the cute one is shown instead.
+const styleOf = p => (p && p.style) || 'cute';
+function A(path) {
+  return styleOf(me()) === 'anime' && !path.startsWith('assets/stamps/') ? path.replace('assets/', 'assets/anime/') : path;
+}
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t.tagName === 'IMG' && t.src.includes('/assets/anime/')) t.src = t.src.replace('/assets/anime/', '/assets/');
+}, true);
+function applyStyle() {
+  const st = styleOf(me());
+  document.documentElement.setAttribute('data-style', st);
+  const logo = $('#brand img'); if (logo) logo.src = A('assets/logo.webp');
+  $$('#style-tog button').forEach(b => b.setAttribute('aria-pressed', b.dataset.style === st));
+}
+function setStyle(st) {
+  const p = me(); if (!p) return;
+  p.style = st; save(); applyStyle();
+  go(route.name, route.arg);
+  toast(st === 'anime' ? '⚡ Anime style on' : '🧸 Cute style on');
+}
+const avatarSrc = id => A(`assets/avatars/${id}.webp`);
+const tiger = pose => A(`assets/mascot/horangi-${pose}.webp`);
 const starsHTML = n => `<span class="stars" aria-label="${n} of 3 stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(3 - n)}</span></span>`;
 function mnImg(letter) {
   const d = L[letter];
   // tries assets/mnemonics/<name>.webp, then .png, then shows the emoji
-  return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="assets/mnemonics/${d.img}.webp" data-alt="assets/mnemonics/${d.img}.png" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
+  return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="${A(`assets/mnemonics/${d.img}.webp`)}" data-alt="${A(`assets/mnemonics/${d.img}.png`)}" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
 }
 
 function updateBar() {
   const p = me();
-  $('#tabs').hidden = !p; $('#mebar').hidden = !p;
+  $('#tabs').hidden = !p; $('#mebar').hidden = !p; $('#style-tog').hidden = !p;
   if (!p) return;
   $('#st-xp').textContent = p.xp; $('#st-streak').textContent = p.streak;
   $('#me-av').src = avatarSrc(p.avatar); $('#me-name').textContent = p.name;
@@ -550,6 +625,7 @@ function updateBar() {
 let route = { name: 'profiles', arg: null };
 function go(name, arg = null) {
   if (!me() && !['profiles', 'newProfile'].includes(name)) name = 'profiles';
+  applyStyle();
   route = { name, arg };
   const main = $('#main');
   main.innerHTML = '';
@@ -560,6 +636,7 @@ function go(name, arg = null) {
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 $('#brand').addEventListener('click', () => go(me() ? 'home' : 'profiles'));
 $('#me-btn').addEventListener('click', () => go('profiles'));
+$('#style-tog').addEventListener('click', e => { const b = e.target.closest('[data-style]'); if (b) setStyle(b.dataset.style); });
 
 const VIEWS = {};
 
@@ -652,7 +729,7 @@ VIEWS.home = main => {
   <div class="journey">
     <div class="card" style="padding:10px">${mapHTML(p)}</div>
     <button class="card pass-card" id="go-pass">
-      <img src="assets/passport-cover.webp" alt="">
+      <img src="${A('assets/passport-cover.webp')}" alt="">
       <span><span class="eyebrow">Passport</span><h3>${stampCount(p)} of ${D.stamps.length} stamps</h3>
       <span class="mini-stamps">${D.stamps.filter(st => stampEarned(p, st)).slice(-4).map(st => `<img src="assets/stamps/${st.id}.webp" alt="">`).join('') || '<span class="muted">Pass Stage 1 for your first stamp!</span>'}</span>
       <span class="pill">Open passport →</span></span>
@@ -775,7 +852,7 @@ VIEWS.parent = main => {
       <div class="row"><button class="btn small" id="bk-copy">Copy backup</button><button class="btn small ghost" id="bk-dl">Download file</button><button class="btn small ghost" id="bk-load">Restore pasted backup</button></div>
     </div>
     <div class="card panel"><h3>Learners</h3>
-      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrc(p.avatar)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
+      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrc(p.avatar)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span><span class="pill">${styleOf(p) === 'anime' ? '⚡ Anime' : '🧸 Cute'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
       <p class="muted" style="font-size:.85rem">Tap a button twice to confirm.</p>
     </div>
   </div>`;
@@ -835,7 +912,7 @@ function speech(pose, html) { return `<div class="speech"><img src="${tiger(pose
 const STEP = {};
 STEP.intro = (box, st) => {
   box.innerHTML = `<span class="eyebrow">${esc(st.eyebrow || '')}</span><h1>${esc(st.title)}</h1>
-    ${st.img ? `<img class="intro-img" src="assets/mnemonics/${st.img}.webp" alt="" onerror="this.remove()">` : ''}
+    ${st.img ? `<img class="intro-img" src="${A(`assets/mnemonics/${st.img}.webp`)}" alt="" onerror="if(this.src.includes('/assets/anime/')){this.src=this.src.replace('/assets/anime/','/assets/');}else{this.remove();}">` : ''}
     ${speech('point', st.html)}`;
   foot('', '', 'Let’s go!', advance);
 };
@@ -1235,7 +1312,7 @@ function mapHTML(p) {
   const nx = nextStep(p);
   const cur = nx ? nx.stage.id : null;
   const pts = D.stamps.filter(s => s.pin).map(s => s.pin);
-  return `<div class="kmap"><img class="map-base" src="assets/korea-map.webp" alt="Cartoon map of Korea with your learning journey">
+  return `<div class="kmap"><img class="map-base" src="${A('assets/korea-map.webp')}" alt="Cartoon map of Korea with your learning journey">
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts.map(q => q.join(',')).join(' ')}" /></svg>
     ${D.stamps.filter(s => s.pin).map(s => {
       const done = stagePassed(p, s.stage), here = s.stage === cur;
@@ -1266,7 +1343,7 @@ VIEWS.passport = main => {
   const n = stampCount(p);
   main.innerHTML = `<button class="back" id="bk">← Home</button>
   <div class="passport-top">
-    <div class="pcover"><img src="assets/passport-cover.webp" alt="Passport cover"><span class="pname">${esc(p.name)}</span></div>
+    <div class="pcover"><img src="${A('assets/passport-cover.webp')}" alt="Passport cover"><span class="pname">${esc(p.name)}</span></div>
     <div style="display:grid;gap:10px;align-content:center">
       <span class="eyebrow">여권 · Passport</span>
       <h1>${esc(p.name)}’s Korea passport</h1>

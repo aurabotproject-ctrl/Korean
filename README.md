@@ -10,7 +10,7 @@ A Korean alphabet and vocabulary app for two young learners heading to Korea.
 
 ## Adding the mnemonic pictures
 Save each picture into `assets/mnemonics/` using the names from the image-prompt list,
-e.g. `mn-giyeok.png`, `mn-a.png`. The app uses `.webp` if present, otherwise `.png`,
+e.g. `mn-giyeok.png`, `mn-a.png`. Stamps live in `assets/stamps/`, the map and passport cover in `assets/`. The app uses `.webp` if present, otherwise `.png`,
 and shows an emoji until the picture is added.
 
 ## Hosting

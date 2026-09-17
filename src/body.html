@@ -10,6 +10,10 @@
       <button class="tab" data-go="parent"><span class="ti">🔒</span>Grown-ups</button>
     </nav>
     <div class="spacer"></div>
+    <div class="style-tog" id="style-tog" hidden role="group" aria-label="Art style">
+      <button data-style="cute" aria-pressed="true" title="Cute style">🧸</button>
+      <button data-style="anime" aria-pressed="false" title="Anime style">⚡</button>
+    </div>
     <div class="row" id="mebar" hidden style="gap:14px">
       <span class="stat hide-sm" title="Day streak">🔥 <span id="st-streak">0</span></span>
       <span class="stat" title="Experience points">⭐ <span id="st-xp">0</span></span>
@@ -168,18 +172,40 @@ function burst() {
   for (let i = 0; i < 28; i++) { const s = document.createElement('span'); s.textContent = pick(items); s.style.left = Math.random() * 100 + '%'; s.style.animationDelay = Math.random() * .6 + 's'; b.appendChild(s); }
   document.body.appendChild(b); setTimeout(() => b.remove(), 2600);
 }
-const avatarSrc = id => `assets/avatars/${id}.webp`;
-const tiger = pose => `assets/mascot/horangi-${pose}.webp`;
+// Art style: 'cute' or 'anime'. Anime images live in assets/anime/… (stamps are shared).
+// If an anime picture hasn't been added yet, the cute one is shown instead.
+const styleOf = p => (p && p.style) || 'cute';
+function A(path) {
+  return styleOf(me()) === 'anime' && !path.startsWith('assets/stamps/') ? path.replace('assets/', 'assets/anime/') : path;
+}
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t.tagName === 'IMG' && t.src.includes('/assets/anime/')) t.src = t.src.replace('/assets/anime/', '/assets/');
+}, true);
+function applyStyle() {
+  const st = styleOf(me());
+  document.documentElement.setAttribute('data-style', st);
+  const logo = $('#brand img'); if (logo) logo.src = A('assets/logo.webp');
+  $$('#style-tog button').forEach(b => b.setAttribute('aria-pressed', b.dataset.style === st));
+}
+function setStyle(st) {
+  const p = me(); if (!p) return;
+  p.style = st; save(); applyStyle();
+  go(route.name, route.arg);
+  toast(st === 'anime' ? '⚡ Anime style on' : '🧸 Cute style on');
+}
+const avatarSrc = id => A(`assets/avatars/${id}.webp`);
+const tiger = pose => A(`assets/mascot/horangi-${pose}.webp`);
 const starsHTML = n => `<span class="stars" aria-label="${n} of 3 stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(3 - n)}</span></span>`;
 function mnImg(letter) {
   const d = L[letter];
   // tries assets/mnemonics/<name>.webp, then .png, then shows the emoji
-  return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="assets/mnemonics/${d.img}.webp" data-alt="assets/mnemonics/${d.img}.png" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
+  return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="${A(`assets/mnemonics/${d.img}.webp`)}" data-alt="${A(`assets/mnemonics/${d.img}.png`)}" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
 }
 
 function updateBar() {
   const p = me();
-  $('#tabs').hidden = !p; $('#mebar').hidden = !p;
+  $('#tabs').hidden = !p; $('#mebar').hidden = !p; $('#style-tog').hidden = !p;
   if (!p) return;
   $('#st-xp').textContent = p.xp; $('#st-streak').textContent = p.streak;
   $('#me-av').src = avatarSrc(p.avatar); $('#me-name').textContent = p.name;
@@ -191,6 +217,7 @@ function updateBar() {
 let route = { name: 'profiles', arg: null };
 function go(name, arg = null) {
   if (!me() && !['profiles', 'newProfile'].includes(name)) name = 'profiles';
+  applyStyle();
   route = { name, arg };
   const main = $('#main');
   main.innerHTML = '';
@@ -201,6 +228,7 @@ function go(name, arg = null) {
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 $('#brand').addEventListener('click', () => go(me() ? 'home' : 'profiles'));
 $('#me-btn').addEventListener('click', () => go('profiles'));
+$('#style-tog').addEventListener('click', e => { const b = e.target.closest('[data-style]'); if (b) setStyle(b.dataset.style); });
 
 const VIEWS = {};
 
@@ -293,7 +321,7 @@ VIEWS.home = main => {
   <div class="journey">
     <div class="card" style="padding:10px">${mapHTML(p)}</div>
     <button class="card pass-card" id="go-pass">
-      <img src="assets/passport-cover.webp" alt="">
+      <img src="${A('assets/passport-cover.webp')}" alt="">
       <span><span class="eyebrow">Passport</span><h3>${stampCount(p)} of ${D.stamps.length} stamps</h3>
       <span class="mini-stamps">${D.stamps.filter(st => stampEarned(p, st)).slice(-4).map(st => `<img src="assets/stamps/${st.id}.webp" alt="">`).join('') || '<span class="muted">Pass Stage 1 for your first stamp!</span>'}</span>
       <span class="pill">Open passport →</span></span>
@@ -416,7 +444,7 @@ VIEWS.parent = main => {
       <div class="row"><button class="btn small" id="bk-copy">Copy backup</button><button class="btn small ghost" id="bk-dl">Download file</button><button class="btn small ghost" id="bk-load">Restore pasted backup</button></div>
     </div>
     <div class="card panel"><h3>Learners</h3>
-      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrc(p.avatar)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
+      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrc(p.avatar)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span><span class="pill">${styleOf(p) === 'anime' ? '⚡ Anime' : '🧸 Cute'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
       <p class="muted" style="font-size:.85rem">Tap a button twice to confirm.</p>
     </div>
   </div>`;
@@ -476,7 +504,7 @@ function speech(pose, html) { return `<div class="speech"><img src="${tiger(pose
 const STEP = {};
 STEP.intro = (box, st) => {
   box.innerHTML = `<span class="eyebrow">${esc(st.eyebrow || '')}</span><h1>${esc(st.title)}</h1>
-    ${st.img ? `<img class="intro-img" src="assets/mnemonics/${st.img}.webp" alt="" onerror="this.remove()">` : ''}
+    ${st.img ? `<img class="intro-img" src="${A(`assets/mnemonics/${st.img}.webp`)}" alt="" onerror="if(this.src.includes('/assets/anime/')){this.src=this.src.replace('/assets/anime/','/assets/');}else{this.remove();}">` : ''}
     ${speech('point', st.html)}`;
   foot('', '', 'Let’s go!', advance);
 };
@@ -876,7 +904,7 @@ function mapHTML(p) {
   const nx = nextStep(p);
   const cur = nx ? nx.stage.id : null;
   const pts = D.stamps.filter(s => s.pin).map(s => s.pin);
-  return `<div class="kmap"><img class="map-base" src="assets/korea-map.webp" alt="Cartoon map of Korea with your learning journey">
+  return `<div class="kmap"><img class="map-base" src="${A('assets/korea-map.webp')}" alt="Cartoon map of Korea with your learning journey">
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts.map(q => q.join(',')).join(' ')}" /></svg>
     ${D.stamps.filter(s => s.pin).map(s => {
       const done = stagePassed(p, s.stage), here = s.stage === cur;
@@ -907,7 +935,7 @@ VIEWS.passport = main => {
   const n = stampCount(p);
   main.innerHTML = `<button class="back" id="bk">← Home</button>
   <div class="passport-top">
-    <div class="pcover"><img src="assets/passport-cover.webp" alt="Passport cover"><span class="pname">${esc(p.name)}</span></div>
+    <div class="pcover"><img src="${A('assets/passport-cover.webp')}" alt="Passport cover"><span class="pname">${esc(p.name)}</span></div>
     <div style="display:grid;gap:10px;align-content:center">
       <span class="eyebrow">여권 · Passport</span>
       <h1>${esc(p.name)}’s Korea passport</h1>

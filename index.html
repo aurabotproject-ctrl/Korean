@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="assets/icon-192.webp">
+<link rel="apple-touch-icon" href="assets/icon-192.webp">
+<meta name="theme-color" content="#FBF6EC">
+<title>한글 Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&family=Jua&display=swap">
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EBDB; --card:#FFFFFF; --ink:#2A2238; --muted:#6C6480; --line:#E6DAC4;
+  --con:#E0483D; --con-soft:#FDE3DF; --vow:#2A74CF; --vow-soft:#DDEBFB; --fin:#E9A21B; --fin-soft:#FCEFD2;
+  --green:#23965F; --green-soft:#DBF3E6; --gold:#F2B43A; --plum:#5B3F8F; --plum-soft:#ECE5F7;
+  --shadow:0 2px 0 rgba(42,34,56,.10), 0 8px 24px -12px rgba(42,34,56,.25);
+  --r-lg:22px; --r-md:14px; --r-sm:10px;
+  --f-display:"Baloo 2","Jua",ui-rounded,system-ui,sans-serif;
+  --f-body:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-ko:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-ko-fun:"Jua","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  --nav-h:68px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#16142A; --paper-2:#1E1B37; --card:#241F42; --ink:#F4EFE6; --muted:#ADA6C6; --line:#383266;
+    --con:#FF6F62; --con-soft:#48243A; --vow:#63A6FF; --vow-soft:#1F3160; --fin:#FFC24D; --fin-soft:#4A3A1E;
+    --green:#4CD08E; --green-soft:#1C4033; --gold:#FFC857; --plum:#B99AF0; --plum-soft:#352A58;
+    --shadow:0 2px 0 rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#16142A; --paper-2:#1E1B37; --card:#241F42; --ink:#F4EFE6; --muted:#ADA6C6; --line:#383266;
+  --con:#FF6F62; --con-soft:#48243A; --vow:#63A6FF; --vow-soft:#1F3160; --fin:#FFC24D; --fin-soft:#4A3A1E;
+  --green:#4CD08E; --green-soft:#1C4033; --gold:#FFC857; --plum:#B99AF0; --plum-soft:#352A58;
+  --shadow:0 2px 0 rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--vow);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(1.9rem,4.5vw,2.6rem)} h2{font-size:1.5rem} h3{font-size:1.15rem}
+p{margin:0}
+.ko{font-family:var(--f-ko);font-weight:700}
+.c-con{color:var(--con)} .c-vow{color:var(--vow)} .c-fin{color:var(--fin)}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.74rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+[hidden]{display:none!important}
+
+/* dancheong band — the painted-palace stripe */
+.dancheong{height:8px;background:
+  repeating-linear-gradient(90deg,var(--con) 0 18px,var(--gold) 18px 24px,var(--green) 24px 42px,var(--gold) 42px 48px,var(--vow) 48px 66px,var(--gold) 66px 72px)}
+
+/* ---------- shell ---------- */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0}
+.brand img{width:42px;height:42px}
+.brand b{font-family:var(--f-ko-fun);font-size:1.45rem;font-weight:400;letter-spacing:.01em}
+.brand b span{font-family:var(--f-display);font-weight:800}
+.tabs{display:flex;gap:4px;margin-left:12px}
+.tab{border:0;background:none;padding:8px 14px;border-radius:999px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+.tab[aria-current="page"]{background:var(--ink);color:var(--paper)}
+.tab .ti{font-size:1.1rem}
+.spacer{flex:1}
+.stat{display:flex;align-items:center;gap:4px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.me{display:flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:3px 12px 3px 3px;font-weight:800}
+.me img{width:34px;height:34px;border-radius:50%}
+main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
+@media (min-width:761px){ main{padding-bottom:60px} }
+@media (max-width:760px){
+  .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:space-around;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:30}
+  .tab{flex-direction:column;gap:0;font-size:.72rem;padding:6px 10px;border-radius:14px}
+  .tab .ti{font-size:1.35rem}
+  .brand b{font-size:1.2rem}
+  .me span{display:none} .me{padding:3px}
+  .stat.hide-sm{display:none}
+}
+
+/* ---------- common ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:16px;padding:12px 20px;font-weight:800;font-size:1rem;background:var(--ink);color:var(--paper);box-shadow:0 4px 0 rgba(0,0,0,.25);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.25)}
+.btn.red{background:var(--con);color:#fff} .btn.blue{background:var(--vow);color:#fff} .btn.green{background:var(--green);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:none;border:2px solid var(--line)}
+.btn.small{padding:8px 14px;font-size:.9rem;border-radius:12px}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid{display:grid;gap:16px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:800;background:var(--paper-2);color:var(--muted)}
+.pill.done{background:var(--green-soft);color:var(--green)}
+.pill.soon{background:var(--plum-soft);color:var(--plum)}
+.bar{height:12px;border-radius:99px;background:var(--paper-2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--con),var(--gold));transition:width .4s}
+.say{border:0;background:var(--vow-soft);color:var(--vow);border-radius:999px;width:44px;height:44px;display:inline-grid;place-items:center;font-size:1.25rem;flex:none}
+.say.big{width:64px;height:64px;font-size:1.8rem}
+.toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:14px;font-weight:700;z-index:100;width:max-content;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
+.field{display:grid;gap:6px}
+.field label{font-weight:800;font-size:.9rem}
+.input{width:100%;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 12px;font:inherit}
+textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-size:.8rem}
+
+/* ---------- profiles ---------- */
+.who{max-width:760px;margin:10px auto 0;text-align:center;display:grid;gap:22px;justify-items:center}
+.who .hero-tiger{width:180px}
+.who-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;width:100%}
+.who-card{padding:18px 14px;display:grid;justify-items:center;gap:8px;cursor:pointer;border:2px solid var(--line);background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow);transition:transform .12s}
+.who-card:hover{transform:translateY(-3px)}
+.who-card img{width:110px;height:110px}
+.who-card b{font-family:var(--f-display);font-size:1.35rem}
+.who-card.add{border-style:dashed;box-shadow:none;background:transparent;color:var(--muted)}
+.who-card.add .plus{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;font-size:3rem;background:var(--paper-2)}
+.avatars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.av-opt{border:3px solid transparent;border-radius:50%;padding:2px;background:none}
+.av-opt[aria-pressed="true"]{border-color:var(--con)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg button{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:12px;text-align:left;font-weight:700}
+.seg button[aria-pressed="true"]{border-color:var(--vow);background:var(--vow-soft)}
+.form-card{max-width:560px;margin:0 auto;padding:24px;display:grid;gap:18px}
+
+/* ---------- home ---------- */
+.home-top{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media (max-width:760px){.home-top{grid-template-columns:1fr}}
+.greet{padding:22px;display:flex;gap:16px;align-items:center;position:relative;overflow:hidden}
+.greet img{width:120px;flex:none;margin:-6px -6px -22px 0}
+.greet h1 .ko{font-family:var(--f-ko-fun);font-weight:400}
+.dday{padding:20px;display:grid;gap:6px;align-content:center;background:var(--ink);color:var(--paper);border:0}
+.dday .num{font-family:var(--f-display);font-size:3.2rem;line-height:1;font-variant-numeric:tabular-nums}
+.dday .num small{font-family:var(--f-ko-fun);font-size:1.2rem;margin-left:6px;opacity:.8}
+.dday .eyebrow{color:inherit;opacity:.7}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
+.action{padding:18px;display:flex;gap:14px;align-items:center;text-align:left;border:1px solid var(--line)}
+.action .glyph{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-family:var(--f-ko);font-weight:900;font-size:2rem;flex:none}
+.action .glyph.con{background:var(--con-soft);color:var(--con)} .action .glyph.vow{background:var(--vow-soft);color:var(--vow)} .action .glyph.grn{background:var(--green-soft);color:var(--green)} .action .glyph.plm{background:var(--plum-soft);color:var(--plum)}
+.action .go{margin-left:auto;font-size:1.4rem;color:var(--muted)}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:30px 0 12px;flex-wrap:wrap}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:760px){.statrow{grid-template-columns:repeat(2,1fr)}}
+.tile{padding:14px 16px}
+.tile .v{font-family:var(--f-display);font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile .v small{font-size:1rem;color:var(--muted)}
+/* journey map + passport */
+.journey{display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:stretch}
+@media (max-width:760px){.journey{grid-template-columns:1fr}}
+.kmap{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1672/941;max-width:100%}
+.kmap>.map-base{width:100%;height:100%;object-fit:cover}
+.kmap svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.kmap polyline{fill:none;stroke:#fff;stroke-width:.6;stroke-dasharray:1.4 1.2;vector-effect:non-scaling-stroke;stroke-width:3;opacity:.9}
+.pin{position:absolute;transform:translate(-50%,-50%);width:clamp(24px,4.4vw,36px);height:clamp(24px,4.4vw,36px);border-radius:50%;border:3px solid #fff;font-family:var(--f-display);font-weight:800;font-size:clamp(.75rem,1.6vw,1rem);display:grid;place-items:center;box-shadow:0 3px 8px rgba(0,0,0,.35);padding:0;color:#fff}
+.pin.done{background:#23965F}
+.pin.here{background:#E0483D;animation:pulse 1.6s infinite}
+.pin.locked{background:#7d7891}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,72,61,.7)}50%{box-shadow:0 0 0 10px rgba(224,72,61,0)}}
+.map-tiger{position:absolute;width:clamp(44px,9%,80px);transform:translate(-15%,-105%);pointer-events:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.3))}
+.pass-card{display:flex;flex-direction:column;align-items:center;gap:12px;padding:18px;text-align:center;border:1px solid var(--line)}
+.pass-card>img{width:min(150px,45%);filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));transform:rotate(-4deg)}
+.pass-card>span{display:grid;gap:8px;justify-items:center}
+.mini-stamps{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.mini-stamps img{width:44px;height:44px}
+@media (max-width:760px){.pass-card{flex-direction:row;text-align:left}.pass-card>img{width:90px}.pass-card>span{justify-items:start}}
+.passport-top{display:grid;grid-template-columns:minmax(0,220px) 1fr;gap:24px;align-items:center}
+@media (max-width:560px){.passport-top{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.pcover{position:relative;max-width:220px;width:100%}
+.pcover img{width:100%;filter:drop-shadow(0 10px 18px rgba(0,0,0,.3))}
+.pname{position:absolute;left:0;right:0;bottom:12%;text-align:center;color:#F7C948;font-family:var(--f-display);font-weight:800;font-size:1.3rem;letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:18px;padding:20px;background:var(--card);background-image:repeating-linear-gradient(0deg,transparent 0 27px,var(--paper-2) 27px 28px)}
+.pstamp{display:grid;justify-items:center;gap:4px;text-align:center;font-size:.85rem}
+.pstamp .pimg{width:110px;height:110px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center}
+.pstamp img{width:100%;opacity:.12;filter:grayscale(1)}
+.pstamp.got .pimg{border:0}
+.pstamp.got img{opacity:.95;filter:none;animation:stampin .4s ease-out}
+.pstamp .muted{font-size:.75rem;line-height:1.25}
+.bar.thin{height:6px;width:80%}
+@keyframes stampin{from{transform:scale(1.6);opacity:0}}
+.stamp-won{width:200px;animation:stampin .5s ease-out;transform:rotate(-8deg)}
+/* games */
+.game{display:flex;gap:16px;align-items:center;padding:18px;flex-wrap:wrap}
+.gicon{width:64px;height:64px;border-radius:18px;background:var(--plum-soft);display:grid;place-items:center;font-size:2.2rem;flex:none}
+.gstamp{width:64px;height:64px;opacity:.15;filter:grayscale(1)}
+.gstamp.got{opacity:1;filter:none;transform:rotate(-8deg)}
+@media (max-width:560px){.game .btn{width:100%}.gstamp{display:none}}
+.mem{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:100%}
+@media (max-width:480px){.mem{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.mcard{position:relative;aspect-ratio:3/4;border:0;padding:0;background:none;perspective:600px;max-width:100%}
+.mback,.mface{position:absolute;inset:0;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;backface-visibility:hidden;transition:transform .35s;padding:6px}
+.mback{background:linear-gradient(135deg,#E0483D,#F2B43A);font-size:2rem;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.mface{background:var(--card);border:2px solid var(--line);transform:rotateY(180deg)}
+.mface .ko{font-size:clamp(1.3rem,5vw,2rem);line-height:1.1;word-break:keep-all}
+.mface .em{font-size:1.6rem}
+.mface .en{font-size:.78rem;font-weight:700;line-height:1.2}
+.mcard.up .mback{transform:rotateY(180deg)}
+.mcard.up .mface{transform:rotateY(0)}
+.mcard.ok .mface{border-color:var(--green);background:var(--green-soft)}
+.swipe-zone{position:relative;width:min(320px,100%);height:400px;max-width:100%}
+.hint{position:absolute;top:8px;font-weight:800;padding:4px 10px;border-radius:10px;opacity:0;z-index:3;transition:opacity .1s}
+.hint.left{left:0;background:var(--con-soft);color:var(--con)}
+.hint.right{right:0;background:var(--green-soft);color:var(--green)}
+#sw-stack{position:absolute;inset:0}
+.scard{position:absolute;inset:40px 0 0;border-radius:24px;perspective:900px;touch-action:none;cursor:grab;user-select:none}
+.scard.under{transform:scale(.94) translateY(12px);background:var(--paper-2);border:1px solid var(--line)}
+.sin{position:absolute;inset:0;transition:transform .45s;transform-style:preserve-3d}
+.scard.flipped .sin{transform:rotateY(180deg)}
+.sf{position:absolute;inset:0;border-radius:24px;background:var(--card);border:2px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;backface-visibility:hidden}
+.sf.back{transform:rotateY(180deg);background:var(--vow-soft);border-color:var(--vow)}
+.sf .big{font-size:clamp(2.6rem,12vw,4rem);line-height:1.1;text-align:center}
+.sf .em{font-size:4rem}
+.sf .en{font-family:var(--f-display);font-size:1.5rem;text-align:center}
+.sf .small{font-size:.8rem}
+.swbtn{width:64px;height:64px;border-radius:50%;font-size:1.6rem;padding:0}
+@media (prefers-reduced-motion:reduce){.pin.here{animation:none}.mback,.mface,.sin{transition:none}}
+.stamps{display:grid;grid-template-columns:repeat(9,1fr);gap:10px}
+@media (max-width:760px){.stamps{grid-template-columns:repeat(5,1fr)}}
+.stamp{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;border:3px dashed var(--line);color:var(--line);font-family:var(--f-ko-fun);font-size:1.2rem;max-width:100%}
+.stamp.got{border:3px solid var(--con);color:var(--con);background:var(--con-soft);transform:rotate(-8deg)}
+
+/* ---------- path ---------- */
+.path{display:grid;gap:14px;position:relative}
+.stage{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:16px 18px;text-align:left;border:1px solid var(--line);width:100%}
+.stage .num{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:1.6rem;background:var(--paper-2);color:var(--muted)}
+.stage.open .num{background:var(--con);color:#fff}
+.stage.passed .num{background:var(--green);color:#fff}
+.stage .lts{font-family:var(--f-ko);font-weight:700;font-size:1.15rem;letter-spacing:.12em}
+.stage.locked{opacity:.6;box-shadow:none}
+.stage h3{margin:2px 0}
+@media (max-width:560px){.stage{grid-template-columns:auto 1fr}.stage .right{grid-column:1/-1}}
+.lessons{display:grid;gap:12px}
+.lesson{display:flex;gap:14px;align-items:center;padding:14px 16px;text-align:left;border:1px solid var(--line);width:100%}
+.lesson .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-ko);font-weight:900;font-size:1.3rem;background:var(--paper-2);flex:none}
+.lesson.locked{opacity:.55;box-shadow:none}
+.stars{color:var(--gold);letter-spacing:2px;white-space:nowrap}
+.stars .off{color:var(--line)}
+.stage-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin-bottom:18px}
+.stage-head .big-lts{font-family:var(--f-ko);font-weight:900;font-size:clamp(2rem,6vw,3.2rem);letter-spacing:.1em}
+.back{border:0;background:none;font-weight:800;color:var(--muted);padding:0;margin-bottom:10px}
+
+/* ---------- lesson player ---------- */
+.player{position:fixed;inset:0;z-index:50;background:var(--paper);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.p-top{display:flex;align-items:center;gap:14px;max-width:760px;width:100%;margin:0 auto;padding:14px 16px}
+.p-top .bar{flex:1}
+.x{border:0;background:var(--paper-2);width:40px;height:40px;border-radius:50%;font-size:1.2rem;flex:none}
+.p-body{flex:1;overflow-y:auto;padding:8px 16px 130px}
+.p-in{max-width:680px;margin:0 auto;display:grid;gap:18px;justify-items:center;text-align:center}
+.p-foot{position:fixed;left:0;right:0;bottom:0;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:1px solid var(--line);z-index:55}
+.p-foot-in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.p-foot.good{background:var(--green-soft);border-color:transparent}
+.p-foot.bad{background:var(--con-soft);border-color:transparent}
+.p-foot .msg{flex:1;font-weight:800;text-align:left}
+.p-foot.good .msg{color:var(--green)} .p-foot.bad .msg{color:var(--con)}
+.p-foot .btn{min-width:150px}
+.speech{display:flex;gap:12px;align-items:flex-end;text-align:left;width:100%}
+.speech img{width:110px;flex:none}
+.bubble{background:var(--card);border:2px solid var(--line);border-radius:20px 20px 20px 4px;padding:14px 16px;font-size:1.05rem;position:relative}
+.q-prompt{font-family:var(--f-display);font-size:1.5rem;font-weight:700}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%}
+.opt{border:2px solid var(--line);border-bottom-width:5px;background:var(--card);border-radius:18px;padding:16px 12px;font-weight:800;font-size:1.1rem;min-height:74px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.opt .ko{font-size:2.1rem;line-height:1.1}
+.opt .em{font-size:1.8rem;line-height:1}
+.opt.sel{border-color:var(--vow);background:var(--vow-soft)}
+.opt.right{border-color:var(--green);background:var(--green-soft)}
+.opt.wrong{border-color:var(--con);background:var(--con-soft)}
+.opt[disabled]{cursor:default}
+
+/* meet */
+.meet{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;align-items:stretch}
+
+.mn-pic{aspect-ratio:1;border-radius:var(--r-lg);background:var(--paper-2);display:grid;place-items:center;overflow:hidden;max-width:100%}
+.mn-pic img{width:100%;height:100%;object-fit:contain}
+.mn-pic .em{font-size:clamp(4rem,16vw,7rem)}
+.glyph-card{border-radius:var(--r-lg);display:grid;place-items:center;align-content:center;gap:4px;padding:16px;aspect-ratio:1;max-width:100%}
+.glyph-card.con{background:var(--con-soft);color:var(--con)} .glyph-card.vow{background:var(--vow-soft);color:var(--vow)}
+.glyph-card .g{font-family:var(--f-ko);font-weight:700;font-size:clamp(4.5rem,20vw,10rem);line-height:1}
+.glyph-card .rom{font-family:var(--f-display);font-size:clamp(1.1rem,4vw,1.6rem);color:var(--ink)}
+.intro-img{width:min(260px,70%);aspect-ratio:1;object-fit:cover;border-radius:var(--r-lg);max-width:100%}
+.mn-text{font-size:1.15rem;font-weight:700;max-width:52ch}
+.tipbox{background:var(--fin-soft);border-radius:var(--r-md);padding:12px 16px;text-align:left;width:100%;font-size:.98rem}
+.tipbox b{color:var(--ink)}
+
+/* trace */
+.trace-wrap{position:relative;width:min(340px,100%);aspect-ratio:1;max-width:100%}
+.trace-wrap canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:var(--r-lg);touch-action:none}
+.trace-bg{background:var(--card);border:2px solid var(--line);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:50% 50%;background-position:center}
+
+/* build */
+.slot{width:150px;height:150px;border-radius:var(--r-lg);border:3px dashed var(--line);display:grid;place-items:center;background:var(--card);max-width:100%}
+.slot .ko{font-size:6rem;line-height:1}
+.parts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;width:100%}
+.parts .label{width:100%;font-weight:800;font-size:.85rem;color:var(--muted)}
+.jamo{width:66px;height:66px;border-radius:16px;border:2px solid var(--line);border-bottom-width:5px;background:var(--card);font-family:var(--f-ko);font-weight:700;font-size:2rem}
+.jamo.con{color:var(--con)} .jamo.vow{color:var(--vow)}
+.jamo[aria-pressed="true"].con{background:var(--con-soft);border-color:var(--con)}
+.jamo[aria-pressed="true"].vow{background:var(--vow-soft);border-color:var(--vow)}
+
+/* word card & block anatomy */
+.wordcard{width:100%;padding:22px;display:grid;gap:14px;justify-items:center}
+.wordcard .em{font-size:4.5rem;line-height:1}
+.wordcard .en{font-family:var(--f-display);font-size:1.6rem}
+.blocks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.blk{width:92px;height:92px;border-radius:16px;background:var(--paper-2);display:grid;padding:8px;font-family:var(--f-ko);font-weight:700;font-size:2rem;line-height:1}
+.blk.v{grid-template-columns:1fr 1fr;align-items:center;justify-items:center}
+.blk.h{grid-template-rows:1fr 1fr;align-items:center;justify-items:center}
+.blk.vt{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;align-items:center;justify-items:center}
+.blk.vt .t{grid-column:1/-1}
+.blk.ht{grid-template-rows:1fr 1fr 1fr;align-items:center;justify-items:center;font-size:1.5rem}
+.blk .i{color:var(--con)} .blk .m{color:var(--vow)} .blk .t{color:var(--fin)}
+.wk{font-family:var(--f-ko);font-weight:900;font-size:clamp(3rem,12vw,4.5rem);line-height:1.1}
+.rom{font-family:var(--f-display);color:var(--muted);font-size:1.2rem}
+.note{font-size:.95rem;color:var(--muted);max-width:48ch}
+
+/* result */
+.result-stars{font-size:3.2rem;letter-spacing:6px;color:var(--gold)}
+.result-stars .off{color:var(--line)}
+.burst{position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden}
+.burst span{position:absolute;top:-40px;font-size:1.6rem;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){.burst{display:none}.who-card,.btn{transition:none}}
+
+.opts .opt:last-child:nth-child(odd){grid-column:1/-1}
+.jamo.fin{color:var(--fin)}
+.jamo[aria-pressed="true"].fin{background:var(--fin-soft);border-color:var(--fin)}
+.big-blk .blk{width:120px;height:120px;font-size:2.6rem}
+.big-blk .blk.ht{font-size:2rem}
+.blocks .wtile{min-width:96px}
+.rule-row{display:grid;grid-template-columns:auto auto auto 1fr auto;gap:10px;align-items:center;padding:10px 14px;text-align:left}
+.rule-row .w{font-size:1.5rem}
+.rule-row .s{font-size:1.3rem}
+.rule-row .en{font-size:.9rem}
+@media (max-width:480px){.rule-row{grid-template-columns:auto auto 1fr auto}.rule-row .en{grid-column:1/-1;grid-row:2}}
+.big-lts.many{font-size:clamp(1.3rem,4vw,2rem);letter-spacing:.05em}
+@media (max-width:560px){.stage-head{grid-template-columns:1fr}}
+
+/* words */
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.wtile{padding:14px 10px;display:grid;justify-items:center;gap:2px;border:1px solid var(--line);text-align:center}
+.wtile .em{font-size:1.8rem}
+.wtile .ko{font-size:1.6rem}
+.wtile .en{font-size:.85rem;color:var(--muted);line-height:1.25}
+.boxes{display:flex;gap:3px;margin-top:6px}
+.boxes i{width:10px;height:10px;border-radius:3px;background:var(--line)}
+.boxes i.on{background:var(--green)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-weight:800;font-size:.85rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* parent */
+.ptable{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.ptable th,.ptable td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.ptable th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.scroll-x{overflow-x:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.panel{padding:20px;display:grid;gap:14px;align-content:start}
+</style>
+</head>
+<body>
+<div class="topbar" id="topbar">
+  <div class="dancheong"></div>
+  <div class="topbar-in">
+    <button class="brand" id="brand" aria-label="한글 Quest home"><img src="assets/logo.webp" alt=""><b>한글 <span>Quest</span></b></button>
+    <nav class="tabs" id="tabs" hidden>
+      <button class="tab" data-go="home"><span class="ti">🏠</span>Home</button>
+      <button class="tab" data-go="path"><span class="ti ko">가</span>Hangul</button>
+      <button class="tab" data-go="games"><span class="ti">🎮</span>Games</button>
+      <button class="tab" data-go="words"><span class="ti">📚</span>Words</button>
+      <button class="tab" data-go="parent"><span class="ti">🔒</span>Grown-ups</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="row" id="mebar" hidden style="gap:14px">
+      <span class="stat hide-sm" title="Day streak">🔥 <span id="st-streak">0</span></span>
+      <span class="stat" title="Experience points">⭐ <span id="st-xp">0</span></span>
+      <button class="me" id="me-btn" title="Switch learner"><img id="me-av" src="" alt=""><span id="me-name"></span></button>
+    </div>
+  </div>
+</div>
+<main id="main"></main>
+<div id="player-root"></div>
+<script src="data.js"></script>
+<script>
+(() => {
+'use strict';
+const D = window.HQ_DATA;
+const L = D.letters;
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const DAY = 86400000;
+const todayStr = (d = new Date()) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+
+/* ================= Hangul maths ================= */
+const CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'.split('');
+const JUNG = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'.split('');
+const JONG = ['', ...'ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ'.split('')];
+const VERT = new Set('ㅏㅐㅑㅒㅓㅔㅕㅖㅣ'.split(''));
+const HORZ = new Set('ㅗㅛㅜㅠㅡ'.split(''));
+const ROM_I = {'ㄱ':'g','ㄲ':'kk','ㄴ':'n','ㄷ':'d','ㄸ':'tt','ㄹ':'r','ㅁ':'m','ㅂ':'b','ㅃ':'pp','ㅅ':'s','ㅆ':'ss','ㅇ':'','ㅈ':'j','ㅉ':'jj','ㅊ':'ch','ㅋ':'k','ㅌ':'t','ㅍ':'p','ㅎ':'h'};
+const ROM_V = {'ㅏ':'a','ㅐ':'ae','ㅑ':'ya','ㅒ':'yae','ㅓ':'eo','ㅔ':'e','ㅕ':'yeo','ㅖ':'ye','ㅗ':'o','ㅘ':'wa','ㅙ':'wae','ㅚ':'oe','ㅛ':'yo','ㅜ':'u','ㅝ':'wo','ㅞ':'we','ㅟ':'wi','ㅠ':'yu','ㅡ':'eu','ㅢ':'ui','ㅣ':'i'};
+function compose(i, v, t = '') { return String.fromCharCode(0xAC00 + (CHO.indexOf(i) * 21 + JUNG.indexOf(v)) * 28 + JONG.indexOf(t)); }
+function decompose(ch) {
+  const c = ch.charCodeAt(0) - 0xAC00;
+  if (c < 0 || c > 11171) return null;
+  return { i: CHO[Math.floor(c / 588)], v: JUNG[Math.floor((c % 588) / 28)], t: JONG[c % 28] };
+}
+const ROM_F = {'ㄱ':'k','ㄲ':'k','ㅋ':'k','ㄴ':'n','ㄷ':'t','ㅅ':'t','ㅆ':'t','ㅈ':'t','ㅊ':'t','ㅌ':'t','ㅎ':'t','ㄹ':'l','ㅁ':'m','ㅂ':'p','ㅍ':'p','ㅇ':'ng'};
+const FIN_ROM = {'ㄱ':'k','ㄴ':'n','ㄷ':'t','ㄹ':'l','ㅁ':'m','ㅂ':'p','ㅇ':'ng'};
+const BASIC_CON = 'ㄱㄴㄷㄹㅁㅂㅅㅈㅊㅎ'.split('');
+const BASIC_VOW = 'ㅏㅓㅗㅜㅡㅣㅐ'.split('');
+function romSyl(s) { const d = decompose(s); if (!d) return s; let r = ROM_I[d.i] + ROM_V[d.v]; if (d.i === 'ㅅ' && d.v === 'ㅣ') r = 'shi'; return r + (ROM_F[d.t] || ''); }
+function blockHTML(ch) {
+  const d = decompose(ch); if (!d) return '';
+  const hz = HORZ.has(d.v), cls = (hz ? 'h' : 'v') + (d.t ? 't' : '');
+  const cl = hz && d.t ? 'ht' : cls;
+  return `<div class="blk ${cl}" aria-label="${esc(ch)}"><span class="i">${d.i}</span><span class="m">${d.v}</span>${d.t ? `<span class="t">${d.t}</span>` : ''}</div>`;
+}
+
+/* ================= storage ================= */
+const KEY = 'hangulQuest.v1';
+const defaults = () => ({ profiles: [], currentId: null, settings: { tripDate: '', tripPlace: 'Korea', rom: 'auto', rate: 0.85, sfx: true } });
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)) || defaults(); } catch (e) { S = defaults(); }
+S.settings = Object.assign(defaults().settings, S.settings || {});
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const me = () => S.profiles.find(p => p.id === S.currentId) || null;
+function newProfile(name, avatar, family) {
+  return { id: 'p' + Date.now().toString(36), name, avatar, family, xp: 0, streak: 0, lastDay: '', created: Date.now(),
+    lessons: {}, stages: {}, letters: {}, words: {}, days: {} };
+}
+
+/* ================= progress helpers ================= */
+function addXP(n) {
+  const p = me(); if (!p || !n) return;
+  p.xp += n;
+  const t = todayStr();
+  if (p.lastDay !== t) {
+    const y = todayStr(new Date(Date.now() - DAY));
+    p.streak = p.lastDay === y ? p.streak + 1 : 1;
+    p.lastDay = t;
+  }
+  p.days[t] = (p.days[t] || 0) + n;
+  save(); updateBar();
+}
+const stageOf = id => D.stages.find(s => s.id === id);
+const lessonById = id => { for (const s of D.stages) for (const l of (s.lessons || [])) if (l.id === id) return { stage: s, lesson: l }; return null; };
+const stagePassed = (p, id) => !!(p.stages[id] && p.stages[id].passed);
+const stageOpen = (p, id) => { const s = stageOf(id); return !!s && !s.soon && (id === 1 || stagePassed(p, id - 1)); };
+function lessonOpen(p, stage, idx) { if (!stageOpen(p, stage.id)) return false; return idx === 0 || !!p.lessons[stage.lessons[idx - 1].id]; }
+const allLessonsDone = (p, stage) => (stage.lessons || []).every(l => p.lessons[l.id]);
+function knownLetters(uptoStage) { const out = []; D.stages.forEach(s => { if (s.id <= uptoStage && !s.soon) out.push(...s.letters); }); return out; }
+function wordsFor(p, stageId) { return D.words.filter(w => w.stage === stageId && (!w.for || w.for === p.family)); }
+function lessonWords(p, stage, lesson) { const ws = wordsFor(p, stage.id); return lesson.slice ? ws.slice(lesson.slice[0], lesson.slice[1]) : ws; }
+function lettersLearned(p) { return Object.values(p.letters).filter(x => x.seen).length; }
+function wordCount(p) { return Object.keys(p.words).length; }
+function addWord(w, box = 1) {
+  const p = me(); if (!p || p.words[w.ko]) return false;
+  p.words[w.ko] = { box, due: Date.now() + (box > 1 ? BOX_GAP[box] : 0), right: 0, wrong: 0, added: Date.now() };
+  return true;
+}
+const BOX_GAP = { 1: 0, 2: DAY, 3: 3 * DAY, 4: 7 * DAY, 5: 14 * DAY };
+function dueWords(p) { const now = Date.now(); return D.words.filter(w => p.words[w.ko] && p.words[w.ko].due <= now); }
+function nextStep(p) {
+  for (const s of D.stages) {
+    if (s.soon) break;
+    if (!stageOpen(p, s.id)) break;
+    if (stagePassed(p, s.id)) continue;
+    const i = s.lessons.findIndex(l => !p.lessons[l.id]);
+    if (i >= 0) return { kind: 'lesson', stage: s, lesson: s.lessons[i] };
+    return { kind: 'challenge', stage: s };
+  }
+  return null;
+}
+function showRom(stageId) { const m = S.settings.rom; return m === 'always' || (m === 'auto' && stageId <= 6); }
+
+/* ================= audio ================= */
+let koVoice = null;
+function pickVoice() {
+  if (!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices();
+  koVoice = vs.find(v => /^ko/i.test(v.lang) && /yuna|sora|google/i.test(v.name)) || vs.find(v => /^ko/i.test(v.lang)) || null;
+}
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+let warnedVoice = false;
+function say(text, slow) {
+  if (!('speechSynthesis' in window)) { toast('This browser can’t speak. Try Safari or Chrome.'); return; }
+  if (!koVoice) pickVoice();
+  if (!koVoice && !warnedVoice) { warnedVoice = true; toast('No Korean voice found. A grown-up can add one in the Grown-ups tab.'); }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR'; if (koVoice) u.voice = koVoice;
+  u.rate = slow ? 0.55 : S.settings.rate;
+  speechSynthesis.speak(u);
+}
+let actx = null;
+function sfx(kind) {
+  if (!S.settings.sfx) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const notes = kind === 'good' ? [660, 880] : kind === 'win' ? [523, 659, 784, 1046] : [220, 180];
+    notes.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = kind === 'bad' ? 'triangle' : 'sine'; o.frequency.value = f;
+      const t = actx.currentTime + i * 0.09;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.25);
+    });
+  } catch (e) {}
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-say]');
+  if (b) { e.stopPropagation(); say(b.dataset.say, b.dataset.slow === '1'); }
+}, true);
+
+/* ================= ui helpers ================= */
+let toastT;
+function toast(msg) {
+  let t = $('#toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200);
+}
+function burst() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const b = document.createElement('div'); b.className = 'burst';
+  const items = ['⭐', '🎉', '🇰🇷', '✨', '🐯', '💫'];
+  for (let i = 0; i < 28; i++) { const s = document.createElement('span'); s.textContent = pick(items); s.style.left = Math.random() * 100 + '%'; s.style.animationDelay = Math.random() * .6 + 's'; b.appendChild(s); }
+  document.body.appendChild(b); setTimeout(() => b.remove(), 2600);
+}
+const avatarSrc = id => `assets/avatars/${id}.webp`;
+const tiger = pose => `assets/mascot/horangi-${pose}.webp`;
+const starsHTML = n => `<span class="stars" aria-label="${n} of 3 stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(3 - n)}</span></span>`;
+function mnImg(letter) {
+  const d = L[letter];
+  // tries assets/mnemonics/<name>.webp, then .png, then shows the emoji
+  return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="assets/mnemonics/${d.img}.webp" data-alt="assets/mnemonics/${d.img}.png" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
+}
+
+function updateBar() {
+  const p = me();
+  $('#tabs').hidden = !p; $('#mebar').hidden = !p;
+  if (!p) return;
+  $('#st-xp').textContent = p.xp; $('#st-streak').textContent = p.streak;
+  $('#me-av').src = avatarSrc(p.avatar); $('#me-name').textContent = p.name;
+  const tabFor = { stage: 'path', passport: 'home' }[route.name] || route.name;
+  $$('.tab').forEach(t => t.setAttribute('aria-current', t.dataset.go === tabFor ? 'page' : 'false'));
+}
+
+/* ================= router ================= */
+let route = { name: 'profiles', arg: null };
+function go(name, arg = null) {
+  if (!me() && !['profiles', 'newProfile'].includes(name)) name = 'profiles';
+  route = { name, arg };
+  const main = $('#main');
+  main.innerHTML = '';
+  (VIEWS[name] || VIEWS.home)(main, arg);
+  updateBar();
+  window.scrollTo(0, 0);
+}
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
+$('#brand').addEventListener('click', () => go(me() ? 'home' : 'profiles'));
+$('#me-btn').addEventListener('click', () => go('profiles'));
+
+const VIEWS = {};
+
+/* ---------- profiles ---------- */
+VIEWS.profiles = main => {
+  main.innerHTML = `<div class="who">
+    <img class="hero-tiger" src="${tiger('wave')}" alt="Horangi the tiger waving">
+    <div><h1>누가 공부해요? <span class="muted" style="font-size:.6em;display:block;margin-top:6px">Who’s learning today?</span></h1></div>
+    <div class="who-grid">
+      ${S.profiles.map(p => `<button class="who-card" data-id="${p.id}"><img src="${avatarSrc(p.avatar)}" alt=""><b>${esc(p.name)}</b><span class="pill">⭐ ${p.xp} XP · ${wordCount(p)} words</span></button>`).join('')}
+      <button class="who-card add" id="add-p"><span class="plus">+</span><b>Add learner</b></button>
+    </div></div>`;
+  $$('.who-card[data-id]', main).forEach(b => b.onclick = () => { S.currentId = b.dataset.id; save(); go('home'); });
+  $('#add-p', main).onclick = () => go('newProfile');
+};
+VIEWS.newProfile = main => {
+  let av = D.avatars[S.profiles.length % D.avatars.length].id, fam = 'boy';
+  main.innerHTML = `<form class="card form-card" id="pf">
+    <h2>New learner</h2>
+    <div class="field"><label for="pf-name">Name</label><input class="input" id="pf-name" maxlength="20" required autocomplete="off" placeholder="First name"></div>
+    <div class="field"><label>Pick an avatar</label><div class="avatars">${D.avatars.map(a => `<button type="button" class="av-opt" data-av="${a.id}" aria-pressed="${a.id === av}" aria-label="${a.label}"><img src="${avatarSrc(a.id)}" alt=""></button>`).join('')}</div></div>
+    <div class="field"><label>Family words</label>
+      <p class="muted" style="font-size:.9rem">In Korean, what you call your older brother and sister depends on whether you’re a boy or a girl.</p>
+      <div class="seg">
+        <button type="button" data-fam="boy" aria-pressed="true"><span class="ko">형 · 누나</span><br><span class="muted">I’m a boy</span></button>
+        <button type="button" data-fam="girl" aria-pressed="false"><span class="ko">오빠 · 언니</span><br><span class="muted">I’m a girl</span></button>
+      </div></div>
+    <div class="row" style="justify-content:space-between">
+      <button type="button" class="btn ghost" id="pf-cancel">Cancel</button>
+      <button class="btn red" type="submit">Start learning →</button>
+    </div>
+  </form>`;
+  $$('[data-av]', main).forEach(b => b.onclick = () => { av = b.dataset.av; $$('[data-av]', main).forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $$('[data-fam]', main).forEach(b => b.onclick = () => { fam = b.dataset.fam; $$('[data-fam]', main).forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $('#pf-cancel', main).onclick = () => go('profiles');
+  $('#pf', main).onsubmit = e => {
+    e.preventDefault();
+    const name = $('#pf-name', main).value.trim(); if (!name) return;
+    const p = newProfile(name, av, fam); S.profiles.push(p); S.currentId = p.id; save();
+    go('home'); toast(`환영해요, ${name}! Already know some Hangul? Try “Test out” on a stage.`);
+  };
+  $('#pf-name', main).focus();
+};
+
+/* ---------- home ---------- */
+VIEWS.home = main => {
+  const p = me(); const nx = nextStep(p); const due = dueWords(p).length;
+  const trip = S.settings.tripDate ? Math.ceil((new Date(S.settings.tripDate + 'T00:00:00') - new Date(todayStr() + 'T00:00:00')) / DAY) : null;
+  const family = S.profiles.reduce((a, q) => a + wordCount(q), 0);
+  const lvl = Math.floor(p.xp / 100) + 1;
+  const lastBuilt = D.stages.filter(s => !s.soon).length;
+  let nextCard;
+  if (nx && nx.kind === 'lesson') {
+    const l = nx.lesson; const g = l.type === 'letters' ? l.letters[0] : l.type === 'finals' ? '받' : l.type === 'rules' ? '✨' : '읽';
+    const cls = l.type === 'letters' ? (L[g].type === 'vow' ? 'vow' : 'con') : l.type === 'words' ? 'grn' : 'plm';
+    const sub = l.type === 'letters' ? 'New letters: <span class="ko">' + l.letters.join(' ') + '</span>' : l.type === 'finals' ? 'Bottom letters: <span class="ko">' + l.finals.join(' ') + '</span>' : l.type === 'rules' ? 'Sound rules: ' + l.rules.map(r => D.rules[r].name).join(' & ') : 'Read real Korean words';
+    nextCard = `<button class="card action" id="go-next"><span class="glyph ${cls}">${g}</span><span><span class="eyebrow">Next lesson · Stage ${nx.stage.id}</span><h3>${esc(l.title)}</h3><span class="muted">${sub}</span></span><span class="go">→</span></button>`;
+  } else if (nx) {
+    nextCard = `<button class="card action" id="go-next"><span class="glyph plm">🏆</span><span><span class="eyebrow">Ready!</span><h3>Stage ${nx.stage.id} challenge</h3><span class="muted">Pass it to earn a passport stamp</span></span><span class="go">→</span></button>`;
+  } else {
+    nextCard = `<div class="card action"><span class="glyph grn">🎓</span><span><span class="eyebrow">All caught up</span>${lastBuilt === D.stages.length ? '<h3>Hangul Path complete! 🎓</h3><span class="muted">You can read Korean! The Sentence Workshop is coming next.</span>' : `<h3>Stages 1–${lastBuilt} complete!</h3><span class="muted">Stages ${lastBuilt + 1}–9 are being built next.</span>`}</span></div>`;
+  }
+  main.innerHTML = `
+  <div class="home-top">
+    <div class="card greet"><div style="flex:1;display:grid;gap:8px">
+      <span class="eyebrow">Level ${lvl} · ${p.xp % 100}/100 XP to level ${lvl + 1}</span>
+      <h1><span class="ko">안녕</span>, ${esc(p.name)}!</h1>
+      <div class="bar" aria-hidden="true"><i style="width:${p.xp % 100}%"></i></div>
+      <p class="muted">${p.streak > 1 ? `🔥 ${p.streak}-day streak. Keep it going!` : 'A few minutes every day builds a streak 🔥'}</p>
+    </div><img src="${tiger(p.xp ? 'point' : 'wave')}" alt=""></div>
+    <div class="card dday">
+      <span class="eyebrow">${esc(S.settings.tripPlace || 'Korea')} trip</span>
+      ${trip === null ? `<div class="num" style="font-size:2rem">D-?</div><p style="opacity:.8">A grown-up can set the trip date in <b>Grown-ups</b>.</p>`
+        : trip > 0 ? `<div class="num">D-${trip}<small>한국까지!</small></div><p style="opacity:.8">${trip} days until Korea. Koreans count down with “D-day” too.</p>`
+        : trip === 0 ? `<div class="num">D-DAY</div><p>오늘 한국에 가요! Today you go to Korea!</p>` : `<div class="num">🇰🇷</div><p>Hope Korea was amazing!</p>`}
+    </div>
+  </div>
+  <div class="next">
+    ${nextCard}
+    <button class="card action" id="go-review" ${due ? '' : 'disabled'} style="${due ? '' : 'opacity:.6'}"><span class="glyph vow">📚</span><span><span class="eyebrow">Word review</span><h3>${due ? `${due} word${due > 1 ? 's' : ''} ready to review` : 'No words due'}</h3><span class="muted">${due ? 'Review them before you forget them!' : wordCount(p) ? 'Come back tomorrow for more.' : 'Words appear here as you learn them.'}</span></span><span class="go">→</span></button>
+  </div>
+  <div class="section-h"><h2>Your progress</h2><span class="muted">Family goal: <b>${family}</b> words together</span></div>
+  <div class="statrow">
+    <div class="card tile"><span class="eyebrow">Letters</span><div class="v">${lettersLearned(p)}<small> / 40</small></div></div>
+    <div class="card tile"><span class="eyebrow">Words</span><div class="v">${wordCount(p)}<small> / ${D.WORD_GOAL}</small></div></div>
+    <div class="card tile"><span class="eyebrow">Stamps</span><div class="v">${stampCount(p)}<small> / ${D.stamps.length}</small></div></div>
+    <div class="card tile"><span class="eyebrow">Sentences</span><div class="v" style="font-size:1.1rem;padding-top:8px">${stagePassed(p, 3) ? 'Workshop coming next' : 'Unlocks after Stage 3'}</div></div>
+  </div>
+  <div class="section-h"><h2>Your Korea journey</h2><span class="muted">Tap a pin to open that stage</span></div>
+  <div class="journey">
+    <div class="card" style="padding:10px">${mapHTML(p)}</div>
+    <button class="card pass-card" id="go-pass">
+      <img src="assets/passport-cover.webp" alt="">
+      <span><span class="eyebrow">Passport</span><h3>${stampCount(p)} of ${D.stamps.length} stamps</h3>
+      <span class="mini-stamps">${D.stamps.filter(st => stampEarned(p, st)).slice(-4).map(st => `<img src="assets/stamps/${st.id}.webp" alt="">`).join('') || '<span class="muted">Pass Stage 1 for your first stamp!</span>'}</span>
+      <span class="pill">Open passport →</span></span>
+    </button>
+  </div>`;
+  bindMap(main);
+  $('#go-pass', main).onclick = () => go('passport');
+  const gn = $('#go-next', main);
+  if (gn && nx) gn.onclick = () => nx.kind === 'lesson' ? startLesson(nx.lesson.id) : startChallenge(nx.stage.id, false);
+  $('#go-review', main).onclick = () => due && startReview();
+};
+
+/* ---------- path ---------- */
+VIEWS.path = main => {
+  const p = me();
+  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Track A</span><h1>The Hangul Path</h1></div><p class="muted" style="max-width:40ch">40 letters in 9 stages. <b class="c-con">Consonants are red</b>, <b class="c-vow">vowels are blue</b>.</p></div>
+  <div class="path">${D.stages.map(s => {
+    const passed = stagePassed(p, s.id), open = stageOpen(p, s.id);
+    const done = (s.lessons || []).filter(l => p.lessons[l.id]).length;
+    const state = passed ? 'passed' : open ? 'open' : 'locked';
+    const right = s.soon ? '<span class="pill soon">Coming soon</span>' : passed ? `<span class="pill done">✓ Stamp earned</span>` : open ? `<span class="pill">${done}/${s.lessons.length} lessons</span>` : '<span class="pill">🔒 Pass the stage before</span>';
+    return `<button class="card stage ${state}" data-stage="${s.id}" ${s.soon ? 'disabled' : ''}>
+      <span class="num">${passed ? '✓' : s.id}</span>
+      <span><span class="eyebrow">Stage ${s.id} · <span class="ko">${s.ko}</span></span><h3>${esc(s.title)}</h3>
+      <span class="lts">${s.display ? `<span class="c-fin">${s.display}</span>` : s.letters.map(x => `<span class="${L[x] ? (L[x].type === 'vow' ? 'c-vow' : 'c-con') : (/[ㅏ-ㅣ]/.test(x) ? 'c-vow' : 'c-con')}">${x}</span>`).join(' ')}</span>
+      <span class="muted" style="display:block;font-size:.92rem">${esc(s.blurb)}</span></span>
+      <span class="right">${right}</span></button>`;
+  }).join('')}</div>`;
+  $$('[data-stage]', main).forEach(b => b.onclick = () => {
+    const id = +b.dataset.stage;
+    if (!stageOpen(p, id)) { toast(`Pass Stage ${id - 1} first, or test out of it.`); return; }
+    go('stage', id);
+  });
+};
+VIEWS.stage = (main, id) => {
+  const p = me(), s = stageOf(id);
+  const allDone = allLessonsDone(p, s), passed = stagePassed(p, id);
+  main.innerHTML = `<button class="back" id="bk">← All stages</button>
+  <div class="stage-head"><div><span class="eyebrow">Stage ${s.id} · <span class="ko">${s.ko}</span></span><h1>${esc(s.title)}</h1><p class="muted">${esc(s.blurb)}</p></div>
+  <div class="big-lts${s.letters.length > 6 ? ' many' : ''}">${s.display ? `<span class="c-fin">${s.display}</span>` : s.letters.map(x => `<span class="${L[x].type === 'vow' ? 'c-vow' : 'c-con'}">${x}</span>`).join('')}</div></div>
+  <div class="lessons">
+  ${s.lessons.map((l, i) => {
+    const open = lessonOpen(p, s, i), rec = p.lessons[l.id];
+    const ic = l.type === 'letters' ? `<span class="ic ${L[l.letters[0]].type === 'vow' ? 'c-vow' : 'c-con'}">${l.letters.slice(0, 2).join('')}</span>`
+      : l.type === 'finals' ? `<span class="ic c-fin" style="font-size:1rem">${l.finals.slice(0, 2).join('')}</span>`
+      : l.type === 'rules' ? `<span class="ic" style="background:var(--plum-soft)">✨</span>`
+      : `<span class="ic" style="color:var(--green)">📖</span>`;
+    const sub = l.type === 'letters' ? `<span class="ko muted">${l.letters.join('  ')}</span>`
+      : l.type === 'finals' ? `<span class="muted">Endings: <span class="ko">${l.finals.join('  ')}</span></span>`
+      : l.type === 'rules' ? `<span class="muted">${l.rules.map(r => `${D.rules[r].name} <span class="ko">${D.rules[r].ko}</span>`).join(' · ')}</span>`
+      : `<span class="muted">${lessonWords(p, s, l).length} words</span>`;
+    return `<button class="card lesson ${open ? '' : 'locked'}" data-lesson="${l.id}">${ic}<span style="flex:1"><span class="eyebrow">Lesson ${i + 1}${l.type === 'words' ? ' · Words' : ''}</span><h3>${esc(l.title)}</h3>${sub}</span>${rec ? starsHTML(rec.stars) : open ? '<span class="pill">Start →</span>' : '<span class="pill">🔒</span>'}</button>`;
+  }).join('')}
+    <button class="card lesson ${allDone || passed ? '' : 'locked'}" id="chal"><span class="ic" style="background:var(--plum-soft)">🏆</span><span style="flex:1"><span class="eyebrow">Stage challenge</span><h3>Earn your passport stamp</h3><span class="muted">12 questions. Get 10 right to pass.</span></span>${passed ? `<span class="pill done">✓ ${p.stages[id].score}/12</span>` : allDone ? '<span class="pill">Go →</span>' : '<span class="pill">🔒</span>'}</button>
+  </div>
+  ${passed ? '' : `<div class="card panel" style="margin-top:22px;box-shadow:none;background:var(--paper-2)"><div class="row" style="justify-content:space-between"><div><h3>${s.kind ? 'Know it already?' : 'Already know these letters?'}</h3><p class="muted">${s.kind ? 'Already know this?' : ''} Take the challenge now. If you pass, the whole stage is marked complete.</p></div><button class="btn ghost small" id="testout">Test out</button></div></div>`}`;
+  $('#bk', main).onclick = () => go('path');
+  $$('[data-lesson]', main).forEach((b, i) => b.onclick = () => lessonOpen(p, s, i) ? startLesson(b.dataset.lesson) : toast('Finish the lesson before this one first.'));
+  $('#chal', main).onclick = () => (allDone || passed) ? startChallenge(id, false) : toast('Finish all the lessons to unlock the challenge.');
+  const t = $('#testout', main); if (t) t.onclick = () => startChallenge(id, true);
+};
+
+/* ---------- words ---------- */
+VIEWS.words = (main, filter) => {
+  const p = me(); filter = filter || 'all';
+  const mine = D.words.filter(w => p.words[w.ko]);
+  const shown = filter === 'all' ? mine : mine.filter(w => String(w.stage) === filter || w.pack === filter);
+  const due = dueWords(p).length;
+  const stagesWith = [...new Set(mine.map(w => w.stage))];
+  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Track B</span><h1>Word Bank</h1></div>
+    <button class="btn blue" id="rv" ${due ? '' : 'disabled'}>Review ${due} due →</button></div>
+  <div class="card panel" style="margin-bottom:18px"><div class="row" style="justify-content:space-between"><b>${mine.length} of ${D.WORD_GOAL} words</b><span class="muted">Next badge at ${[100, 250, 500, 750, 1000].find(n => n > mine.length) || 1000}</span></div><div class="bar"><i style="width:${Math.max(1, mine.length / D.WORD_GOAL * 100)}%"></i></div>
+  <p class="muted" style="font-size:.9rem">Every word moves through 5 boxes <span class="boxes" style="display:inline-flex;vertical-align:middle"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span>. Get it right and it moves up a box and comes back later. Miss it and it goes back to box 1.</p></div>
+  ${mine.length ? `<div class="chips" style="margin-bottom:14px"><button class="chip" data-f="all" aria-pressed="${filter === 'all'}">All</button>${stagesWith.map(s => `<button class="chip" data-f="${s}" aria-pressed="${filter === String(s)}">Stage ${s}</button>`).join('')}</div>
+  <div class="wgrid">${shown.map(w => { const r = p.words[w.ko]; return `<button class="card wtile" data-say="${esc(w.ko)}"><span class="em">${w.emoji}</span><span class="ko">${esc(w.ko)}</span><span class="en">${esc(w.en)}</span><span class="boxes" aria-label="Box ${r.box} of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= r.box ? 'on' : ''}"></i>`).join('')}</span></button>`; }).join('')}</div>`
+  : `<div class="card panel" style="text-align:center;justify-items:center"><img src="${tiger('think')}" alt="" style="width:130px"><h3>No words yet</h3><p class="muted">Finish Stage 1 lessons to read your first Korean words.</p><button class="btn red" id="gp">Go to the Hangul Path</button></div>`}`;
+  $$('[data-f]', main).forEach(b => b.onclick = () => go('words', b.dataset.f));
+  const rv = $('#rv', main); if (rv) rv.onclick = startReview;
+  const gp = $('#gp', main); if (gp) gp.onclick = () => go('path');
+};
+
+/* ---------- parent ---------- */
+let parentOK = false;
+VIEWS.parent = main => {
+  if (!parentOK) {
+    const a = 6 + Math.floor(Math.random() * 4), b = 6 + Math.floor(Math.random() * 4);
+    main.innerHTML = `<form class="card form-card" id="gate" style="text-align:center;justify-items:center"><span style="font-size:2.5rem">🔒</span><h2>Grown-ups only</h2><p class="muted">What is ${a} × ${b}?</p><input class="input" id="gate-a" inputmode="numeric" style="max-width:160px;text-align:center;font-size:1.4rem" autocomplete="off"><button class="btn" type="submit">Open</button></form>`;
+    $('#gate', main).onsubmit = e => { e.preventDefault(); if (+$('#gate-a', main).value === a * b) { parentOK = true; go('parent'); } else toast('Not quite. Try again.'); };
+    $('#gate-a', main).focus();
+    return;
+  }
+  const st = S.settings;
+  const rows = S.profiles.map(p => {
+    const weak = Object.entries(p.words).filter(([, r]) => r.wrong > r.right).map(([k]) => k).slice(0, 5);
+    const week = Object.entries(p.days).filter(([d]) => d >= todayStr(new Date(Date.now() - 6 * DAY))).reduce((a, [, v]) => a + v, 0);
+    return `<tr><td><div class="row" style="gap:8px;flex-wrap:nowrap"><img src="${avatarSrc(p.avatar)}" alt="" style="width:30px"><b>${esc(p.name)}</b></div></td><td>${lettersLearned(p)}/40</td><td>${wordCount(p)}</td><td>${stampCount(p)}/${D.stamps.length}</td><td>${p.xp}</td><td>${week}</td><td>${p.streak}🔥</td><td>${p.lastDay || '—'}</td><td class="ko">${weak.join(', ') || '—'}</td></tr>`;
+  }).join('');
+  const voices = ('speechSynthesis' in window) ? speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang)) : [];
+  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Grown-ups</span><h1>Progress & settings</h1></div><button class="btn ghost small" id="lock">Lock 🔒</button></div>
+  <div class="card" style="padding:8px 16px"><div class="scroll-x"><table class="ptable"><thead><tr><th>Learner</th><th>Letters</th><th>Words</th><th>Stamps</th><th>XP</th><th>XP this week</th><th>Streak</th><th>Last active</th><th>Tricky words</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="muted">No learners yet.</td></tr>'}</tbody></table></div></div>
+  <div class="two" style="margin-top:16px">
+    <div class="card panel"><h3>Trip</h3>
+      <div class="field"><label for="s-date">Departure date</label><input type="date" class="input" id="s-date" value="${esc(st.tripDate)}"></div>
+      <div class="field"><label for="s-place">Where are you going?</label><input class="input" id="s-place" value="${esc(st.tripPlace)}" placeholder="e.g. Seoul & Busan"></div>
+    </div>
+    <div class="card panel"><h3>Learning</h3>
+      <div class="field"><label for="s-rom">English spellings (romanisation)</label><select class="input" id="s-rom">
+        <option value="auto" ${st.rom === 'auto' ? 'selected' : ''}>Show for Stages 1–6, then hide</option>
+        <option value="always" ${st.rom === 'always' ? 'selected' : ''}>Always show</option>
+        <option value="never" ${st.rom === 'never' ? 'selected' : ''}>Never show</option></select></div>
+      <div class="field"><label for="s-rate">Voice speed</label><select class="input" id="s-rate">
+        <option value="0.7" ${st.rate == 0.7 ? 'selected' : ''}>Slow</option><option value="0.85" ${st.rate == 0.85 ? 'selected' : ''}>Relaxed</option><option value="1" ${st.rate == 1 ? 'selected' : ''}>Natural</option></select></div>
+      <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-sfx" ${st.sfx ? 'checked' : ''}> Sound effects</label>
+      <div class="row"><button class="btn small blue" data-say="안녕하세요! 한국어를 배워요.">🔊 Test voice</button><span class="muted" style="font-size:.85rem">${koVoice ? 'Using: ' + esc(koVoice.name) : voices.length ? voices.length + ' Korean voice(s) found' : 'No Korean voice found'}</span></div>
+      <p class="muted" style="font-size:.85rem">No voice? On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → Korean (Yuna). On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.</p>
+    </div>
+    <div class="card panel"><h3>Backup</h3>
+      <p class="muted" style="font-size:.9rem">Progress is saved in this browser only. Copy a backup to move to another device, or before clearing the browser.</p>
+      <textarea class="input" id="bk-text" placeholder="Paste a backup here to restore it"></textarea>
+      <div class="row"><button class="btn small" id="bk-copy">Copy backup</button><button class="btn small ghost" id="bk-dl">Download file</button><button class="btn small ghost" id="bk-load">Restore pasted backup</button></div>
+    </div>
+    <div class="card panel"><h3>Learners</h3>
+      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrc(p.avatar)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
+      <p class="muted" style="font-size:.85rem">Tap a button twice to confirm.</p>
+    </div>
+  </div>`;
+  $('#lock', main).onclick = () => { parentOK = false; go('home'); };
+  const set = (k, v) => { S.settings[k] = v; save(); };
+  $('#s-date', main).onchange = e => set('tripDate', e.target.value);
+  $('#s-place', main).onchange = e => set('tripPlace', e.target.value.trim() || 'Korea');
+  $('#s-rom', main).onchange = e => set('rom', e.target.value);
+  $('#s-rate', main).onchange = e => set('rate', +e.target.value);
+  $('#s-sfx', main).onchange = e => set('sfx', e.target.checked);
+  const dump = () => JSON.stringify(S);
+  $('#bk-copy', main).onclick = async () => { $('#bk-text', main).value = dump(); try { await navigator.clipboard.writeText(dump()); toast('Backup copied'); } catch (e) { $('#bk-text', main).select(); toast('Backup is in the box. Copy it from there.'); } };
+  $('#bk-dl', main).onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dump()], { type: 'application/json' })); a.download = `hangul-quest-backup-${todayStr()}.json`; document.body.appendChild(a); a.click(); a.remove(); };
+  $('#bk-load', main).onclick = () => { try { const d = JSON.parse($('#bk-text', main).value); if (!Array.isArray(d.profiles)) throw 0; S = Object.assign(defaults(), d); S.settings = Object.assign(defaults().settings, d.settings || {}); save(); toast('Backup restored'); go('parent'); } catch (e) { toast('That doesn’t look like a 한글 Quest backup.'); } };
+  const armed = {};
+  const confirmTwice = (btn, fn) => { if (armed[btn.dataset.reset || btn.dataset.del]) { fn(); } else { armed[btn.dataset.reset || btn.dataset.del] = 1; btn.textContent = 'Sure?'; btn.classList.add('red'); } };
+  $$('[data-reset]', main).forEach(b => b.onclick = () => confirmTwice(b, () => { const p = S.profiles.find(x => x.id === b.dataset.reset); Object.assign(p, newProfile(p.name, p.avatar, p.family), { id: p.id }); save(); go('parent'); toast('Progress reset'); }));
+  $$('[data-del]', main).forEach(b => b.onclick = () => confirmTwice(b, () => { S.profiles = S.profiles.filter(x => x.id !== b.dataset.del); if (S.currentId === b.dataset.del) S.currentId = null; save(); go(me() ? 'parent' : 'profiles'); }));
+};
+
+/* ================= activity player ================= */
+let P = null; // current session
+function openPlayer(steps, opts) {
+  P = { steps, i: 0, right: 0, total: 0, xp: 0, opts, answered: false, newWords: 0 };
+  const root = $('#player-root');
+  root.innerHTML = `<div class="player" role="dialog" aria-modal="true" aria-label="${esc(opts.title)}">
+    <div class="p-top"><button class="x" id="p-x" aria-label="Close">✕</button><div class="bar"><i id="p-bar" style="width:0"></i></div><span class="stat" id="p-xp">⭐ 0</span></div>
+    <div class="p-body" id="p-body"><div class="p-in" id="p-in"></div></div>
+    <div class="p-foot" id="p-foot"><div class="p-foot-in"><span class="msg" id="p-msg"></span><button class="btn red" id="p-next">Continue</button></div></div></div>`;
+  document.body.style.overflow = 'hidden';
+  let armedX = false;
+  $('#p-x').onclick = () => {
+    if (P.i >= P.steps.length - 1 || P.i === 0 || armedX) return closePlayer();
+    armedX = true; toast('Tap ✕ again to leave. This lesson won’t be saved.');
+    setTimeout(() => armedX = false, 3500);
+  };
+  $('#p-next').onclick = () => P.onNext && P.onNext();
+  renderStep();
+}
+function closePlayer() { $('#player-root').innerHTML = ''; document.body.style.overflow = ''; if (window.speechSynthesis) speechSynthesis.cancel(); P = null; go(route.name, route.arg); }
+function gainXP(n) { P.xp += n; addXP(n); $('#p-xp').textContent = '⭐ ' + P.xp; }
+function foot(msg, state, label, fn, enabled = true) {
+  const f = $('#p-foot'); f.className = 'p-foot' + (state ? ' ' + state : '');
+  $('#p-msg').innerHTML = msg || ''; const b = $('#p-next'); b.textContent = label; b.disabled = !enabled;
+  b.className = 'btn ' + (state === 'bad' ? 'red' : state === 'good' ? 'green' : 'red');
+  P.onNext = fn;
+}
+function advance() { P.i++; renderStep(); }
+function renderStep() {
+  const st = P.steps[P.i];
+  $('#p-bar').style.width = (P.i / (P.steps.length - 1)) * 100 + '%';
+  const box = $('#p-in'); box.innerHTML = ''; $('#p-body').scrollTop = 0;
+  STEP[st.type](box, st);
+}
+function speech(pose, html) { return `<div class="speech"><img src="${tiger(pose)}" alt=""><div class="bubble">${html}</div></div>`; }
+
+const STEP = {};
+STEP.intro = (box, st) => {
+  box.innerHTML = `<span class="eyebrow">${esc(st.eyebrow || '')}</span><h1>${esc(st.title)}</h1>
+    ${st.img ? `<img class="intro-img" src="assets/mnemonics/${st.img}.webp" alt="" onerror="this.remove()">` : ''}
+    ${speech('point', st.html)}`;
+  foot('', '', 'Let’s go!', advance);
+};
+STEP.meet = (box, st) => {
+  const d = L[st.letter], cls = d.type === 'vow' ? 'vow' : 'con';
+  const p = me(); p.letters[st.letter] = Object.assign({ right: 0, wrong: 0 }, p.letters[st.letter], { seen: true }); save();
+  box.innerHTML = `<span class="eyebrow">New ${d.type === 'vow' ? 'vowel' : 'consonant'} · name: <span class="ko">${d.name}</span></span>
+    <div class="meet">${mnImg(st.letter)}<div class="glyph-card ${cls}"><span class="g">${st.letter}</span><span class="rom">“${esc(d.rom)}”</span></div></div>
+    <p class="mn-text">${esc(d.mnemonic)}</p>
+    <div class="row" style="justify-content:center">
+      <button class="btn blue" data-say="${d.sample}">🔊 Sound: <span class="ko">${d.sample}</span></button>
+      ${st.letter === 'ㅇ' ? `<button class="btn ghost" data-say="앙">🔊 At the bottom: <span class="ko">앙</span></button>` : ''}
+      <button class="btn ghost" data-say="${d.name}">🔊 Name: <span class="ko">${d.name}</span></button>
+    </div>
+    <div class="tipbox">💡 <b>Say it:</b> ${esc(d.tip)}${d.type === 'con' && st.letter !== 'ㅇ' ? ` A consonant can’t be said alone, so we practise it with ㅏ: <span class="ko">${d.sample}</span>.` : ''}</div>`;
+  setTimeout(() => say(d.sample), 350);
+  gainXP(1);
+  foot('', '', 'Now trace it ✍️', advance);
+};
+STEP.trace = (box, st) => {
+  const d = L[st.letter], color = d.type === 'vow' ? 'vow' : 'con';
+  box.innerHTML = `<span class="eyebrow">Trace · follow the numbers</span><h2>Write <span class="ko c-${color}">${st.letter}</span></h2>
+    <div class="trace-wrap"><canvas class="trace-bg" id="tg"></canvas><canvas id="ti" aria-label="Tracing area"></canvas></div>
+    <div class="row" style="justify-content:center"><button class="btn ghost small" id="t-watch">▶ Watch the strokes</button><button class="btn ghost small" id="t-clear">↺ Clear</button></div>
+    <p class="muted" id="t-hint">Start at dot 1 and follow the arrows. Korean is written top to bottom, left to right.</p>`;
+  const cg = $('#tg', box), ci = $('#ti', box);
+  const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let W, dpr, userPts = [], cur = null, drawing = false;
+  const toPx = v => (v / 100) * W;
+  function size() {
+    dpr = window.devicePixelRatio || 1; W = ci.clientWidth;
+    [cg, ci].forEach(c => { c.width = W * dpr; c.height = W * dpr; c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); });
+    drawGuide(); redrawInk();
+  }
+  function drawGuide(progress) {
+    const g = cg.getContext('2d'); g.clearRect(0, 0, W, W);
+    g.lineCap = 'round'; g.lineJoin = 'round';
+    d.strokes.forEach((s, si) => {
+      g.strokeStyle = cssVar('--line'); g.lineWidth = W * 0.11;
+      g.beginPath(); s.forEach(([x, y], k) => k ? g.lineTo(toPx(x), toPx(y)) : g.moveTo(toPx(x), toPx(y))); g.stroke();
+    });
+    if (progress !== undefined) {
+      g.strokeStyle = cssVar('--' + color); g.lineWidth = W * 0.07;
+      let left = progress;
+      d.strokes.forEach(s => {
+        if (left <= 0) return;
+        const n = Math.min(s.length, Math.floor(left) + 1); g.beginPath();
+        for (let k = 0; k < n; k++) { const [x, y] = s[k]; k ? g.lineTo(toPx(x), toPx(y)) : g.moveTo(toPx(x), toPx(y)); }
+        if (n < s.length) { const f = left - Math.floor(left), [x0, y0] = s[n - 1], [x1, y1] = s[n]; g.lineTo(toPx(x0 + (x1 - x0) * f), toPx(y0 + (y1 - y0) * f)); }
+        g.stroke(); left -= (s.length - 1);
+      });
+    }
+    d.strokes.forEach((s, si) => {
+      const [x, y] = s[0], [x2, y2] = s[1];
+      const ang = Math.atan2(y2 - y, x2 - x);
+      g.fillStyle = cssVar('--' + color); g.beginPath(); g.arc(toPx(x), toPx(y), W * 0.042, 0, 7); g.fill();
+      g.fillStyle = '#fff'; g.font = `800 ${W * 0.05}px Nunito, sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(si + 1, toPx(x), toPx(y) + 1);
+      const ax = toPx(x) + Math.cos(ang) * W * 0.09, ay = toPx(y) + Math.sin(ang) * W * 0.09;
+      g.save(); g.translate(ax, ay); g.rotate(ang); g.fillStyle = cssVar('--muted'); g.beginPath(); g.moveTo(W * .025, 0); g.lineTo(-W * .015, -W * .018); g.lineTo(-W * .015, W * .018); g.fill(); g.restore();
+    });
+  }
+  function redrawInk() {
+    const c = ci.getContext('2d'); c.clearRect(0, 0, W, W);
+    c.strokeStyle = cssVar('--' + color); c.lineWidth = W * 0.06; c.lineCap = 'round'; c.lineJoin = 'round';
+    userPts.forEach(s => { c.beginPath(); s.forEach(([x, y], k) => k ? c.lineTo(toPx(x), toPx(y)) : c.moveTo(toPx(x), toPx(y))); if (s.length === 1) c.lineTo(toPx(s[0][0]) + .1, toPx(s[0][1])); c.stroke(); });
+  }
+  const pos = e => { const r = ci.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100]; };
+  ci.addEventListener('pointerdown', e => { ci.setPointerCapture(e.pointerId); drawing = true; cur = [pos(e)]; userPts.push(cur); redrawInk(); });
+  ci.addEventListener('pointermove', e => { if (!drawing) return; cur.push(pos(e)); redrawInk(); });
+  const end = () => { if (!drawing) return; drawing = false; check(); };
+  ci.addEventListener('pointerup', end); ci.addEventListener('pointercancel', end);
+  function score() {
+    const all = userPts.flat(); if (all.length < 3) return { cov: 0, stray: 1 };
+    const near = (x, y, r) => all.some(([a, b]) => (a - x) ** 2 + (b - y) ** 2 < r * r);
+    let per = d.strokes.map(s => {
+      const samples = []; for (let k = 0; k < s.length - 1; k++) { const [x0, y0] = s[k], [x1, y1] = s[k + 1]; const n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 3)); for (let j = 0; j <= n; j++) samples.push([x0 + (x1 - x0) * j / n, y0 + (y1 - y0) * j / n]); }
+      return samples.filter(([x, y]) => near(x, y, 11)).length / samples.length;
+    });
+    const guide = d.strokes.flatMap(s => { const o = []; for (let k = 0; k < s.length - 1; k++) { const [x0, y0] = s[k], [x1, y1] = s[k + 1]; for (let j = 0; j <= 10; j++) o.push([x0 + (x1 - x0) * j / 10, y0 + (y1 - y0) * j / 10]); } return o; });
+    const stray = all.filter(([x, y]) => !guide.some(([a, b]) => (a - x) ** 2 + (b - y) ** 2 < 196)).length / all.length;
+    return { cov: Math.min(...per), stray };
+  }
+  let passed = false;
+  function check() {
+    const { cov, stray } = score();
+    if (cov >= 0.72 && stray < 0.3) {
+      if (!passed) { passed = true; sfx('good'); gainXP(3); const p = me(); p.letters[st.letter].traced = true; save(); }
+      $('#t-hint', box).innerHTML = '<b style="color:var(--green)">훌륭해요! Beautiful writing.</b>';
+      foot('✓ Great tracing!', 'good', 'Continue', advance);
+    } else if (stray >= 0.3 && userPts.length) {
+      $('#t-hint', box).textContent = 'Try to stay on the grey path. Tap ↺ to start again.';
+    } else {
+      $('#t-hint', box).textContent = 'Keep going: trace every stroke.';
+    }
+  }
+  $('#t-clear', box).onclick = () => { userPts = []; redrawInk(); };
+  $('#t-watch', box).onclick = () => {
+    const total = d.strokes.reduce((a, s) => a + s.length - 1, 0); const t0 = performance.now();
+    const perSeg = d.strokes.some(s => s.length > 10) ? 45 : 450;
+    const tick = t => { const pr = (t - t0) / perSeg; drawGuide(Math.min(pr, total)); if (pr < total + 1) requestAnimationFrame(tick); else drawGuide(); };
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(size);
+  foot('', '', 'Skip', advance);
+};
+/* choice question: st = {prompt, sub, audio, options:[{html,value}], answer, onResult} */
+STEP.choice = (box, st) => {
+  box.innerHTML = `<span class="eyebrow">${esc(st.eyebrow || 'Question')}</span><div class="q-prompt">${st.prompt}</div>
+    ${st.audio ? `<div class="row" style="justify-content:center"><button class="say big" data-say="${esc(st.audio)}" aria-label="Play sound">🔊</button><button class="say" data-say="${esc(st.audio)}" data-slow="1" aria-label="Play slowly">🐢</button></div>` : ''}
+    ${st.sub || ''}
+    <div class="opts">${st.options.map((o, k) => `<button class="opt" data-k="${k}">${o.html}</button>`).join('')}</div>`;
+  if (st.audio) setTimeout(() => say(st.audio), 300);
+  let chosen = null;
+  $$('.opt', box).forEach(b => b.onclick = () => {
+    chosen = +b.dataset.k; $$('.opt', box).forEach(x => x.classList.toggle('sel', x === b));
+    if (st.optAudio) say(st.options[chosen].value);
+    foot('', '', 'Check', submit);
+  });
+  function submit() {
+    const ok = st.options[chosen].value === st.answer;
+    $$('.opt', box).forEach((x, k) => { x.disabled = true; x.classList.remove('sel'); if (st.options[k].value === st.answer) x.classList.add('right'); else if (k === chosen) x.classList.add('wrong'); });
+    P.total++; if (ok) { P.right++; gainXP(2); }
+    sfx(ok ? 'good' : 'bad');
+    st.onResult && st.onResult(ok);
+    save();
+    foot(ok ? pick(['✓ 잘했어요! Well done!', '✓ 맞아요! Correct!', '✓ 대박! Awesome!']) : `✗ The answer is ${st.answerText || ''}`, ok ? 'good' : 'bad', 'Continue', advance);
+  }
+  foot('', '', 'Check', null, false);
+};
+STEP.build = (box, st) => {
+  const target = decompose(st.target);
+  const cons = shuffle(st.cons), vows = shuffle(st.vows), fins = st.fins ? shuffle(st.fins) : null;
+  let ci = null, vi = null, ti = null;
+  box.innerHTML = `<span class="eyebrow">Build a block</span><div class="q-prompt">Build the block that says <span style="color:var(--plum)">“${romSyl(st.target)}”</span></div>
+    <div class="row" style="justify-content:center"><button class="say big" data-say="${st.target}" aria-label="Play sound">🔊</button></div>
+    <div class="slot" id="slot"><span class="muted">?</span></div>
+    <div class="parts"><span class="label">1. Pick a consonant</span>${cons.map(c => `<button class="jamo con" data-c="${c}" aria-pressed="false">${c}</button>`).join('')}</div>
+    <div class="parts"><span class="label">2. Pick a vowel</span>${vows.map(v => `<button class="jamo vow" data-v="${v}" aria-pressed="false">${v}</button>`).join('')}</div>
+    ${fins ? `<div class="parts"><span class="label">3. Pick a bottom letter</span>${fins.map(f => `<button class="jamo fin" data-t="${f}" aria-pressed="false">${f}</button>`).join('')}</div>` : ''}`;
+  setTimeout(() => say(st.target), 300);
+  const upd = () => {
+    const slot = $('#slot', box);
+    if (ci && vi && (!fins || ti)) { const s = compose(ci, vi, fins ? ti : ''); slot.innerHTML = `<span class="ko">${s}</span>`; say(s); foot('', '', 'Check', submit); }
+    else slot.innerHTML = `<span class="ko" style="font-size:3rem;opacity:.6">${ci ? `<span class="c-con">${ci}</span>` : ''}${vi ? `<span class="c-vow">${vi}</span>` : ''}${ti ? `<span class="c-fin">${ti}</span>` : ''}</span>`;
+  };
+  $$('[data-c]', box).forEach(b => b.onclick = () => { ci = b.dataset.c; $$('[data-c]', box).forEach(x => x.setAttribute('aria-pressed', x === b)); upd(); });
+  $$('[data-v]', box).forEach(b => b.onclick = () => { vi = b.dataset.v; $$('[data-v]', box).forEach(x => x.setAttribute('aria-pressed', x === b)); upd(); });
+  $$('[data-t]', box).forEach(b => b.onclick = () => { ti = b.dataset.t; $$('[data-t]', box).forEach(x => x.setAttribute('aria-pressed', x === b)); upd(); });
+  function submit() {
+    const ok = ci === target.i && vi === target.v && (!fins || ti === target.t);
+    $$('.jamo', box).forEach(x => x.disabled = true);
+    P.total++; if (ok) { P.right++; gainXP(2); }
+    sfx(ok ? 'good' : 'bad');
+    $('#slot', box).innerHTML = blockHTML(st.target);
+    foot(ok ? '✓ Perfect block!' : `✗ It’s <span class="ko">${st.target}</span> = <span class="ko">${target.i} + ${target.v}${target.t ? ' + ' + target.t : ''}</span>`, ok ? 'good' : 'bad', 'Continue', advance);
+  }
+  foot('', '', 'Check', null, false);
+};
+STEP.finalcard = (box, st) => {
+  const f = st.fin;
+  box.innerHTML = `<span class="eyebrow">Bottom letter · door ${f.n} of 7</span>
+    <h2>Ending sound <span class="ko c-fin">${f.f}</span> “${f.rom}”</h2>
+    <div class="row" style="justify-content:center;gap:16px"><div class="big-blk">${blockHTML(f.ex)}</div><button class="say big" data-say="${f.ex}" aria-label="Play">🔊</button></div>
+    <span class="muted" style="font-size:.85rem"><b class="c-con">top consonant</b> + <b class="c-vow">vowel</b> + <b class="c-fin">bottom letter</b></span>
+    ${f.family ? `<div class="tipbox"><b>All of these sound like <span class="ko c-fin">${f.f}</span> at the bottom:</b> <span class="ko c-fin" style="font-size:1.4rem;letter-spacing:.15em">${f.family}</span></div>` : ''}
+    <p class="mn-text">${esc(f.tip)}</p>
+    <div class="blocks">${f.words.map(([k, e]) => `<button class="card wtile" data-say="${k}"><span class="ko">${k}</span><span class="en">${esc(e)}</span><span class="muted">🔊</span></button>`).join('')}</div>`;
+  setTimeout(() => say(f.ex), 300);
+  gainXP(1);
+  foot('', '', 'Next', advance);
+};
+STEP.doublecard = box => {
+  box.innerHTML = `<span class="eyebrow">Bonus</span><h2>Two bottom letters?</h2>
+    ${speech('think', 'Some blocks have <b>two</b> bottom letters, like <span class="ko">닭</span>. At the end of a word you only say <b>one</b> of them. When a vowel comes next, both get to speak!')}
+    <div class="grid" style="width:100%;gap:10px">${D.doubleFinals.map(([w, said, en]) => `<div class="card rule-row"><span class="ko w">${w}</span><span class="muted">→</span><span class="ko c-fin s">[${said}]</span><span class="muted en">${esc(en)}</span><button class="say" data-say="${w}" aria-label="Play">🔊</button></div>`).join('')}</div>`;
+  foot('', '', 'Got it', advance);
+};
+STEP.rulecard = (box, st) => {
+  const r = D.rules[st.rule];
+  box.innerHTML = `<span class="eyebrow">Sound rule · <span class="ko">${r.ko}</span></span><h2>${esc(r.name)}</h2>
+    ${speech('point', r.text)}
+    <div class="grid" style="width:100%;gap:10px">${r.items.map(([w, said, en]) => `<div class="card rule-row"><span class="ko w">${w}</span><span class="muted">→</span><span class="ko c-fin s">[${said}]</span><span class="muted en">${esc(en)}</span><button class="say" data-say="${w}" aria-label="Play">🔊</button></div>`).join('')}</div>
+    <p class="muted" style="font-size:.9rem">Tap 🔊: the voice reads the spelling but says it the real way.</p>`;
+  gainXP(1);
+  foot('', '', 'Practise', advance);
+};
+STEP.wordcard = (box, st) => {
+  const w = st.word;
+  if (addWord(w)) { P.newWords++; save(); }
+  box.innerHTML = `<span class="eyebrow">New word ${st.n} of ${st.of} · ${esc(w.pack)}</span>
+    <div class="card wordcard"><span class="em">${w.emoji}</span>
+      <div class="row" style="justify-content:center;gap:16px"><span class="wk">${esc(w.ko)}</span><button class="say big" data-say="${esc(w.ko)}" aria-label="Play">🔊</button></div>
+      ${showRom(w.stage) ? `<span class="rom">${esc(w.rom)}</span>` : ''}
+      <span class="en">${esc(w.en)}</span>
+      <div class="blocks">${[...w.ko].map(blockHTML).join('')}</div>
+      <span class="muted" style="font-size:.85rem">Each block: <b class="c-con">consonant</b> + <b class="c-vow">vowel</b></span>
+      ${w.note ? `<p class="note">💡 ${esc(w.note)}</p>` : ''}
+    </div>`;
+  setTimeout(() => say(w.ko), 300);
+  foot('', '', st.n === st.of ? 'Quiz time!' : 'Next word', advance);
+};
+STEP.result = (box, st) => {
+  const acc = P.total ? P.right / P.total : 1;
+  const res = st.finish(acc);
+  if (res.win) { sfx('win'); burst(); }
+  box.innerHTML = `${res.stamp ? `<img class="stamp-won" src="assets/stamps/${res.stamp}.webp" alt="Passport stamp">` : `<img src="${tiger(res.win ? 'cheer' : 'sad')}" alt="" style="width:190px">`}
+    <h1>${res.title}</h1>
+    ${res.stars ? `<div class="result-stars">${'★'.repeat(res.stars)}<span class="off">${'★'.repeat(3 - res.stars)}</span></div>` : ''}
+    <p class="mn-text">${res.text}</p>
+    <div class="row" style="justify-content:center"><span class="pill">✓ ${P.right}/${P.total} correct</span><span class="pill">⭐ +${P.xp} XP</span>${P.newWords ? `<span class="pill done">📚 +${P.newWords} words</span>` : ''}</div>`;
+  $('#p-bar').style.width = '100%';
+  foot('', '', res.win ? 'Done' : 'Back to the stage', closePlayer);
+};
+
+/* ================= session builders ================= */
+function letterOpts(answer, pool, show) {
+  const A = L[answer];
+  // never offer a letter that sounds the same as the answer (e.g. ㅐ / ㅔ)
+  const uniq = [...new Set(pool)].filter(x => L[x] && x !== answer && !(A.snd && L[x].snd === A.snd));
+  // family first: the letter it grows from, letters that grow from it, and its siblings (가 / 카 / 까)
+  const fam = x => x === A.pair || L[x].pair === answer || (A.pair && L[x].pair === A.pair);
+  const partner = shuffle(uniq.filter(fam));
+  const same = shuffle(uniq.filter(x => L[x].type === A.type && !partner.includes(x)));
+  const other = shuffle(uniq.filter(x => L[x].type !== A.type));
+  return shuffle([answer, ...partner.concat(same, other).slice(0, 3)]).map(x => ({ value: x, html: show(x) }));
+}
+const glyphHTML = x => `<span class="ko ${L[x].type === 'vow' ? 'c-vow' : 'c-con'}">${x}</span>`;
+function hearQ(letter, pool, eyebrow) {
+  return { type: 'choice', eyebrow: eyebrow || 'Listen', prompt: 'Which letter makes this sound?', audio: L[letter].sample, answer: letter, answerText: `<span class="ko">${letter}</span>`,
+    options: letterOpts(letter, pool, glyphHTML), onResult: ok => markLetter(letter, ok) };
+}
+function soundQ(letter, pool) {
+  return { type: 'choice', eyebrow: 'What sound?', prompt: `What sound does <span class="ko ${L[letter].type === 'vow' ? 'c-vow' : 'c-con'}" style="font-size:3rem;vertical-align:middle">${letter}</span> make?`, answer: letter, answerText: `“${L[letter].rom}”`,
+    options: letterOpts(letter, pool, x => `<span>${esc(L[x].rom)}</span>`), onResult: ok => markLetter(letter, ok) };
+}
+function markLetter(x, ok) { const p = me(); const r = p.letters[x] = Object.assign({ right: 0, wrong: 0 }, p.letters[x]); ok ? r.right++ : r.wrong++; }
+function buildQ(target, known) {
+  const cons = known.filter(x => L[x].type === 'con'), vows = known.filter(x => L[x].type === 'vow');
+  const t = decompose(target);
+  const c = [...new Set([t.i, ...shuffle(cons.filter(x => x !== t.i)).slice(0, 3)])];
+  const v = [...new Set([t.v, ...shuffle(vows.filter(x => x !== t.v)).slice(0, 3)])];
+  return { type: 'build', target, cons: c, vows: v };
+}
+function wordQ(w, pool, mode) {
+  const others = shuffle(pool.filter(x => x.ko !== w.ko && x.en !== w.en)).slice(0, 3);
+  const opts = shuffle([w, ...others]);
+  const onResult = ok => { const p = me(); const r = p.words[w.ko]; if (r) { ok ? r.right++ : r.wrong++; } };
+  if (mode === 'meaning') return { type: 'choice', eyebrow: 'Read it', prompt: `<span class="ko" style="font-size:3.4rem">${esc(w.ko)}</span>`, sub: '<p class="muted">What does this mean?</p>', answer: w.ko, answerText: `${w.emoji} ${esc(w.en)}`,
+    options: opts.map(o => ({ value: o.ko, html: `<span class="em">${o.emoji}</span><span>${esc(o.en)}</span>` })), onResult };
+  if (mode === 'listen') return { type: 'choice', eyebrow: 'Listen', prompt: 'Which word do you hear?', audio: w.ko, answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`,
+    options: opts.map(o => ({ value: o.ko, html: `<span class="ko">${esc(o.ko)}</span>` })), onResult };
+  return { type: 'choice', eyebrow: 'Find the Korean', prompt: `<span style="font-size:3rem">${w.emoji}</span><br>${esc(w.en)}`, answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`, optAudio: true,
+    options: opts.map(o => ({ value: o.ko, html: `<span class="ko">${esc(o.ko)}</span>` })), onResult };
+}
+function finalListenQ(set) {
+  const a = pick(set);
+  return { type: 'choice', eyebrow: 'Listen to the ending', prompt: 'Which block do you hear?', audio: a, answer: a, answerText: `<span class="ko">${a}</span>`,
+    options: shuffle(set).map(x => ({ value: x, html: `<span class="ko">${x}</span>` })) };
+}
+function finalAskQ([syl, ans]) {
+  const others = shuffle(Object.keys(FIN_ROM).filter(x => x !== ans)).slice(0, 3);
+  return { type: 'choice', eyebrow: 'Bottom letter', prompt: `Which ending sound does <span class="ko" style="font-size:2.4rem;vertical-align:middle">${syl}</span> make?`,
+    sub: `<div class="row" style="justify-content:center">${blockHTML(syl)}<button class="say" data-say="${syl}" aria-label="Play">🔊</button></div>`,
+    answer: ans, answerText: `<span class="ko">${ans}</span> “${FIN_ROM[ans]}”`,
+    options: shuffle([ans, ...others]).map(x => ({ value: x, html: `<span class="ko c-fin">${x}</span><span>“${FIN_ROM[x]}”</span>` })) };
+}
+function finalBuildQ(target) {
+  const t = decompose(target);
+  const cons = [...new Set([t.i, ...shuffle(BASIC_CON.filter(x => x !== t.i)).slice(0, 3)])];
+  const vows = [...new Set([t.v, ...shuffle(BASIC_VOW.filter(x => x !== t.v)).slice(0, 3)])];
+  const fins = [...new Set([t.t, ...shuffle(['ㄱ', 'ㄴ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅇ'].filter(x => x !== t.t)).slice(0, 3)])];
+  return { type: 'build', target, cons, vows, fins };
+}
+function ruleQ(ruleId, [w, said, en, wrong]) {
+  const r = D.rules[ruleId];
+  return { type: 'choice', eyebrow: `Sound rule · ${r.name}`, prompt: `<span class="ko" style="font-size:3rem">${w}</span>`,
+    sub: `<p class="muted">${esc(en)}. How is it really said?</p>`, audio: w, answer: said, answerText: `<span class="ko">[${said}]</span>`,
+    options: shuffle([said, ...wrong]).map(x => ({ value: x, html: `<span class="ko" style="font-size:1.5rem">[${x}]</span>` })) };
+}
+function startLesson(id) {
+  const { stage, lesson } = lessonById(id); const p = me();
+  const knownSoFar = (() => { const out = knownLetters(stage.id - 1); for (const l of stage.lessons) { if (l.letters) out.push(...l.letters); if (l.id === id) break; } return out; })();
+  const steps = [{ type: 'intro', eyebrow: `Stage ${stage.id} · Lesson ${stage.lessons.indexOf(lesson) + 1}`, title: lesson.title, html: lesson.intro, img: lesson.img }];
+  if (lesson.type === 'letters') {
+    lesson.letters.forEach(x => steps.push({ type: 'meet', letter: x }, { type: 'trace', letter: x }));
+    const hearable = lesson.letters.filter(x => x !== 'ㅇ');
+    const hq = shuffle([...hearable, ...hearable]).slice(0, Math.max(4, hearable.length + 2));
+    hq.forEach(x => steps.push(hearQ(x, knownSoFar)));
+    shuffle(lesson.letters).slice(0, 3).forEach(x => steps.push(soundQ(x, knownSoFar)));
+    shuffle(lesson.build).slice(0, 4).forEach(t => steps.push(buildQ(t, knownSoFar)));
+  } else if (lesson.type === 'finals') {
+    lesson.finals.forEach(f => steps.push({ type: 'finalcard', fin: D.finals.find(x => x.f === f) }));
+    if (lesson.doubles) steps.push({ type: 'doublecard' });
+    steps.push(...shuffle([...lesson.listen.map(finalListenQ), ...lesson.ask.map(finalAskQ)]).slice(0, 8));
+    steps.push(...shuffle(lesson.build).slice(0, 3).map(finalBuildQ));
+  } else if (lesson.type === 'rules') {
+    lesson.rules.forEach(r => steps.push({ type: 'rulecard', rule: r }));
+    steps.push(...shuffle(lesson.rules.flatMap(r => D.rules[r].items.map(it => ruleQ(r, it)))).slice(0, 8));
+  } else {
+    const ws = lessonWords(p, stage, lesson);
+    ws.forEach((w, k) => steps.push({ type: 'wordcard', word: w, n: k + 1, of: ws.length }));
+    const pool = D.words.filter(w => w.stage <= stage.id && (!w.for || w.for === p.family));
+    const modes = ['meaning', 'listen', 'find'];
+    shuffle(ws).slice(0, Math.min(10, ws.length + 2)).forEach((w, k) => steps.push(wordQ(w, pool, modes[k % 3])));
+    if (ws.length < 6) shuffle(ws).forEach((w, k) => steps.push(wordQ(w, pool, modes[(k + 1) % 3])));
+  }
+  steps.push({ type: 'result', finish: acc => {
+    const stars = acc >= .9 ? 3 : acc >= .7 ? 2 : 1;
+    const prev = p.lessons[id];
+    p.lessons[id] = { stars: Math.max(stars, prev ? prev.stars : 0), at: Date.now() };
+    if (!prev) gainXP(20);
+    save();
+    const last = stage.lessons[stage.lessons.length - 1].id === id;
+    return { win: true, stars, title: stars === 3 ? '완벽해요! Perfect!' : stars === 2 ? '잘했어요! Great job!' : '좋아요! Lesson done!',
+      text: last ? 'All lessons done. The <b>Stage challenge</b> is unlocked: pass it to earn a passport stamp!' : 'The next lesson is unlocked.' };
+  } });
+  openPlayer(steps, { title: lesson.title });
+}
+function startChallenge(stageId, testout) {
+  const stage = stageOf(stageId), p = me();
+  const letters = stage.letters, known = knownLetters(stageId);
+  const hearable = letters.filter(x => x !== 'ㅇ');
+  const steps = [{ type: 'intro', eyebrow: testout ? 'Test out' : 'Stage challenge', title: `Stage ${stageId}: ${stage.title}`,
+    html: `12 questions about ${stage.kind ? esc(stage.title.toLowerCase()) : `<span class="ko">${letters.join(' ')}</span>`} and the words from this stage. Get <b>10 right</b> to earn your passport stamp! ${testout ? 'If you pass, the whole stage is marked complete.' : ''}` }];
+  if (stage.kind === 'finals') {
+    const fl = stage.lessons.filter(l => l.type === 'finals');
+    steps.push(...shuffle(fl.flatMap(l => [...l.listen.map(finalListenQ), ...l.ask.map(finalAskQ)])).slice(0, 7));
+    steps.push(...shuffle(fl.flatMap(l => l.build)).slice(0, 2).map(finalBuildQ));
+  } else if (stage.kind === 'rules') {
+    steps.push(...shuffle(Object.keys(D.rules).flatMap(r => D.rules[r].items.map(it => ruleQ(r, it)))).slice(0, 9));
+  } else {
+    shuffle([...hearable, ...hearable]).slice(0, 4).forEach(x => steps.push(hearQ(x, known, 'Challenge · listen')));
+    shuffle(letters).slice(0, 3).forEach(x => steps.push(soundQ(x, known)));
+    const builds = stage.lessons.flatMap(l => l.build || []);
+    shuffle(builds).slice(0, 2).forEach(t => steps.push(buildQ(t, known)));
+  }
+  const ws = wordsFor(p, stageId), pool = D.words.filter(w => w.stage <= stageId && (!w.for || w.for === p.family));
+  shuffle(ws).slice(0, 3).forEach((w, k) => steps.push(wordQ(w, pool, ['meaning', 'listen', 'find'][k])));
+  steps.push({ type: 'result', finish: () => {
+    const score = P.right, win = score >= Math.ceil(P.total * 0.8);
+    if (win) {
+      const prev = p.stages[stageId];
+      p.stages[stageId] = { passed: true, score: Math.max(score, prev ? prev.score || 0 : 0), at: Date.now() };
+      if (!prev || !prev.passed) gainXP(50);
+      if (testout) {
+        stage.lessons.forEach(l => { if (!p.lessons[l.id]) p.lessons[l.id] = { stars: 3, at: Date.now(), testout: true }; });
+        letters.forEach(x => { p.letters[x] = Object.assign({ right: 0, wrong: 0 }, p.letters[x], { seen: true }); });
+        ws.forEach(w => { if (addWord(w, 2)) P.newWords++; });
+      }
+      save();
+      const nxt = stageOf(stageId + 1);
+      return { win: true, stamp: stampForStage(stageId).id, title: '합격! You passed!', stars: score === P.total ? 3 : score >= P.total - 1 ? 2 : 1,
+        text: `You earned the <b>${stampForStage(stageId).label}</b> passport stamp. ${nxt && !nxt.soon ? `Stage ${stageId + 1} is unlocked!` : stageId === D.stages.length ? '🎓 You finished the whole Hangul Path. You can read Korean!' : `Stages 1–${stageId} complete: amazing! More stages are coming soon.`}` };
+    }
+    save();
+    return { win: false, title: 'So close!', stars: 0, text: `You need ${Math.ceil(P.total * 0.8)} right to pass. ${testout ? 'Try the lessons first. They’ll make it easy!' : 'Look at the picture clues again and have another go.'}` };
+  } });
+  openPlayer(steps, { title: 'Challenge' });
+}
+function startReview() {
+  const p = me();
+  const due = shuffle(dueWords(p)).sort((a, b) => p.words[a.ko].box - p.words[b.ko].box).slice(0, 15);
+  if (!due.length) { toast('No words to review right now.'); return; }
+  const pool = D.words.filter(w => p.words[w.ko] || w.stage <= 1);
+  const modes = ['meaning', 'listen', 'find'];
+  const steps = [{ type: 'intro', eyebrow: 'Word review', title: `${due.length} words to review`, html: 'Get a word right and it moves up a box, so you’ll see it less often. Miss it and it goes back to box 1 for more practice.' }];
+  due.forEach((w, k) => {
+    const q = wordQ(w, pool.length >= 4 ? pool : D.words, modes[k % 3]);
+    const base = q.onResult;
+    q.onResult = ok => { base(ok); const r = p.words[w.ko]; r.box = ok ? Math.min(5, r.box + 1) : 1; r.due = Date.now() + (ok ? BOX_GAP[r.box] : 0) + (ok ? 0 : 10 * 60000); };
+    steps.push(q);
+  });
+  steps.push({ type: 'result', finish: acc => ({ win: acc >= .6, stars: acc >= .9 ? 3 : acc >= .7 ? 2 : 1, title: acc >= .6 ? '복습 끝! Review done!' : 'Good practice!', text: acc >= .6 ? 'Your words are moving up the boxes. Come back tomorrow for the next review!' : 'Missed words go back to box 1 and come back soon. That’s how they stick!' }) });
+  openPlayer(steps, { title: 'Word review' });
+}
+
+
+/* ================= passport & map ================= */
+function gameStats(p) { p.games = p.games || { memory: { plays: 0, wins: 0, best: 0 }, swipe: { plays: 0, known: 0 }, speed: { plays: 0, best: 0 } }; return p.games; }
+function stampProgress(p, st) {
+  if (st.stage) return stagePassed(p, st.stage) ? 1 : 0;
+  const g = gameStats(p)[st.game];
+  const v = st.game === 'memory' ? g.wins : st.game === 'swipe' ? g.known : g.best;
+  return Math.min(1, v / st.goal);
+}
+const stampEarned = (p, st) => stampProgress(p, st) >= 1;
+const stampCount = p => D.stamps.filter(st => stampEarned(p, st)).length;
+const stampForStage = id => D.stamps.find(s => s.stage === id);
+function checkGameStamps(before) {
+  const p = me();
+  D.stamps.filter(st => st.game && !before.includes(st.id) && stampEarned(p, st)).forEach(st => {
+    setTimeout(() => { sfx('win'); burst(); toast(`New passport stamp: ${st.label}!`); }, 600);
+  });
+}
+const earnedIds = p => D.stamps.filter(st => stampEarned(p, st)).map(s => s.id);
+function mapHTML(p) {
+  const nx = nextStep(p);
+  const cur = nx ? nx.stage.id : null;
+  const pts = D.stamps.filter(s => s.pin).map(s => s.pin);
+  return `<div class="kmap"><img class="map-base" src="assets/korea-map.webp" alt="Cartoon map of Korea with your learning journey">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts.map(q => q.join(',')).join(' ')}" /></svg>
+    ${D.stamps.filter(s => s.pin).map(s => {
+      const done = stagePassed(p, s.stage), here = s.stage === cur;
+      return `<button class="pin ${done ? 'done' : here ? 'here' : 'locked'}" style="left:${s.pin[0]}%;top:${s.pin[1]}%" data-pin="${s.stage}" title="Stage ${s.stage}: ${esc(stageOf(s.stage).title)}">${done ? '✓' : s.stage}</button>`;
+    }).join('')}
+    ${cur ? `<img class="map-tiger" src="${tiger('wave')}" alt="" style="left:${stampForStage(cur).pin[0]}%;top:${stampForStage(cur).pin[1]}%">` : ''}
+  </div>`;
+}
+function bindMap(root) {
+  const p = me();
+  $$('[data-pin]', root).forEach(b => b.onclick = () => {
+    const id = +b.dataset.pin;
+    if (stageOpen(p, id)) go('stage', id); else toast(`Stage ${id} is locked. Pass Stage ${id - 1} first!`);
+  });
+}
+function stampTile(p, st) {
+  const got = stampEarned(p, st), pr = stampProgress(p, st);
+  const tilt = ((st.id.charCodeAt(0) + st.id.length * 7) % 17) - 8;
+  return `<div class="pstamp ${got ? 'got' : ''}">
+    <div class="pimg"><img src="assets/stamps/${st.id}.webp" alt="" style="transform:rotate(${got ? tilt : 0}deg)"></div>
+    <b>${esc(st.label)}</b>
+    <span class="muted">${st.stage ? `Stage ${st.stage}: ${esc(stageOf(st.stage).title)}` : esc(st.how)}</span>
+    ${!got && st.game ? `<div class="bar thin"><i style="width:${pr * 100}%"></i></div>` : ''}
+  </div>`;
+}
+VIEWS.passport = main => {
+  const p = me();
+  const n = stampCount(p);
+  main.innerHTML = `<button class="back" id="bk">← Home</button>
+  <div class="passport-top">
+    <div class="pcover"><img src="assets/passport-cover.webp" alt="Passport cover"><span class="pname">${esc(p.name)}</span></div>
+    <div style="display:grid;gap:10px;align-content:center">
+      <span class="eyebrow">여권 · Passport</span>
+      <h1>${esc(p.name)}’s Korea passport</h1>
+      <p class="muted">Earn a stamp for every Hangul stage you pass, and three bonus stamps from the Games tab.</p>
+      <div class="bar"><i style="width:${n / D.stamps.length * 100}%"></i></div>
+      <b>${n} of ${D.stamps.length} stamps</b>
+    </div>
+  </div>
+  <div class="section-h"><h2>Hangul journey</h2><span class="muted">Pass a stage challenge</span></div>
+  <div class="card pgrid">${D.stamps.filter(s => s.stage).map(s => stampTile(p, s)).join('')}</div>
+  <div class="section-h"><h2>Game stamps</h2><button class="btn small blue" id="to-games">Play games →</button></div>
+  <div class="card pgrid">${D.stamps.filter(s => s.game).map(s => stampTile(p, s)).join('')}</div>`;
+  $('#bk', main).onclick = () => go('home');
+  $('#to-games', main).onclick = () => go('games');
+};
+
+/* ================= games ================= */
+function gamePool(p) {
+  const ws = D.words.filter(w => p.words[w.ko] && (!w.for || w.for === p.family));
+  if (ws.length >= 6) return { kind: 'words', items: ws.map(w => ({ key: w.ko, ko: w.ko, en: w.en, emoji: w.emoji, rom: w.rom, say: w.ko, word: w })) };
+  let ls = Object.keys(L).filter(x => p.letters[x] && p.letters[x].seen);
+  if (ls.length < 6) ls = D.stages[0].letters.concat(D.stages[1].letters);
+  return { kind: 'letters', items: ls.map(x => ({ key: x, ko: x, en: '“' + L[x].rom + '”', emoji: L[x].emoji, rom: L[x].rom, say: L[x].sample })) };
+}
+VIEWS.games = main => {
+  const p = me(), g = gameStats(p), pool = gamePool(p);
+  const src = pool.kind === 'words' ? `your ${pool.items.length} words` : 'the letters you’ve met';
+  const card = (id, emoji, title, blurb, stat, st) => `<div class="card game">
+    <div class="gicon">${emoji}</div>
+    <div style="flex:1;display:grid;gap:4px"><h3>${title}</h3><p class="muted">${blurb}</p>
+      <div class="row" style="gap:8px"><span class="pill">${stat}</span><span class="pill ${stampEarned(p, st) ? 'done' : ''}">${stampEarned(p, st) ? '✓ Stamp earned' : '🎯 ' + esc(st.how)}</span></div></div>
+    <img class="gstamp ${stampEarned(p, st) ? 'got' : ''}" src="assets/stamps/${st.id}.webp" alt="">
+    <button class="btn red" data-game="${id}">Play</button></div>`;
+  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Practice</span><h1>Games</h1></div><p class="muted" style="max-width:42ch">Games use ${src}. Learn more words on the Hangul Path to fill the decks!</p></div>
+  <div class="grid">
+    ${card('memory', '🃏', 'Memory Match', 'Flip two cards and find the pairs: Korean ↔ meaning.', `🏆 ${g.memory.wins} wins · best ${g.memory.best ? g.memory.best + ' moves' : '—'}`, D.stamps.find(s => s.game === 'memory'))}
+    ${card('swipe', '👆', 'Swipe Cards', 'Flip a cue card. Swipe right if you knew it, left if you’re still learning.', `✓ ${g.swipe.known} cards known`, D.stamps.find(s => s.game === 'swipe'))}
+    ${card('speed', '⚡', 'Speed Read', 'How many Korean words can you read in 60 seconds?', `⭐ best ${g.speed.best}`, D.stamps.find(s => s.game === 'speed'))}
+  </div>`;
+  $$('[data-game]', main).forEach(b => b.onclick = () => ({ memory: playMemory, swipe: playSwipe, speed: playSpeed })[b.dataset.game]());
+};
+let G = null;
+function openGame(title) {
+  const root = $('#player-root');
+  root.innerHTML = `<div class="player" role="dialog" aria-modal="true" aria-label="${esc(title)}">
+    <div class="p-top"><button class="x" id="g-x" aria-label="Close">✕</button><h3 style="flex:1">${esc(title)}</h3><span class="stat" id="g-stat"></span></div>
+    <div class="p-body" style="padding-bottom:40px"><div class="p-in" id="g-in"></div></div></div>`;
+  document.body.style.overflow = 'hidden';
+  G = { before: earnedIds(me()), cleanup: null };
+  $('#g-x').onclick = closeGame;
+  return $('#g-in');
+}
+function closeGame() {
+  if (G && G.cleanup) G.cleanup();
+  $('#player-root').innerHTML = ''; document.body.style.overflow = '';
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  G = null; go(route.name, route.arg);
+}
+function gameOver(box, { title, text, pose, again }) {
+  const p = me(); save();
+  box.innerHTML = `<img src="${tiger(pose)}" alt="" style="width:170px"><h1>${title}</h1><p class="mn-text">${text}</p>
+    <div class="row" style="justify-content:center"><button class="btn ghost" id="g-done">Done</button><button class="btn red" id="g-again">Play again</button></div>`;
+  $('#g-done', box).onclick = closeGame;
+  $('#g-again', box).onclick = again;
+  checkGameStamps(G.before);
+  G.before = earnedIds(p);
+}
+
+/* --- Memory Match --- */
+function playMemory() {
+  const p = me(), pool = gamePool(p);
+  const box = G ? $('#g-in') : openGame('Memory Match');
+  const pairs = shuffle(pool.items).slice(0, 6);
+  const cards = shuffle(pairs.flatMap((it, i) => [{ i, side: 'ko', it }, { i, side: 'en', it }]));
+  let open = [], matched = 0, moves = 0, lock = false;
+  const stat = () => $('#g-stat').textContent = `🔄 ${moves} moves`;
+  box.innerHTML = `<p class="muted">Find each Korean ${pool.kind === 'words' ? 'word' : 'letter'} and its ${pool.kind === 'words' ? 'meaning' : 'sound'}.</p>
+    <div class="mem">${cards.map((c, k) => `<button class="mcard" data-k="${k}" aria-label="Hidden card"><span class="mback">🐯</span><span class="mface ${c.side}">${c.side === 'ko' ? `<span class="ko">${esc(c.it.ko)}</span>` : `<span class="em">${c.it.emoji}</span><span class="en">${esc(c.it.en)}</span>`}</span></button>`).join('')}</div>`;
+  stat();
+  $$('.mcard', box).forEach(b => b.onclick = () => {
+    const k = +b.dataset.k, c = cards[k];
+    if (lock || b.classList.contains('up')) return;
+    b.classList.add('up'); b.setAttribute('aria-label', c.side === 'ko' ? c.it.ko : c.it.en);
+    if (c.side === 'ko') say(c.it.say);
+    open.push([b, c]);
+    if (open.length < 2) return;
+    moves++; stat();
+    const [[b1, c1], [b2, c2]] = open; open = [];
+    if (c1.i === c2.i) {
+      matched++; sfx('good'); b1.classList.add('ok'); b2.classList.add('ok'); addXP(1);
+      if (matched === pairs.length) {
+        const g = gameStats(p).memory; g.plays++; g.wins++; if (!g.best || moves < g.best) g.best = moves;
+        addXP(10);
+        setTimeout(() => { sfx('win'); burst(); gameOver(box, { title: '짝 맞추기 성공!', pose: 'cheer', text: `All pairs found in <b>${moves} moves</b>. ${moves <= 8 ? 'Amazing memory!' : 'Try to beat it with fewer moves!'} (+16 XP)`, again: playMemory }); }, 700);
+      }
+    } else {
+      lock = true; sfx('bad');
+      setTimeout(() => { b1.classList.remove('up'); b2.classList.remove('up'); lock = false; }, 950);
+    }
+  });
+}
+
+/* --- Swipe Cards --- */
+function playSwipe(mode) {
+  const p = me(), pool = gamePool(p);
+  const box = G ? $('#g-in') : openGame('Swipe Cards');
+  mode = typeof mode === 'string' ? mode : 'ko';
+  // due words first, then the rest
+  const now = Date.now();
+  const items = pool.items.slice().sort((a, b) => {
+    const ra = a.word && p.words[a.key], rb = b.word && p.words[b.key];
+    return ((ra ? ra.box : 0) - (rb ? rb.box : 0)) || ((ra && ra.due <= now ? 0 : 1) - (rb && rb.due <= now ? 0 : 1));
+  });
+  const deck = shuffle(items.slice(0, 20)).slice(0, 15);
+  let i = 0, known = 0, again = [];
+  box.innerHTML = `<div class="chips" style="justify-content:center"><button class="chip" data-mode="ko" aria-pressed="${mode === 'ko'}">Korean first</button><button class="chip" data-mode="en" aria-pressed="${mode === 'en'}">English first</button></div>
+    <div class="swipe-zone"><div class="hint left">✗ Still learning</div><div class="hint right">Knew it ✓</div><div id="sw-stack"></div></div>
+    <p class="muted" style="font-size:.9rem">Tap the card to flip it. Swipe or use the buttons (← / → keys work too).</p>
+    <div class="row" style="justify-content:center">
+      <button class="btn red swbtn" id="sw-no" aria-label="Still learning">✗</button>
+      <button class="btn ghost" id="sw-flip">↻ Flip</button>
+      <button class="btn green swbtn" id="sw-yes" aria-label="Knew it">✓</button></div>`;
+  $$('[data-mode]', box).forEach(b => b.onclick = () => playSwipe(b.dataset.mode));
+  const stat = () => $('#g-stat').textContent = `${Math.min(i + 1, deck.length)} / ${deck.length}`;
+  function render() {
+    stat();
+    const it = deck[i];
+    const front = mode === 'ko' ? `<span class="ko big">${esc(it.ko)}</span>` : `<span class="em">${it.emoji}</span><span class="en">${esc(it.en)}</span>`;
+    const back = mode === 'ko' ? `<span class="em">${it.emoji}</span><span class="en">${esc(it.en)}</span>${pool.kind === 'words' && showRom(it.word.stage) ? `<span class="rom">${esc(it.rom)}</span>` : ''}` : `<span class="ko big">${esc(it.ko)}</span><span class="rom">${esc(it.rom)}</span>`;
+    $('#sw-stack', box).innerHTML = `${deck[i + 1] ? '<div class="scard under"></div>' : ''}<div class="scard" id="sc" tabindex="0"><div class="sin"><div class="sf front">${front}<span class="muted small">tap to flip</span></div><div class="sf back">${back}</div></div></div>`;
+    if (mode === 'ko') say(it.say);
+    bindCard($('#sc', box));
+  }
+  function flip() { const c = $('#sc', box); if (!c) return; c.classList.toggle('flipped'); if (c.classList.contains('flipped') && mode === 'en') say(deck[i].say); }
+  function decide(ok) {
+    const c = $('#sc', box); if (!c || c.dataset.gone) return;
+    c.dataset.gone = 1;
+    c.style.transition = 'transform .3s ease, opacity .3s'; c.style.transform = `translateX(${ok ? 140 : -140}%) rotate(${ok ? 18 : -18}deg)`; c.style.opacity = 0;
+    const it = deck[i];
+    sfx(ok ? 'good' : 'bad');
+    if (ok) { known++; addXP(1); } else again.push(it);
+    if (it.word) { const r = p.words[it.key]; if (r) { if (ok) { r.right++; if (r.due <= Date.now()) { r.box = Math.min(5, r.box + 1); r.due = Date.now() + BOX_GAP[r.box]; } } else { r.wrong++; r.box = 1; r.due = Date.now() + 10 * 60000; } } }
+    else markLetter(it.key, ok);
+    save();
+    setTimeout(() => {
+      i++;
+      if (i < deck.length) return render();
+      const g = gameStats(p).swipe; g.plays++; g.known += known; addXP(5);
+      gameOver(box, { title: known === deck.length ? '완벽해요! Perfect!' : '잘했어요! Deck done!', pose: known >= deck.length * .7 ? 'cheer' : 'thumbs',
+        text: `You knew <b>${known} of ${deck.length}</b> cards.${again.length ? `<br>Keep practising: <span class="ko">${again.map(x => esc(x.ko)).join(', ')}</span>` : ''}`, again: () => playSwipe(mode) });
+    }, 280);
+  }
+  function bindCard(c) {
+    let x0 = null, dx = 0, moved = false;
+    c.addEventListener('pointerdown', e => { x0 = e.clientX; dx = 0; moved = false; c.setPointerCapture(e.pointerId); c.style.transition = 'none'; });
+    c.addEventListener('pointermove', e => {
+      if (x0 === null) return; dx = e.clientX - x0; if (Math.abs(dx) > 6) moved = true;
+      c.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`;
+      box.querySelector('.hint.left').style.opacity = Math.min(1, Math.max(0, -dx / 90));
+      box.querySelector('.hint.right').style.opacity = Math.min(1, Math.max(0, dx / 90));
+    });
+    const up = () => {
+      if (x0 === null) return; x0 = null;
+      $$('.hint', box).forEach(h => h.style.opacity = 0);
+      if (!moved) { c.style.transform = ''; flip(); return; }
+      if (Math.abs(dx) > 90) decide(dx > 0);
+      else { c.style.transition = 'transform .2s'; c.style.transform = ''; }
+    };
+    c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
+  }
+  $('#sw-no', box).onclick = () => decide(false);
+  $('#sw-yes', box).onclick = () => decide(true);
+  $('#sw-flip', box).onclick = flip;
+  const key = e => { if (!$('#sc')) return; if (e.key === 'ArrowLeft') decide(false); else if (e.key === 'ArrowRight') decide(true); else if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); flip(); } };
+  if (G.cleanup) G.cleanup();
+  document.addEventListener('keydown', key);
+  G.cleanup = () => document.removeEventListener('keydown', key);
+  render();
+}
+
+/* --- Speed Read --- */
+function playSpeed() {
+  const p = me(), pool = gamePool(p);
+  const box = G ? $('#g-in') : openGame('Speed Read');
+  let score = 0, left = 60, timer = null, cur = null, busy = false;
+  const stat = () => $('#g-stat').textContent = `⏱ ${left}s · ⭐ ${score}`;
+  box.innerHTML = `<img src="${tiger('point')}" alt="" style="width:140px"><h2>60 seconds. Ready?</h2>
+    <p class="muted">Read the Korean and tap the right meaning, as fast as you can.</p><button class="btn red" id="sp-go">Start!</button>`;
+  $('#g-stat').textContent = `best ${gameStats(p).speed.best}`;
+  $('#sp-go', box).onclick = () => {
+    box.innerHTML = `<div class="bar"><i id="sp-t" style="width:100%;transition:width 1s linear"></i></div><div id="sp-q" style="display:grid;gap:18px;width:100%;justify-items:center"></div>`;
+    stat(); next();
+    timer = setInterval(() => {
+      left--; stat(); $('#sp-t').style.width = (left / 60 * 100) + '%';
+      if (left <= 0) end();
+    }, 1000);
+  };
+  if (G.cleanup) G.cleanup();
+  G.cleanup = () => clearInterval(timer);
+  function next() {
+    busy = false;
+    let it; do { it = pick(pool.items); } while (cur && it.key === cur.key && pool.items.length > 1);
+    cur = it;
+    const opts = shuffle([it, ...shuffle(pool.items.filter(x => x.key !== it.key && x.en !== it.en)).slice(0, 3)]);
+    $('#sp-q').innerHTML = `<span class="ko" style="font-size:clamp(3rem,14vw,4.5rem);line-height:1.1">${esc(it.ko)}</span>
+      <div class="opts">${opts.map(o => `<button class="opt" data-k="${esc(o.key)}"><span class="em">${o.emoji}</span><span>${esc(o.en)}</span></button>`).join('')}</div>`;
+    $$('#sp-q .opt').forEach(b => b.onclick = () => {
+      if (busy) return; busy = true;
+      const ok = b.dataset.k === it.key;
+      b.classList.add(ok ? 'right' : 'wrong');
+      if (!ok) $$('#sp-q .opt').find(x => x.dataset.k === it.key).classList.add('right');
+      sfx(ok ? 'good' : 'bad');
+      if (ok) { score++; stat(); }
+      setTimeout(next, ok ? 250 : 900);
+    });
+  }
+  function end() {
+    clearInterval(timer);
+    const g = gameStats(p).speed; g.plays++;
+    const best = score > g.best; if (best) g.best = score;
+    addXP(score);
+    if (score) { sfx('win'); if (best) burst(); }
+    gameOver(box, { title: best && score ? '신기록! New record!' : `${score} correct!`, pose: score >= 10 ? 'cheer' : 'thumbs',
+      text: `You read <b>${score}</b> ${pool.kind === 'words' ? 'words' : 'letters'} in 60 seconds. Best: <b>${g.best}</b>. (+${score} XP)`, again: playSpeed });
+  }
+}
+
+/* ================= boot ================= */
+go(me() ? 'home' : 'profiles');
+})();
+</script>
+</body>
+</html>

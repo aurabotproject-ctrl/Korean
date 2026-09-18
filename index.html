@@ -107,26 +107,34 @@ p{margin:0}
 
 /* ---------- shell ---------- */
 .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
-.topbar-in{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
-.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0}
-.brand img{width:42px;height:42px}
+.topbar-in{max-width:1240px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;flex:none}
+.brand img{width:126px;height:126px;flex:none;object-fit:contain}
 .brand b{font-family:var(--f-ko-fun);font-size:1.45rem;font-weight:400;letter-spacing:.01em;white-space:nowrap}
 .brand b span{font-family:var(--f-display);font-weight:800}
-.tabs{display:flex;gap:4px;margin-left:12px}
-.tab{border:0;background:none;padding:8px 14px;border-radius:999px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px}
+.tabs{display:flex;gap:4px;margin-left:8px;flex-wrap:nowrap}
+.tab{border:0;background:none;padding:8px 14px;border-radius:999px;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
 .tab[aria-current="page"]{background:var(--ink);color:var(--paper)}
 .tab .ti{font-size:1.1rem}
-.spacer{flex:1}
+.spacer{flex:1;min-width:0}
+#mebar{margin-left:auto;flex-wrap:nowrap;gap:12px}
 .stat{display:flex;align-items:center;gap:4px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-.me{display:flex;align-items:center;gap:8px;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:3px 12px 3px 3px;font-weight:800}
-.me img{width:34px;height:34px;border-radius:50%}
+.me{display:flex;align-items:center;gap:10px;flex:none;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:4px 18px 4px 4px;font-weight:800;font-size:1.1rem}
+.me img{width:102px;height:102px;border-radius:50%;flex:none;object-fit:cover}
 main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
 @media (min-width:761px){ main{padding-bottom:60px} }
+/* keep the top bar on ONE row: the logo carries the brand, so the wordmark steps aside for the tabs */
+@media (min-width:761px){ .brand b{display:none} }
+@media (max-width:1270px){ .me span{display:none} .me{padding:4px} }
+@media (max-width:1010px){ .topbar-in{gap:8px} .tabs{margin-left:4px} .tab{padding:6px 8px;font-size:.95rem} .brand img{width:72px;height:72px} .me img{width:64px;height:64px} }
+@media (max-width:880px){ .stat.hide-sm{display:none} .style-tog{display:none} }
 @media (max-width:760px){
   .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:space-around;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:30}
   .tab{flex-direction:column;gap:0;font-size:.72rem;padding:6px 10px;border-radius:14px}
   .tab .ti{font-size:1.35rem}
   .brand b{font-size:1.2rem}
+  .brand img{width:62px;height:62px}
+  .me img{width:52px;height:52px}
   .me span{display:none} .me{padding:3px}
   .stat.hide-sm{display:none}
 }
@@ -146,6 +154,9 @@ main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
 .pill.soon{background:var(--plum-soft);color:var(--plum)}
 .bar{height:12px;border-radius:99px;background:var(--paper-2);overflow:hidden}
 .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--con),var(--gold));transition:width .4s}
+.listen-box{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%}
+.listen-btn{font-size:1.15rem;padding:16px 28px}
+.tipbox.warn{background:var(--con-soft);color:var(--ink);font-size:.9rem}
 .say{border:0;background:var(--vow-soft);color:var(--vow);border-radius:999px;width:44px;height:44px;display:inline-grid;place-items:center;font-size:1.25rem;flex:none}
 .say.big{width:64px;height:64px;font-size:1.8rem}
 .toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:14px;font-weight:700;z-index:100;width:max-content;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
@@ -536,16 +547,37 @@ function pickVoice() {
   koVoice = vs.find(v => /^ko/i.test(v.lang) && /yuna|sora|google/i.test(v.name)) || vs.find(v => /^ko/i.test(v.lang)) || null;
 }
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-let warnedVoice = false;
+let speechBroken = false, unlocked = false;
+// Browsers block speech until the page has been tapped once, so prime it on the first touch.
+function unlockSpeech() {
+  if (unlocked || !('speechSynthesis' in window)) return;
+  unlocked = true;
+  try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) {}
+}
+document.addEventListener('pointerdown', unlockSpeech, true);
+document.addEventListener('keydown', unlockSpeech, true);
+function canSpeak() {
+  if (!('speechSynthesis' in window) || speechBroken) return false;
+  if (!koVoice) pickVoice();
+  return !!koVoice;
+}
 function say(text, slow) {
   if (!('speechSynthesis' in window)) { toast('This browser can’t speak. Try Safari or Chrome.'); return; }
   if (!koVoice) pickVoice();
-  if (!koVoice && !warnedVoice) { warnedVoice = true; toast('No Korean voice found. A grown-up can add one in the Grown-ups tab.'); }
-  speechSynthesis.cancel();
+  unlockSpeech();
+  try { speechSynthesis.cancel(); if (speechSynthesis.paused) speechSynthesis.resume(); } catch (e) {}
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'ko-KR'; if (koVoice) u.voice = koVoice;
   u.rate = slow ? 0.55 : S.settings.rate;
-  speechSynthesis.speak(u);
+  u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') { speechBroken = true; showVoiceNote(); } };
+  setTimeout(() => { try { speechSynthesis.speak(u); } catch (e) {} }, 40);
+}
+function voiceHelp() {
+  return 'No Korean voice on this device yet. On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → add Korean (Yuna), then reload this page. On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.';
+}
+function showVoiceNote() {
+  const n = $('#voice-note');
+  if (n) { n.hidden = false; n.innerHTML = `🔇 <b>No Korean voice.</b> ${esc(voiceHelp())}`; }
 }
 let actx = null;
 function sfx(kind) {
@@ -583,9 +615,9 @@ function burst() {
 // Art style: 'cute' or 'anime'. Anime images live in assets/anime/… (stamps are shared).
 // If an anime picture hasn't been added yet, the cute one is shown instead.
 const styleOf = p => (p && p.style) || 'cute';
-function A(path) {
-  return styleOf(me()) === 'anime' && !path.startsWith('assets/stamps/') ? path.replace('assets/', 'assets/anime/') : path;
-}
+const stylePath = (st, path) => st === 'anime' && !path.startsWith('assets/stamps/') ? path.replace('assets/', 'assets/anime/') : path;
+function A(path) { return stylePath(styleOf(me()), path); }
+const avatarSrcFor = p => stylePath(styleOf(p), `assets/avatars/${p.avatar}.webp`);
 document.addEventListener('error', e => {
   const t = e.target;
   if (t.tagName === 'IMG' && t.src.includes('/assets/anime/')) t.src = t.src.replace('/assets/anime/', '/assets/');
@@ -646,7 +678,7 @@ VIEWS.profiles = main => {
     <img class="hero-tiger" src="${tiger('wave')}" alt="Horangi the tiger waving">
     <div><h1>누가 공부해요? <span class="muted" style="font-size:.6em;display:block;margin-top:6px">Who’s learning today?</span></h1></div>
     <div class="who-grid">
-      ${S.profiles.map(p => `<button class="who-card" data-id="${p.id}"><img src="${avatarSrc(p.avatar)}" alt=""><b>${esc(p.name)}</b><span class="pill">⭐ ${p.xp} XP · ${wordCount(p)} words</span></button>`).join('')}
+      ${S.profiles.map(p => `<button class="who-card" data-id="${p.id}"><img src="${avatarSrcFor(p)}" alt=""><b>${esc(p.name)}</b><span class="pill">⭐ ${p.xp} XP · ${wordCount(p)} words</span></button>`).join('')}
       <button class="who-card add" id="add-p"><span class="plus">+</span><b>Add learner</b></button>
     </div></div>`;
   $$('.who-card[data-id]', main).forEach(b => b.onclick = () => { S.currentId = b.dataset.id; save(); go('home'); });
@@ -654,10 +686,17 @@ VIEWS.profiles = main => {
 };
 VIEWS.newProfile = main => {
   let av = D.avatars[S.profiles.length % D.avatars.length].id, fam = 'boy';
+  let sty = styleOf(me());
   main.innerHTML = `<form class="card form-card" id="pf">
     <h2>New learner</h2>
     <div class="field"><label for="pf-name">Name</label><input class="input" id="pf-name" maxlength="20" required autocomplete="off" placeholder="First name"></div>
-    <div class="field"><label>Pick an avatar</label><div class="avatars">${D.avatars.map(a => `<button type="button" class="av-opt" data-av="${a.id}" aria-pressed="${a.id === av}" aria-label="${a.label}"><img src="${avatarSrc(a.id)}" alt=""></button>`).join('')}</div></div>
+    <div class="field"><label>Pick your style</label>
+      <p class="muted" style="font-size:.9rem">Same lessons either way. You can switch any time with the buttons at the top.</p>
+      <div class="seg">
+        <button type="button" data-sty="cute" aria-pressed="${sty === 'cute'}"><span style="font-size:1.3rem">🧸</span> Cute<br><span class="muted">Soft and friendly</span></button>
+        <button type="button" data-sty="anime" aria-pressed="${sty === 'anime'}"><span style="font-size:1.3rem">⚡</span> Anime<br><span class="muted">Bold and dramatic</span></button>
+      </div></div>
+    <div class="field"><label>Pick an avatar</label><div class="avatars">${D.avatars.map(a => `<button type="button" class="av-opt" data-av="${a.id}" aria-pressed="${a.id === av}" aria-label="${a.label}"><img src="${stylePath(sty, `assets/avatars/${a.id}.webp`)}" alt=""></button>`).join('')}</div></div>
     <div class="field"><label>Family words</label>
       <p class="muted" style="font-size:.9rem">In Korean, what you call your older brother and sister depends on whether you’re a boy or a girl.</p>
       <div class="seg">
@@ -670,12 +709,18 @@ VIEWS.newProfile = main => {
     </div>
   </form>`;
   $$('[data-av]', main).forEach(b => b.onclick = () => { av = b.dataset.av; $$('[data-av]', main).forEach(x => x.setAttribute('aria-pressed', x === b)); });
+  $$('[data-sty]', main).forEach(b => b.onclick = () => {
+    sty = b.dataset.sty;
+    $$('[data-sty]', main).forEach(x => x.setAttribute('aria-pressed', x === b));
+    document.documentElement.setAttribute('data-style', sty);   // preview the look straight away
+    $$('[data-av] img', main).forEach((img, i) => img.src = stylePath(sty, `assets/avatars/${D.avatars[i].id}.webp`));
+  });
   $$('[data-fam]', main).forEach(b => b.onclick = () => { fam = b.dataset.fam; $$('[data-fam]', main).forEach(x => x.setAttribute('aria-pressed', x === b)); });
-  $('#pf-cancel', main).onclick = () => go('profiles');
+  $('#pf-cancel', main).onclick = () => { applyStyle(); go('profiles'); };
   $('#pf', main).onsubmit = e => {
     e.preventDefault();
     const name = $('#pf-name', main).value.trim(); if (!name) return;
-    const p = newProfile(name, av, fam); S.profiles.push(p); S.currentId = p.id; save();
+    const p = newProfile(name, av, fam); p.style = sty; S.profiles.push(p); S.currentId = p.id; save();
     go('home'); toast(`환영해요, ${name}! Already know some Hangul? Try “Test out” on a stage.`);
   };
   $('#pf-name', main).focus();
@@ -825,7 +870,7 @@ VIEWS.parent = main => {
   const rows = S.profiles.map(p => {
     const weak = Object.entries(p.words).filter(([, r]) => r.wrong > r.right).map(([k]) => k).slice(0, 5);
     const week = Object.entries(p.days).filter(([d]) => d >= todayStr(new Date(Date.now() - 6 * DAY))).reduce((a, [, v]) => a + v, 0);
-    return `<tr><td><div class="row" style="gap:8px;flex-wrap:nowrap"><img src="${avatarSrc(p.avatar)}" alt="" style="width:30px"><b>${esc(p.name)}</b></div></td><td>${lettersLearned(p)}/40</td><td>${wordCount(p)}</td><td>${stampCount(p)}/${D.stamps.length}</td><td>${p.xp}</td><td>${week}</td><td>${p.streak}🔥</td><td>${p.lastDay || '—'}</td><td class="ko">${weak.join(', ') || '—'}</td></tr>`;
+    return `<tr><td><div class="row" style="gap:8px;flex-wrap:nowrap"><img src="${avatarSrcFor(p)}" alt="" style="width:30px"><b>${esc(p.name)}</b></div></td><td>${lettersLearned(p)}/40</td><td>${wordCount(p)}</td><td>${stampCount(p)}/${D.stamps.length}</td><td>${p.xp}</td><td>${week}</td><td>${p.streak}🔥</td><td>${p.lastDay || '—'}</td><td class="ko">${weak.join(', ') || '—'}</td></tr>`;
   }).join('');
   const voices = ('speechSynthesis' in window) ? speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang)) : [];
   main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Grown-ups</span><h1>Progress & settings</h1></div><button class="btn ghost small" id="lock">Lock 🔒</button></div>
@@ -843,7 +888,7 @@ VIEWS.parent = main => {
       <div class="field"><label for="s-rate">Voice speed</label><select class="input" id="s-rate">
         <option value="0.7" ${st.rate == 0.7 ? 'selected' : ''}>Slow</option><option value="0.85" ${st.rate == 0.85 ? 'selected' : ''}>Relaxed</option><option value="1" ${st.rate == 1 ? 'selected' : ''}>Natural</option></select></div>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-sfx" ${st.sfx ? 'checked' : ''}> Sound effects</label>
-      <div class="row"><button class="btn small blue" data-say="안녕하세요! 한국어를 배워요.">🔊 Test voice</button><span class="muted" style="font-size:.85rem">${koVoice ? 'Using: ' + esc(koVoice.name) : voices.length ? voices.length + ' Korean voice(s) found' : 'No Korean voice found'}</span></div>
+      <div class="row"><button class="btn small blue" data-say="안녕하세요! 한국어를 배워요.">🔊 Test voice</button><span class="muted" style="font-size:.85rem">${koVoice ? '✓ Using: ' + esc(koVoice.name) : voices.length ? voices.length + ' Korean voice(s) found' : '⚠️ No Korean voice found — the app switches to written sound questions'}</span></div>
       <p class="muted" style="font-size:.85rem">No voice? On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → Korean (Yuna). On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.</p>
     </div>
     <div class="card panel"><h3>Backup</h3>
@@ -852,7 +897,7 @@ VIEWS.parent = main => {
       <div class="row"><button class="btn small" id="bk-copy">Copy backup</button><button class="btn small ghost" id="bk-dl">Download file</button><button class="btn small ghost" id="bk-load">Restore pasted backup</button></div>
     </div>
     <div class="card panel"><h3>Learners</h3>
-      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrc(p.avatar)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span><span class="pill">${styleOf(p) === 'anime' ? '⚡ Anime' : '🧸 Cute'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
+      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrcFor(p)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span><span class="pill">${styleOf(p) === 'anime' ? '⚡ Anime' : '🧸 Cute'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
       <p class="muted" style="font-size:.85rem">Tap a button twice to confirm.</p>
     </div>
   </div>`;
@@ -1021,10 +1066,15 @@ STEP.trace = (box, st) => {
 /* choice question: st = {prompt, sub, audio, options:[{html,value}], answer, onResult} */
 STEP.choice = (box, st) => {
   box.innerHTML = `<span class="eyebrow">${esc(st.eyebrow || 'Question')}</span><div class="q-prompt">${st.prompt}</div>
-    ${st.audio ? `<div class="row" style="justify-content:center"><button class="say big" data-say="${esc(st.audio)}" aria-label="Play sound">🔊</button><button class="say" data-say="${esc(st.audio)}" data-slow="1" aria-label="Play slowly">🐢</button></div>` : ''}
+    ${st.audio ? `<div class="listen-box">
+      <button class="btn blue listen-btn" data-say="${esc(st.audio)}">🔊 Play the sound</button>
+      <button class="btn ghost small" data-say="${esc(st.audio)}" data-slow="1">🐢 Slower</button>
+      <p class="muted" style="width:100%;font-size:.9rem">Tap to hear it as many times as you like.</p>
+      <div class="tipbox warn" id="voice-note" hidden></div>
+    </div>` : ''}
     ${st.sub || ''}
     <div class="opts">${st.options.map((o, k) => `<button class="opt" data-k="${k}">${o.html}</button>`).join('')}</div>`;
-  if (st.audio) setTimeout(() => say(st.audio), 300);
+  if (st.audio) { setTimeout(() => say(st.audio), 300); if (!canSpeak()) setTimeout(showVoiceNote, 60); }
   let chosen = null;
   $$('.opt', box).forEach(b => b.onclick = () => {
     chosen = +b.dataset.k; $$('.opt', box).forEach(x => x.classList.toggle('sel', x === b));
@@ -1047,7 +1097,7 @@ STEP.build = (box, st) => {
   const cons = shuffle(st.cons), vows = shuffle(st.vows), fins = st.fins ? shuffle(st.fins) : null;
   let ci = null, vi = null, ti = null;
   box.innerHTML = `<span class="eyebrow">Build a block</span><div class="q-prompt">Build the block that says <span style="color:var(--plum)">“${romSyl(st.target)}”</span></div>
-    <div class="row" style="justify-content:center"><button class="say big" data-say="${st.target}" aria-label="Play sound">🔊</button></div>
+    <div class="listen-box"><button class="btn blue listen-btn" data-say="${st.target}">🔊 Hear it</button></div>
     <div class="slot" id="slot"><span class="muted">?</span></div>
     <div class="parts"><span class="label">1. Pick a consonant</span>${cons.map(c => `<button class="jamo con" data-c="${c}" aria-pressed="false">${c}</button>`).join('')}</div>
     <div class="parts"><span class="label">2. Pick a vowel</span>${vows.map(v => `<button class="jamo vow" data-v="${v}" aria-pressed="false">${v}</button>`).join('')}</div>
@@ -1141,7 +1191,14 @@ function letterOpts(answer, pool, show) {
 }
 const glyphHTML = x => `<span class="ko ${L[x].type === 'vow' ? 'c-vow' : 'c-con'}">${x}</span>`;
 function hearQ(letter, pool, eyebrow) {
-  return { type: 'choice', eyebrow: eyebrow || 'Listen', prompt: 'Which letter makes this sound?', audio: L[letter].sample, answer: letter, answerText: `<span class="ko">${letter}</span>`,
+  if (!canSpeak()) {
+    // silent device: ask for the sound in writing instead, so the question is still answerable
+    return { type: 'choice', eyebrow: eyebrow || 'Sounds', prompt: `Which letter makes the “<span style="color:var(--plum)">${esc(romSyl(L[letter].sample))}</span>” sound?`,
+      sub: '<p class="muted">Say it out loud, then pick the letter.</p>', answer: letter, answerText: `<span class="ko">${letter}</span>`,
+      options: letterOpts(letter, pool, glyphHTML), onResult: ok => markLetter(letter, ok) };
+  }
+  return { type: 'choice', eyebrow: eyebrow || 'Listen', prompt: 'Which letter makes this sound?',
+    sub: '<p class="muted">Listen, then tap the letter you heard.</p>', audio: L[letter].sample, answer: letter, answerText: `<span class="ko">${letter}</span>`,
     options: letterOpts(letter, pool, glyphHTML), onResult: ok => markLetter(letter, ok) };
 }
 function soundQ(letter, pool) {
@@ -1157,19 +1214,20 @@ function buildQ(target, known) {
   return { type: 'build', target, cons: c, vows: v };
 }
 function wordQ(w, pool, mode) {
+  if (mode === 'listen' && !canSpeak()) mode = 'find';
   const others = shuffle(pool.filter(x => x.ko !== w.ko && x.en !== w.en)).slice(0, 3);
   const opts = shuffle([w, ...others]);
   const onResult = ok => { const p = me(); const r = p.words[w.ko]; if (r) { ok ? r.right++ : r.wrong++; } };
   if (mode === 'meaning') return { type: 'choice', eyebrow: 'Read it', prompt: `<span class="ko" style="font-size:3.4rem">${esc(w.ko)}</span>`, sub: '<p class="muted">What does this mean?</p>', answer: w.ko, answerText: `${w.emoji} ${esc(w.en)}`,
     options: opts.map(o => ({ value: o.ko, html: `<span class="em">${o.emoji}</span><span>${esc(o.en)}</span>` })), onResult };
-  if (mode === 'listen') return { type: 'choice', eyebrow: 'Listen', prompt: 'Which word do you hear?', audio: w.ko, answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`,
+  if (mode === 'listen') return { type: 'choice', eyebrow: 'Listen', prompt: 'Which word do you hear?', sub: '<p class="muted">Listen, then tap the word you heard.</p>', audio: w.ko, answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`,
     options: opts.map(o => ({ value: o.ko, html: `<span class="ko">${esc(o.ko)}</span>` })), onResult };
   return { type: 'choice', eyebrow: 'Find the Korean', prompt: `<span style="font-size:3rem">${w.emoji}</span><br>${esc(w.en)}`, answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`, optAudio: true,
     options: opts.map(o => ({ value: o.ko, html: `<span class="ko">${esc(o.ko)}</span>` })), onResult };
 }
 function finalListenQ(set) {
   const a = pick(set);
-  return { type: 'choice', eyebrow: 'Listen to the ending', prompt: 'Which block do you hear?', audio: a, answer: a, answerText: `<span class="ko">${a}</span>`,
+  return { type: 'choice', eyebrow: 'Listen to the ending', prompt: 'Which block do you hear?', sub: '<p class="muted">Listen for the sound at the END of the block.</p>', audio: a, answer: a, answerText: `<span class="ko">${a}</span>`,
     options: shuffle(set).map(x => ({ value: x, html: `<span class="ko">${x}</span>` })) };
 }
 function finalAskQ([syl, ans]) {
@@ -1206,7 +1264,7 @@ function startLesson(id) {
   } else if (lesson.type === 'finals') {
     lesson.finals.forEach(f => steps.push({ type: 'finalcard', fin: D.finals.find(x => x.f === f) }));
     if (lesson.doubles) steps.push({ type: 'doublecard' });
-    steps.push(...shuffle([...lesson.listen.map(finalListenQ), ...lesson.ask.map(finalAskQ)]).slice(0, 8));
+    steps.push(...shuffle([...(canSpeak() ? lesson.listen.map(finalListenQ) : []), ...lesson.ask.map(finalAskQ)]).slice(0, 8));
     steps.push(...shuffle(lesson.build).slice(0, 3).map(finalBuildQ));
   } else if (lesson.type === 'rules') {
     lesson.rules.forEach(r => steps.push({ type: 'rulecard', rule: r }));
@@ -1239,7 +1297,7 @@ function startChallenge(stageId, testout) {
     html: `12 questions about ${stage.kind ? esc(stage.title.toLowerCase()) : `<span class="ko">${letters.join(' ')}</span>`} and the words from this stage. Get <b>10 right</b> to earn your passport stamp! ${testout ? 'If you pass, the whole stage is marked complete.' : ''}` }];
   if (stage.kind === 'finals') {
     const fl = stage.lessons.filter(l => l.type === 'finals');
-    steps.push(...shuffle(fl.flatMap(l => [...l.listen.map(finalListenQ), ...l.ask.map(finalAskQ)])).slice(0, 7));
+    steps.push(...shuffle(fl.flatMap(l => [...(canSpeak() ? l.listen.map(finalListenQ) : []), ...l.ask.map(finalAskQ)])).slice(0, 7));
     steps.push(...shuffle(fl.flatMap(l => l.build)).slice(0, 2).map(finalBuildQ));
   } else if (stage.kind === 'rules') {
     steps.push(...shuffle(Object.keys(D.rules).flatMap(r => D.rules[r].items.map(it => ruleQ(r, it)))).slice(0, 9));

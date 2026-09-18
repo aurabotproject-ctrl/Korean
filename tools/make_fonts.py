@@ -38,7 +38,7 @@ for r in DATA['rules'].values():
         chars.update(item[0]); chars.update(item[1])
         for wrong in item[3]:
             chars.update(wrong)
-chars.update('한글')                  # the app's own name, used in the footer
+chars.update('한글화이팅')            # the app's name and the booklet's sign-off
 
 for src, out in [('NotoSansCJK-Regular.ttc', 'ko-regular'), ('NotoSansCJK-Bold.ttc', 'ko-bold')]:
     coll = TTCollection('/usr/share/fonts/opentype/noto/' + src)

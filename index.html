@@ -493,6 +493,12 @@ h1 .ko,h3 .ko{text-transform:none}
 .sbubble .en{font-size:.92rem;color:var(--muted);font-weight:700}
 .sline.now .sbubble{border-color:var(--gold);box-shadow:0 0 0 4px var(--fin-soft)}
 
+
+.booklet{display:flex;gap:16px;align-items:flex-start;background:var(--paper-2);border-radius:var(--r-lg);padding:14px;margin-top:6px}
+.booklet img{width:124px;flex:none;border-radius:var(--r-md);box-shadow:var(--shadow)}
+.booklet>div{display:grid;gap:4px}
+@media (max-width:480px){ .booklet{flex-direction:column;align-items:center;text-align:center} .booklet .row{justify-content:center} }
+
 </style>
 </head>
 <body>
@@ -1059,7 +1065,19 @@ VIEWS.parent = main => {
       <p class="muted" style="font-size:.85rem">A rough stand-in (<span class="ko">안녕</span> → “an nyawng”). It keeps the listening games working, but it is <b>not</b> how Korean really sounds, so turn it off once a Korean voice is installed.</p>
     </div>
     <div class="card panel"><h3>Practice sheets</h3>
-      <p class="muted" style="font-size:.9rem">One printable PDF per stage: the letters with stroke numbers and picture clues, then every word to trace and copy. A4, black-and-white friendly.</p>
+      <p class="muted" style="font-size:.9rem">A4, black-and-white friendly. Each stage sheet has the letters with stroke numbers and picture clues, then every word to trace and copy.</p>
+      <div class="booklet">
+        <img src="assets/printables/booklet-cover.webp" alt="" loading="lazy" onerror="this.remove()">
+        <div>
+          <b>The whole booklet</b>
+          <p class="muted" style="font-size:.88rem">Cover, contents, every practice sheet in order, and a “Can I…?” checklist to tick off — one file, ready to staple.</p>
+          <div class="row" style="gap:8px;margin-top:8px">
+            <a class="btn small red" href="assets/printables/booklet.pdf" download>⬇︎ Download PDF</a>
+            <button class="btn small blue" data-print="booklet">🖨️ Print</button>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="font-size:.85rem;margin-top:14px">Or just one stage at a time:</p>
       <div class="chips">${D.stages.map(st => `<a class="chip" href="assets/printables/stage-${st.id}.pdf" target="_blank" rel="noopener">🖨️ Stage ${st.id}</a>`).join('')}</div>
     </div>
     <div class="card panel"><h3>Backup</h3>
@@ -1082,6 +1100,7 @@ VIEWS.parent = main => {
   $('#s-voice', main).onchange = e => { set('voiceURI', e.target.value); koVoice = null; pickVoice(); speechBroken = false; go('parent'); };
   $('#s-romvoice', main).onchange = e => { set('romVoice', e.target.checked); go('parent'); };
   $('#s-novoice', main).onchange = e => { set('noVoice', e.target.checked); if (!e.target.checked) speechBroken = false; go('parent'); };
+  $$('[data-print]', main).forEach(b => b.onclick = () => printPDF(`assets/printables/${b.dataset.print}.pdf`));
   $('#s-l2', main).onchange = e => { set('l2Early', e.target.checked); toast(e.target.checked ? 'Level 2 is now open' : 'Level 2 locked again'); };
   $('#s-refresh', main).onclick = () => { koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Voice list refreshed'); };
   const ub = $('#s-usebest', main);
@@ -2010,6 +2029,20 @@ STEP.mDone = (box, st) => {
   $('#p-bar').style.width = '100%';
   foot('', '', 'Done', closePlayer);
 };
+
+function printPDF(src) {
+  const f = document.createElement('iframe');
+  f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  f.src = src;
+  f.onload = () => {
+    try { f.contentWindow.focus(); f.contentWindow.print(); }
+    catch (e) { window.open(src, '_blank', 'noopener'); }   // some browsers block it — just open the file
+    setTimeout(() => f.remove(), 60000);
+  };
+  f.onerror = () => { f.remove(); window.open(src, '_blank', 'noopener'); };
+  document.body.appendChild(f);
+  toast('Opening the print dialogue…');
+}
 
 /* ================= Level 2: 친구와 가족 ================= */
 const L2 = window.HQ_L2 || { units: [], patterns: {}, cast: {}, words: [] };

@@ -1,83 +1,34 @@
 <title>한글 Quest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&family=Jua&family=Anton&family=Black+Han+Sans&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&family=Anton&family=Black+Han+Sans&display=swap">
 <style>
 :root{
-  --paper:#FBF6EC; --paper-2:#F3EBDB; --card:#FFFFFF; --ink:#2A2238; --muted:#6C6480; --line:#E6DAC4;
-  --con:#E0483D; --con-soft:#FDE3DF; --vow:#2A74CF; --vow-soft:#DDEBFB; --fin:#E9A21B; --fin-soft:#FCEFD2;
-  --green:#23965F; --green-soft:#DBF3E6; --gold:#F2B43A; --plum:#5B3F8F; --plum-soft:#ECE5F7;
-  --shadow:0 2px 0 rgba(42,34,56,.10), 0 8px 24px -12px rgba(42,34,56,.25);
-  --r-lg:22px; --r-md:14px; --r-sm:10px;
-  --f-display:"Baloo 2","Jua",ui-rounded,system-ui,sans-serif;
-  --f-body:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-ko:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --f-ko-fun:"Jua","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
-  --nav-h:68px;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#16142A; --paper-2:#1E1B37; --card:#241F42; --ink:#F4EFE6; --muted:#ADA6C6; --line:#383266;
-    --con:#FF6F62; --con-soft:#48243A; --vow:#63A6FF; --vow-soft:#1F3160; --fin:#FFC24D; --fin-soft:#4A3A1E;
-    --green:#4CD08E; --green-soft:#1C4033; --gold:#FFC857; --plum:#B99AF0; --plum-soft:#352A58;
-    --shadow:0 2px 0 rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.7);
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#16142A; --paper-2:#1E1B37; --card:#241F42; --ink:#F4EFE6; --muted:#ADA6C6; --line:#383266;
-  --con:#FF6F62; --con-soft:#48243A; --vow:#63A6FF; --vow-soft:#1F3160; --fin:#FFC24D; --fin-soft:#4A3A1E;
-  --green:#4CD08E; --green-soft:#1C4033; --gold:#FFC857; --plum:#B99AF0; --plum-soft:#352A58;
-  --shadow:0 2px 0 rgba(0,0,0,.35), 0 10px 28px -14px rgba(0,0,0,.7);
-}
-/* ---------- anime style (data-style="anime") ---------- */
-:root[data-style="anime"]{
   --paper:#F4EFF9; --paper-2:#E6DCF2; --card:#FFFFFF; --ink:#1A1030; --muted:#6A5A86; --line:#D5C7EA;
   --con:#E8175D; --con-soft:#FFDCE8; --vow:#1E7FD6; --vow-soft:#D8ECFB; --fin:#F0A80C; --fin-soft:#FCEFD0;
   --green:#12A57E; --green-soft:#D2F5EA; --gold:#F5C518; --plum:#7B2CBF; --plum-soft:#EDE0FA;
   --shadow:0 3px 0 rgba(26,16,48,.18), 0 10px 26px -14px rgba(123,44,191,.5);
   --r-lg:16px; --r-md:10px; --r-sm:7px;
   --f-display:"Anton","Black Han Sans",system-ui,sans-serif;
+  --f-body:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-ko:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-ko-fun:"Black Han Sans","Noto Sans KR",sans-serif;
+  --nav-h:68px;
 }
 @media (prefers-color-scheme: dark){
-  :root[data-style="anime"]:not([data-theme="light"]){
+  :root:not([data-theme="light"]){
     --paper:#120B22; --paper-2:#1D1136; --card:#221441; --ink:#F6EEFF; --muted:#AC9BD0; --line:#3E2A68;
     --con:#FF2E74; --con-soft:#45102C; --vow:#34B4FF; --vow-soft:#102E4D; --fin:#FFC01E; --fin-soft:#3E2E0C;
     --green:#1FE0A0; --green-soft:#0A3A2E; --gold:#FFD84D; --plum:#B072FF; --plum-soft:#2E1A55;
     --shadow:0 3px 0 rgba(0,0,0,.55), 0 14px 34px -16px rgba(232,23,93,.55);
   }
 }
-:root[data-style="anime"][data-theme="dark"]{
+:root[data-theme="dark"]{
   --paper:#120B22; --paper-2:#1D1136; --card:#221441; --ink:#F6EEFF; --muted:#AC9BD0; --line:#3E2A68;
   --con:#FF2E74; --con-soft:#45102C; --vow:#34B4FF; --vow-soft:#102E4D; --fin:#FFC01E; --fin-soft:#3E2E0C;
   --green:#1FE0A0; --green-soft:#0A3A2E; --gold:#FFD84D; --plum:#B072FF; --plum-soft:#2E1A55;
   --shadow:0 3px 0 rgba(0,0,0,.55), 0 14px 34px -16px rgba(232,23,93,.55);
 }
-:root[data-style="anime"] h1,:root[data-style="anime"] h2,:root[data-style="anime"] h3{letter-spacing:.02em;text-transform:uppercase}
-:root[data-style="anime"] h1{font-size:clamp(2rem,5vw,2.9rem)}
-:root[data-style="anime"] h1 .ko,:root[data-style="anime"] h3 .ko{text-transform:none}
-:root[data-style="anime"] .eyebrow{letter-spacing:.16em}
-:root[data-style="anime"] .dancheong{height:7px;background:repeating-linear-gradient(115deg,var(--con) 0 24px,#160A26 24px 30px,var(--gold) 30px 50px,#160A26 50px 56px,var(--plum) 56px 78px,#160A26 78px 84px)}
-/* halftone dots: the printed-manga texture */
-:root[data-style="anime"] .greet,:root[data-style="anime"] .dday,:root[data-style="anime"] .gicon{background-image:radial-gradient(currentColor .8px,transparent .9px);background-size:7px 7px;background-blend-mode:soft-light}
-:root[data-style="anime"] .greet{background-color:var(--card)}
-:root[data-style="anime"] .stage.open .num,:root[data-style="anime"] .pin.here{box-shadow:0 0 0 4px var(--gold)}
-:root[data-style="anime"] .btn{border-radius:10px;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem}
-:root[data-style="anime"] .btn.red{box-shadow:0 4px 0 #8C0B36,0 0 20px -6px var(--con)}
-:root[data-style="anime"] .btn.blue{box-shadow:0 4px 0 #10497E,0 0 20px -6px var(--vow)}
-:root[data-style="anime"] .btn.green{box-shadow:0 4px 0 #076A51}
-:root[data-style="anime"] .btn{border:2px solid rgba(0,0,0,.25)}
-:root[data-style="anime"] .card{border-width:2px}
-:root[data-style="anime"] .opt{border-radius:12px}
-:root[data-style="anime"] .jamo{border-radius:10px}
-:root[data-style="anime"] .glyph-card,:root[data-style="anime"] .mn-pic{border-radius:14px}
-:root[data-style="anime"] .mback{background:linear-gradient(135deg,var(--vow),var(--plum))}
-:root[data-style="anime"] .bar i{background:linear-gradient(90deg,var(--vow),var(--con))}
-.style-tog{display:flex;gap:2px;background:var(--paper-2);border-radius:999px;padding:3px}
-.style-tog button{border:0;background:none;border-radius:999px;padding:4px 9px;font-size:1rem;line-height:1;opacity:.5}
-.style-tog button[aria-pressed="true"]{background:var(--card);opacity:1;box-shadow:var(--shadow)}
-@media (max-width:420px){.style-tog{display:none}}
-
 *{box-sizing:border-box}
 html,body{min-height:100%}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
@@ -119,7 +70,7 @@ main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
 @media (min-width:761px){ .brand b{display:none} }
 @media (max-width:1270px){ .me span{display:none} .me{padding:4px} }
 @media (max-width:1010px){ .topbar-in{gap:8px} .tabs{margin-left:4px} .tab{padding:6px 8px;font-size:.95rem} .brand img{width:72px;height:72px} .me img{width:64px;height:64px} }
-@media (max-width:880px){ .stat.hide-sm{display:none} .style-tog{display:none} }
+@media (max-width:880px){ .stat.hide-sm{display:none} }
 @media (max-width:760px){
   .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:space-around;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:30}
   .tab{flex-direction:column;gap:0;font-size:.72rem;padding:6px 10px;border-radius:14px;flex:1 1 0;min-width:0}
@@ -151,6 +102,7 @@ main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
 .listen-box{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%}
 .listen-btn{font-size:1.15rem;padding:16px 28px}
 .tipbox.warn{background:var(--con-soft);color:var(--ink);font-size:.9rem}
+.tipbox.good{background:var(--green-soft);color:var(--ink);font-size:.9rem}
 .say{border:0;background:var(--vow-soft);color:var(--vow);border-radius:999px;width:44px;height:44px;display:inline-grid;place-items:center;font-size:1.25rem;flex:none}
 .say.big{width:64px;height:64px;font-size:1.8rem}
 .toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:14px;font-weight:700;z-index:100;width:max-content;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
@@ -419,6 +371,27 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 @media (max-width:760px){.two{grid-template-columns:1fr}}
 .panel{padding:20px;display:grid;gap:14px;align-content:start}
 
+/* ---------- the app's bold manga look ---------- */
+h1,h2,h3{letter-spacing:.02em;text-transform:uppercase}
+h1{font-size:clamp(2rem,5vw,2.9rem)}
+h1 .ko,h3 .ko{text-transform:none}
+.eyebrow{letter-spacing:.16em}
+.dancheong{height:7px;background:repeating-linear-gradient(115deg,var(--con) 0 24px,#160A26 24px 30px,var(--gold) 30px 50px,#160A26 50px 56px,var(--plum) 56px 78px,#160A26 78px 84px)}
+.greet,.dday,.gicon{background-image:radial-gradient(currentColor .8px,transparent .9px);background-size:7px 7px;background-blend-mode:soft-light}
+.greet{background-color:var(--card)}
+.stage.open .num,.pin.here{box-shadow:0 0 0 4px var(--gold)}
+.btn{border-radius:10px;text-transform:uppercase;letter-spacing:.04em;font-size:.95rem}
+.btn.red{box-shadow:0 4px 0 #8C0B36,0 0 20px -6px var(--con)}
+.btn.blue{box-shadow:0 4px 0 #10497E,0 0 20px -6px var(--vow)}
+.btn.green{box-shadow:0 4px 0 #076A51}
+.btn{border:2px solid rgba(0,0,0,.25)}
+.card{border-width:2px}
+.opt{border-radius:12px}
+.jamo{border-radius:10px}
+.glyph-card,.mn-pic{border-radius:14px}
+.mback{background:linear-gradient(135deg,var(--vow),var(--plum))}
+.bar i{background:linear-gradient(90deg,var(--vow),var(--con))}
+
 /* ---- Track D: Korea Missions ---- */
 .grid.missions{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
 .card.mission{padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:0;border-bottom-width:5px}
@@ -462,6 +435,62 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 .card.mission.locked .mcard-cast{filter:grayscale(.85) brightness(.8)}
 @media (max-width:430px){ .npc-line .cast{width:86px} }
 
+
+/* ---- Level 2: 친구와 가족 ---- */
+.lvl-switch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.lvl-switch button{border:2px solid var(--line);border-bottom-width:4px;background:var(--card);border-radius:14px;padding:12px 10px;font-weight:800;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px}
+.lvl-switch button[aria-pressed="true"]{border-color:var(--plum);background:var(--plum-soft);color:var(--ink)}
+.lvl-switch button.locked{opacity:.62}
+.grid.units{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.card.unit{padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;border-bottom-width:5px}
+.card.unit.locked{opacity:.62;cursor:default}
+.ushot{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,var(--vow),var(--plum));display:grid;place-items:center}
+.ushot img{width:100%;height:100%;object-fit:cover;display:block}
+.uemoji{font-size:3.4rem;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
+.card.unit.locked .ushot img{filter:grayscale(.85) brightness(.75)}
+.mscene.noart{background:linear-gradient(135deg,var(--vow),var(--plum));display:grid;place-items:center}
+.mscene.noart .mplace{position:static;font-size:1.05rem}
+.card.lesson .lnum.set{background:var(--vow-soft);color:var(--vow)}
+.card.lesson .lnum.pattern{background:var(--plum-soft);color:var(--plum)}
+.card.lesson .lnum.dialogue{background:var(--fin-soft);color:var(--fin)}
+.can-list{margin:8px 0 0;padding-left:20px;display:grid;gap:5px;color:var(--muted);font-weight:700}
+.can-list li::marker{color:var(--green)}
+.l2-word{display:grid;gap:8px;justify-items:center;background:var(--paper-2);border-radius:var(--r-lg);padding:22px 16px;width:100%}
+.l2-word .em{font-size:3.6rem;line-height:1}
+.l2-word .ko.big{font-size:clamp(2.2rem,8vw,3.2rem);line-height:1.2;text-align:center}
+.l2-word .en{font-family:var(--f-display);font-size:1.45rem;text-align:center}
+.ex-list{display:grid;gap:10px;width:100%}
+.ex{position:relative;border:2px solid var(--line);border-bottom-width:4px;background:var(--card);border-radius:14px;padding:14px 46px 14px 16px;display:grid;gap:2px;text-align:left}
+.ex .ko{font-size:1.35rem}
+.ex .en{color:var(--muted);font-weight:700}
+.ex .spk{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:1.2rem}
+.slot.tiles{min-height:74px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:12px}
+.slot.tiles .ko{font-size:1.6rem}
+.tile-tray{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%}
+.tile{border:2px solid var(--line);border-bottom-width:5px;background:var(--card);border-radius:12px;padding:12px 16px;font-size:1.3rem;font-weight:700}
+.tile:disabled{opacity:.35}
+.who-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%}
+.who-chip{display:flex;align-items:center;gap:8px;background:var(--paper-2);border-radius:999px;padding:6px 16px 6px 6px}
+.who-chip img{width:46px;height:46px;border-radius:50%;object-fit:cover;object-position:top}
+.who-chip .muted{font-size:.85rem}
+.script{display:grid;gap:12px;width:100%}
+.sline{display:flex;gap:10px;align-items:flex-end;text-align:left;background:none;border:0;padding:0;cursor:pointer}
+.sline.mine{flex-direction:row-reverse;justify-content:flex-start}
+.sface{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:top;flex:none}
+.sbubble{background:var(--card);border:2px solid var(--line);border-radius:18px 18px 18px 4px;padding:10px 14px;display:grid;gap:1px}
+.sline.mine .sbubble{border-radius:18px 18px 4px 18px;background:var(--vow-soft);border-color:var(--vow)}
+.sbubble .swho{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sbubble .ko{font-size:1.25rem}
+.sbubble .rom{font-size:.9rem}
+.sbubble .en{font-size:.92rem;color:var(--muted);font-weight:700}
+.sline.now .sbubble{border-color:var(--gold);box-shadow:0 0 0 4px var(--fin-soft)}
+
+
+.booklet{display:flex;gap:16px;align-items:flex-start;background:var(--paper-2);border-radius:var(--r-lg);padding:14px;margin-top:6px}
+.booklet img{width:124px;flex:none;border-radius:var(--r-md);box-shadow:var(--shadow)}
+.booklet>div{display:grid;gap:4px}
+@media (max-width:480px){ .booklet{flex-direction:column;align-items:center;text-align:center} .booklet .row{justify-content:center} }
+
 </style>
 <div class="topbar" id="topbar">
   <div class="dancheong"></div>
@@ -469,17 +498,13 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
     <button class="brand" id="brand" aria-label="한글 Quest home"><img src="assets/logo.webp" alt=""><b>한글 <span>Quest</span></b></button>
     <nav class="tabs" id="tabs" hidden>
       <button class="tab" data-go="home"><span class="ti">🏠</span>Home</button>
-      <button class="tab" data-go="path"><span class="ti ko">가</span>Hangul</button>
+      <button class="tab" data-go="learn"><span class="ti ko">가</span>Learn</button>
       <button class="tab" data-go="games"><span class="ti">🎮</span>Games</button>
       <button class="tab" data-go="words"><span class="ti">📚</span>Words</button>
       <button class="tab" data-go="missions"><span class="ti">🇰🇷</span>Korea</button>
       <button class="tab" data-go="parent"><span class="ti">🔒</span>Grown-ups</button>
     </nav>
     <div class="spacer"></div>
-    <div class="style-tog" id="style-tog" hidden role="group" aria-label="Art style">
-      <button data-style="cute" aria-pressed="true" title="Cute style">🧸</button>
-      <button data-style="anime" aria-pressed="false" title="Anime style">⚡</button>
-    </div>
     <div class="row" id="mebar" hidden style="gap:14px">
       <span class="stat hide-sm" title="Day streak">🔥 <span id="st-streak">0</span></span>
       <span class="stat" title="Experience points">⭐ <span id="st-xp">0</span></span>
@@ -490,10 +515,13 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 <main id="main"></main>
 <div id="player-root"></div>
 <script src="data.js"></script>
+<script src="level2.js"></script>
 <script>
 (() => {
 'use strict';
 const D = window.HQ_DATA;
+// Level 2's words join the shared bank, so reviews, games and the word list cover both levels.
+if (window.HQ_L2) D.words = D.words.concat(window.HQ_L2.words);
 const L = D.letters;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -570,10 +598,29 @@ function wordCount(p) { return Object.keys(p.words).length; }
 function addWord(w, box = 1) {
   const p = me(); if (!p || p.words[w.ko]) return false;
   p.words[w.ko] = { box, due: Date.now() + (box > 1 ? BOX_GAP[box] : 0), right: 0, wrong: 0, added: Date.now() };
+  rotateWords(p);
   return true;
 }
 const BOX_GAP = { 1: 0, 2: DAY, 3: 3 * DAY, 4: 7 * DAY, 5: 14 * DAY };
-function dueWords(p) { const now = Date.now(); return D.words.filter(w => p.words[w.ko] && p.words[w.ko].due <= now); }
+function dueWords(p) {
+  const now = Date.now();
+  return D.words.filter(w => { const r = p.words[w.ko]; return r && !r.parked && r.due <= now; });
+}
+// A word bank of 1,000+ would make daily review a chore, so only ACTIVE_WORDS are in
+// rotation. New words park themselves until older ones are well known, then take their place.
+function rotateWords(p) {
+  const recs = Object.entries(p.words);
+  const live = recs.filter(([, r]) => !r.parked);
+  if (live.length <= ACTIVE_WORDS) {
+    // room to spare: wake the oldest parked words
+    const parked = recs.filter(([, r]) => r.parked).sort((a, b) => a[1].added - b[1].added);
+    parked.slice(0, ACTIVE_WORDS - live.length).forEach(([, r]) => { delete r.parked; r.due = Date.now(); });
+  } else {
+    // too many: park the newest ones that haven't been answered yet
+    live.filter(([, r]) => r.box === 1 && !r.right).sort((a, b) => b[1].added - a[1].added)
+        .slice(0, live.length - ACTIVE_WORDS).forEach(([, r]) => { r.parked = true; });
+  }
+}
 function nextStep(p) {
   for (const s of D.stages) {
     if (s.soon) break;
@@ -592,10 +639,17 @@ let koVoice = null;
 function pickVoice() {
   if (!('speechSynthesis' in window)) return;
   const vs = speechSynthesis.getVoices();
+  // "Google 한국의" is far and away the most natural-sounding Korean voice, so it wins
+  // whenever it's installed. The system voices below it are the fallbacks, in order.
   koVoice = (S.settings.voiceURI && vs.find(v => v.voiceURI === S.settings.voiceURI))
-    || vs.find(v => /^ko/i.test(v.lang) && /yuna|sora|google/i.test(v.name))
+    || vs.find(isBestKo)
+    || vs.find(v => /^ko/i.test(v.lang) && /yuna|sora/i.test(v.name))
     || vs.find(v => /^ko/i.test(v.lang)) || null;
 }
+// The Google Korean voice ships with Chrome; its name is localised, so match on the vendor word
+// in a few spellings rather than the whole label.
+const isBestKo = v => /^ko/i.test(v.lang) && /google|구글/i.test(v.name);
+const hasBestKo = () => ('speechSynthesis' in window) && speechSynthesis.getVoices().some(isBestKo);
 // Rough English-letter reading, used only when the device has no Korean voice at all.
 function romanize(text) {
   return [...text].map(ch => {
@@ -659,7 +713,7 @@ function say(text, slow) {
   const rate = approx ? (slow ? 0.6 : 0.8) : (slow ? 0.55 : S.settings.rate);
   unlockSpeech();
   speakStarted = false;
-  speakNow(spoken, rate, !approx);
+  const utter = speakNow(spoken, rate, !approx);
   // if the queue was wedged, nothing starts at all: clear it out and try once more
   setTimeout(() => {
     try {
@@ -668,9 +722,10 @@ function say(text, slow) {
       }
     } catch (e) {}
   }, 300);
+  return utter;
 }
 function voiceHelp() {
-  return 'No Korean voice on this device yet. On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → add Korean (Yuna), then reload this page. On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.';
+  return 'No Korean voice on this device yet. Easiest fix: open this page in Google Chrome, which comes with the “Google 한국의” voice — the best-sounding one there is. Otherwise, on a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → add Korean (Yuna), then reload this page. On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.';
 }
 function showVoiceNote() {
   const n = $('#voice-note');
@@ -709,36 +764,14 @@ function burst() {
   for (let i = 0; i < 28; i++) { const s = document.createElement('span'); s.textContent = pick(items); s.style.left = Math.random() * 100 + '%'; s.style.animationDelay = Math.random() * .6 + 's'; b.appendChild(s); }
   document.body.appendChild(b); setTimeout(() => b.remove(), 2600);
 }
-// Art style: 'cute' or 'anime'. Anime images live in assets/anime/… (stamps are shared).
-// If an anime picture hasn't been added yet, the cute one is shown instead.
-const styleOf = p => (p && p.style) || 'cute';
-const stylePath = (st, path) =>
-  st === 'anime' && D.animeHas && D.animeHas.includes(path.replace('assets/', '')) ? path.replace('assets/', 'assets/anime/') : path;
-function A(path) { return stylePath(styleOf(me()), path); }
-const avatarSrcFor = p => stylePath(styleOf(p), `assets/avatars/${p.avatar}.webp`);
-document.addEventListener('error', e => {
-  const t = e.target;
-  if (t.tagName === 'IMG' && t.src.includes('/assets/anime/')) t.src = t.src.replace('/assets/anime/', '/assets/');
-}, true);
-function applyStyle() {
-  const st = styleOf(me());
-  document.documentElement.setAttribute('data-style', st);
-  const logo = $('#brand img'); if (logo) logo.src = A('assets/logo.webp');
-  $$('#style-tog button').forEach(b => b.setAttribute('aria-pressed', b.dataset.style === st));
-}
-function setStyle(st) {
-  const p = me(); if (!p) return;
-  p.style = st; save(); applyStyle();
-  go(route.name, route.arg);
-  toast(st === 'anime' ? '⚡ Anime style on' : '🧸 Cute style on');
-}
-const avatarSrc = id => A(`assets/avatars/${id}.webp`);
-const tiger = pose => A(`assets/mascot/horangi-${pose}.webp`);
+const avatarSrcFor = p => `assets/avatars/${p.avatar}.webp`;
+const avatarSrc = id => `assets/avatars/${id}.webp`;
+const tiger = pose => `assets/mascot/horangi-${pose}.webp`;
 const starsHTML = n => `<span class="stars" aria-label="${n} of 3 stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(3 - n)}</span></span>`;
 function mnImg(letter) {
   const d = L[letter];
   // tries assets/mnemonics/<name>.webp, then .png, then shows the emoji
-  return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="${A(`assets/mnemonics/${d.img}.webp`)}" data-alt="${A(`assets/mnemonics/${d.img}.png`)}" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
+  return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="assets/mnemonics/${d.img}.webp" data-alt="assets/mnemonics/${d.img}.png" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
 }
 
 // The picture clue: the same mnemonic image from the lesson, shown beside the letter.
@@ -750,11 +783,11 @@ function clueHTML(letter) {
 }
 function updateBar() {
   const p = me();
-  $('#tabs').hidden = !p; $('#mebar').hidden = !p; $('#style-tog').hidden = !p;
+  $('#tabs').hidden = !p; $('#mebar').hidden = !p;
   if (!p) return;
   $('#st-xp').textContent = p.xp; $('#st-streak').textContent = p.streak;
   $('#me-av').src = avatarSrc(p.avatar); $('#me-name').textContent = p.name;
-  const tabFor = { stage: 'path', passport: 'home' }[route.name] || route.name;
+  const tabFor = { stage: 'learn', path: 'learn', unit: 'learn', passport: 'home' }[route.name] || route.name;
   $$('.tab').forEach(t => t.setAttribute('aria-current', t.dataset.go === tabFor ? 'page' : 'false'));
 }
 
@@ -762,7 +795,6 @@ function updateBar() {
 let route = { name: 'profiles', arg: null };
 function go(name, arg = null) {
   if (!me() && !['profiles', 'newProfile'].includes(name)) name = 'profiles';
-  applyStyle();
   route = { name, arg };
   const main = $('#main');
   main.innerHTML = '';
@@ -773,7 +805,6 @@ function go(name, arg = null) {
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 $('#brand').addEventListener('click', () => go(me() ? 'home' : 'profiles'));
 $('#me-btn').addEventListener('click', () => go('profiles'));
-$('#style-tog').addEventListener('click', e => { const b = e.target.closest('[data-style]'); if (b) setStyle(b.dataset.style); });
 
 const VIEWS = {};
 
@@ -791,17 +822,10 @@ VIEWS.profiles = main => {
 };
 VIEWS.newProfile = main => {
   let av = D.avatars[S.profiles.length % D.avatars.length].id, fam = 'boy';
-  let sty = styleOf(me());
   main.innerHTML = `<form class="card form-card" id="pf">
     <h2>New learner</h2>
     <div class="field"><label for="pf-name">Name</label><input class="input" id="pf-name" maxlength="20" required autocomplete="off" placeholder="First name"></div>
-    <div class="field"><label>Pick your style</label>
-      <p class="muted" style="font-size:.9rem">Same lessons either way. You can switch any time with the buttons at the top.</p>
-      <div class="seg">
-        <button type="button" data-sty="cute" aria-pressed="${sty === 'cute'}"><span style="font-size:1.3rem">🧸</span> Cute<br><span class="muted">Soft and friendly</span></button>
-        <button type="button" data-sty="anime" aria-pressed="${sty === 'anime'}"><span style="font-size:1.3rem">⚡</span> Anime<br><span class="muted">Bold and dramatic</span></button>
-      </div></div>
-    <div class="field"><label>Pick an avatar</label><div class="avatars">${D.avatars.map(a => `<button type="button" class="av-opt" data-av="${a.id}" aria-pressed="${a.id === av}" aria-label="${a.label}"><img src="${stylePath(sty, `assets/avatars/${a.id}.webp`)}" alt=""></button>`).join('')}</div></div>
+    <div class="field"><label>Pick an avatar</label><div class="avatars">${D.avatars.map(a => `<button type="button" class="av-opt" data-av="${a.id}" aria-pressed="${a.id === av}" aria-label="${a.label}"><img src="assets/avatars/${a.id}.webp" alt=""></button>`).join('')}</div></div>
     <div class="field"><label>Family words</label>
       <p class="muted" style="font-size:.9rem">In Korean, what you call your older brother and sister depends on whether you’re a boy or a girl.</p>
       <div class="seg">
@@ -814,18 +838,12 @@ VIEWS.newProfile = main => {
     </div>
   </form>`;
   $$('[data-av]', main).forEach(b => b.onclick = () => { av = b.dataset.av; $$('[data-av]', main).forEach(x => x.setAttribute('aria-pressed', x === b)); });
-  $$('[data-sty]', main).forEach(b => b.onclick = () => {
-    sty = b.dataset.sty;
-    $$('[data-sty]', main).forEach(x => x.setAttribute('aria-pressed', x === b));
-    document.documentElement.setAttribute('data-style', sty);   // preview the look straight away
-    $$('[data-av] img', main).forEach((img, i) => img.src = stylePath(sty, `assets/avatars/${D.avatars[i].id}.webp`));
-  });
   $$('[data-fam]', main).forEach(b => b.onclick = () => { fam = b.dataset.fam; $$('[data-fam]', main).forEach(x => x.setAttribute('aria-pressed', x === b)); });
-  $('#pf-cancel', main).onclick = () => { applyStyle(); go('profiles'); };
+  $('#pf-cancel', main).onclick = () => go('profiles');
   $('#pf', main).onsubmit = e => {
     e.preventDefault();
     const name = $('#pf-name', main).value.trim(); if (!name) return;
-    const p = newProfile(name, av, fam); p.style = sty; S.profiles.push(p); S.currentId = p.id; save();
+    const p = newProfile(name, av, fam); S.profiles.push(p); S.currentId = p.id; save();
     go('home'); toast(`환영해요, ${name}! Already know some Hangul? Try “Test out” on a stage.`);
   };
   $('#pf-name', main).focus();
@@ -879,7 +897,7 @@ VIEWS.home = main => {
   <div class="journey">
     <div class="card" style="padding:10px">${mapHTML(p)}</div>
     <button class="card pass-card" id="go-pass">
-      <img src="${A('assets/passport-cover.webp')}" alt="">
+      <img src="assets/passport-cover.webp" alt="">
       <span><span class="eyebrow">Passport</span><h3>${stampCount(p)} of ${D.stamps.length} stamps</h3>
       <span class="mini-stamps">${D.stamps.filter(st => stampEarned(p, st)).slice(-4).map(st => `<img src="assets/stamps/${st.id}.webp" alt="">`).join('') || '<span class="muted">Pass Stage 1 for your first stamp!</span>'}</span>
       <span class="pill">Open passport →</span></span>
@@ -890,6 +908,15 @@ VIEWS.home = main => {
   const gn = $('#go-next', main);
   if (gn && nx) gn.onclick = () => nx.kind === 'lesson' ? startLesson(nx.lesson.id) : startChallenge(nx.stage.id, false);
   $('#go-review', main).onclick = () => due && startReview();
+  if (l2Open(p)) {
+    const nu = L2.units.find(u => unitOpen(p, u) && !unitComplete(p, u));
+    if (nu) {
+      const parts = unitParts(nu), doneN = unitDoneCount(p, nu);
+      $('.next', main).insertAdjacentHTML('beforeend',
+        `<button class="card action" id="go-l2"><span class="glyph plm">${nu.emoji}</span><span><span class="eyebrow">Level 2 · Unit ${nu.id} · <span class="ko">${esc(nu.ko)}</span></span><h3>${esc(nu.title)}</h3><span class="muted">${doneN} of ${parts.length} parts done · ${esc(nu.blurb)}</span></span><span class="go">→</span></button>`);
+      $('#go-l2', main).onclick = () => go('unit', nu.id);
+    }
+  }
   const nm = D.missions.find(m => missionOpen(p, m) && !missionDone(p, m));
   if (nm) {
     $('.next', main).insertAdjacentHTML('beforeend',
@@ -899,7 +926,8 @@ VIEWS.home = main => {
 };
 
 /* ---------- path ---------- */
-VIEWS.path = main => {
+VIEWS.path = main => renderL1(main);
+function renderL1(main) {
   const p = me();
   main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Track A</span><h1>The Hangul Path</h1></div><p class="muted" style="max-width:40ch">40 letters in 9 stages. <b class="c-con">Consonants are red</b>, <b class="c-vow">vowels are blue</b>.</p></div>
   <div class="path">${D.stages.map(s => {
@@ -919,7 +947,7 @@ VIEWS.path = main => {
     if (!stageOpen(p, id)) { toast(`Pass Stage ${id - 1} first, or test out of it.`); return; }
     go('stage', id);
   });
-};
+}
 VIEWS.stage = (main, id) => {
   const p = me(), s = stageOf(id);
   const allDone = allLessonsDone(p, s), passed = stagePassed(p, id);
@@ -947,7 +975,7 @@ VIEWS.stage = (main, id) => {
     <button class="card lesson ${allDone || passed ? '' : 'locked'}" id="chal"><span class="ic" style="background:var(--plum-soft)">🏆</span><span style="flex:1"><span class="eyebrow">Stage challenge</span><h3>Earn your passport stamp</h3><span class="muted">12 questions. Get 10 right to pass.</span></span>${passed ? `<span class="pill done">✓ ${p.stages[id].score}/12</span>` : allDone ? '<span class="pill">Go →</span>' : '<span class="pill">🔒</span>'}</button>
   </div>
   ${passed ? '' : `<div class="card panel" style="margin-top:22px;box-shadow:none;background:var(--paper-2)"><div class="row" style="justify-content:space-between"><div><h3>${s.kind ? 'Know it already?' : 'Already know these letters?'}</h3><p class="muted">${s.kind ? 'Already know this?' : ''} Take the challenge now. If you pass, the whole stage is marked complete.</p></div><button class="btn ghost small" id="testout">Test out</button></div></div>`}`;
-  $('#bk', main).onclick = () => go('path');
+  $('#bk', main).onclick = () => go('learn', 1);
   $$('[data-lesson]', main).forEach((b, i) => b.onclick = () => lessonOpen(p, s, i) ? startLesson(b.dataset.lesson) : toast('Finish the lesson before this one first.'));
   $('#chal', main).onclick = () => (allDone || passed) ? startChallenge(id, false) : toast('Finish all the lessons to unlock the challenge.');
   const t = $('#testout', main); if (t) t.onclick = () => startChallenge(id, true);
@@ -964,12 +992,12 @@ VIEWS.words = (main, filter) => {
     <button class="btn blue" id="rv" ${due ? '' : 'disabled'}>Review ${due} due →</button></div>
   <div class="card panel" style="margin-bottom:18px"><div class="row" style="justify-content:space-between"><b>${mine.length} of ${D.WORD_GOAL} words</b><span class="muted">Next badge at ${[100, 250, 500, 750, 1000].find(n => n > mine.length) || 1000}</span></div><div class="bar"><i style="width:${Math.max(1, mine.length / D.WORD_GOAL * 100)}%"></i></div>
   <p class="muted" style="font-size:.9rem">Every word moves through 5 boxes <span class="boxes" style="display:inline-flex;vertical-align:middle"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span>. Get it right and it moves up a box and comes back later. Miss it and it goes back to box 1.</p></div>
-  ${mine.length ? `<div class="chips" style="margin-bottom:14px"><button class="chip" data-f="all" aria-pressed="${filter === 'all'}">All</button>${stagesWith.map(s => `<button class="chip" data-f="${s}" aria-pressed="${filter === String(s)}">Stage ${s}</button>`).join('')}</div>
+  ${mine.length ? `<div class="chips" style="margin-bottom:14px"><button class="chip" data-f="all" aria-pressed="${filter === 'all'}">All</button>${stagesWith.map(s => `<button class="chip" data-f="${s}" aria-pressed="${filter === String(s)}">${s > 100 ? 'Unit ' + (s - 100) : 'Stage ' + s}</button>`).join('')}</div>
   <div class="wgrid">${shown.map(w => { const r = p.words[w.ko]; return `<button class="card wtile" data-say="${esc(w.ko)}"><span class="em">${w.emoji}</span><span class="ko">${esc(w.ko)}</span><span class="en">${esc(w.en)}</span><span class="boxes" aria-label="Box ${r.box} of 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= r.box ? 'on' : ''}"></i>`).join('')}</span></button>`; }).join('')}</div>`
   : `<div class="card panel" style="text-align:center;justify-items:center"><img src="${tiger('think')}" alt="" style="width:130px"><h3>No words yet</h3><p class="muted">Finish Stage 1 lessons to read your first Korean words.</p><button class="btn red" id="gp">Go to the Hangul Path</button></div>`}`;
   $$('[data-f]', main).forEach(b => b.onclick = () => go('words', b.dataset.f));
   const rv = $('#rv', main); if (rv) rv.onclick = startReview;
-  const gp = $('#gp', main); if (gp) gp.onclick = () => go('path');
+  const gp = $('#gp', main); if (gp) gp.onclick = () => go('learn', 1);
 };
 
 /* ---------- parent ---------- */
@@ -990,6 +1018,8 @@ VIEWS.parent = main => {
   }).join('');
   const all = ('speechSynthesis' in window) ? speechSynthesis.getVoices() : [];
   pickVoice();
+  const best = all.find(isBestKo) || null;                    // the Google Korean voice, if present
+  const usingBest = !!(koVoice && best && koVoice.voiceURI === best.voiceURI);
   main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Grown-ups</span><h1>Progress & settings</h1></div><button class="btn ghost small" id="lock">Lock 🔒</button></div>
   <div class="card" style="padding:8px 16px"><div class="scroll-x"><table class="ptable"><thead><tr><th>Learner</th><th>Letters</th><th>Words</th><th>Stamps</th><th>XP</th><th>XP this week</th><th>Streak</th><th>Last active</th><th>Tricky words</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="muted">No learners yet.</td></tr>'}</tbody></table></div></div>
   <div class="two" style="margin-top:16px">
@@ -1006,21 +1036,38 @@ VIEWS.parent = main => {
         <option value="0.7" ${st.rate == 0.7 ? 'selected' : ''}>Slow</option><option value="0.85" ${st.rate == 0.85 ? 'selected' : ''}>Relaxed</option><option value="1" ${st.rate == 1 ? 'selected' : ''}>Natural</option></select></div>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-sfx" ${st.sfx ? 'checked' : ''}> Sound effects</label>
       <div class="field"><label for="s-voice">Korean voice</label><select class="input" id="s-voice">
-        <option value="">Choose automatically</option>
-        ${all.map(v => `<option value="${esc(v.voiceURI)}" ${st.voiceURI === v.voiceURI ? 'selected' : ''}>${esc(v.name)} — ${esc(v.lang)}</option>`).join('')}
+        <option value="">Choose automatically ${best ? `(uses ${esc(best.name)})` : ''}</option>
+        ${all.map(v => `<option value="${esc(v.voiceURI)}" ${st.voiceURI === v.voiceURI ? 'selected' : ''}>${isBestKo(v) ? '★ ' : ''}${esc(v.name)} — ${esc(v.lang)}${isBestKo(v) ? '  (recommended)' : ''}</option>`).join('')}
       </select></div>
       <div class="row"><button class="btn small blue" data-say="안녕하세요! 한국어를 배워요.">🔊 Test a sentence</button><button class="btn small blue" data-say="아">🔊 Test one letter</button><button class="btn small ghost" id="s-refresh">↻ Refresh list</button></div>
       <p class="muted" style="font-size:.85rem">Both should speak. If only the sentence does, tell Claude — it means this Mac skips very short phrases.</p>
-      <div class="tipbox ${koVoice ? '' : 'warn'}" style="font-size:.9rem">
+      <div class="tipbox ${koVoice ? (usingBest ? 'good' : 'warn') : 'warn'}" style="font-size:.9rem">
         ${koVoice ? `✓ Korean voice ready: <b>${esc(koVoice.name)}</b>` : `⚠️ <b>No Korean voice on this device</b>, so Korean can’t be spoken. This browser offers ${all.length} voice(s), none of them Korean.`}
-        ${koVoice ? '' : `<br><br><b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → <b>Manage Voices…</b> → tick <b>Korean (Yuna)</b> → download, then reload this page.<br><b>iPad/iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Korean.<br><b>Windows:</b> Settings → Time &amp; language → Language → Add Korean → Speech.`}
+        ${usingBest ? `<br>This is the <b>recommended</b> voice — by far the most natural-sounding Korean available in a browser.` : ''}
+        ${koVoice && !usingBest && best ? `<br><br>⭐ <b>A better voice is available on this device:</b> <b>${esc(best.name)}</b>. The system voices sound robotic next to it and model pronunciation poorly.
+          <div class="row" style="margin-top:8px"><button class="btn small blue" id="s-usebest">Use ${esc(best.name)}</button></div>` : ''}
+        ${koVoice && !usingBest && !best ? `<br><br>⭐ <b>Recommended:</b> the <b>Google 한국의</b> voice, which comes with <b>Google Chrome</b> on Mac, Windows and Android. Open this app in Chrome and it appears in the list above — it sounds far more like a real person than the built-in system voices. (It's a Google service, not a file, so it can't be bundled into the app itself.)` : ''}
+        ${koVoice ? '' : `<br><br><b>Best option — Chrome:</b> open this page in <b>Google Chrome</b> and pick <b>Google 한국의</b> above. It's the most natural-sounding Korean voice and needs no download.<br><b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → <b>Manage Voices…</b> → tick <b>Korean (Yuna)</b> → download, then reload this page.<br><b>iPad/iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Korean.<br><b>Windows:</b> Settings → Time &amp; language → Language → Add Korean → Speech.`}
       </div>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-romvoice" ${st.romVoice ? 'checked' : ''}> Until then, read Korean with an English voice</label>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-novoice" ${st.noVoice ? 'checked' : ''}> Written sound questions (no listening)</label>
+      <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-l2" ${st.l2Early ? 'checked' : ''}> Open Level 2 (Talk) before Stage 9 is passed</label>
       <p class="muted" style="font-size:.85rem">A rough stand-in (<span class="ko">안녕</span> → “an nyawng”). It keeps the listening games working, but it is <b>not</b> how Korean really sounds, so turn it off once a Korean voice is installed.</p>
     </div>
     <div class="card panel"><h3>Practice sheets</h3>
-      <p class="muted" style="font-size:.9rem">One printable PDF per stage: the letters with stroke numbers and picture clues, then every word to trace and copy. A4, black-and-white friendly.</p>
+      <p class="muted" style="font-size:.9rem">A4, black-and-white friendly. Each stage sheet has the letters with stroke numbers and picture clues, then every word to trace and copy.</p>
+      <div class="booklet">
+        <img src="assets/printables/booklet-cover.webp" alt="" loading="lazy" onerror="this.remove()">
+        <div>
+          <b>The whole booklet</b>
+          <p class="muted" style="font-size:.88rem">Cover, contents, every practice sheet in order, and a “Can I…?” checklist to tick off — one file, ready to staple.</p>
+          <div class="row" style="gap:8px;margin-top:8px">
+            <a class="btn small red" href="assets/printables/booklet.pdf" download>⬇︎ Download PDF</a>
+            <button class="btn small blue" data-print="booklet">🖨️ Print</button>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="font-size:.85rem;margin-top:14px">Or just one stage at a time:</p>
       <div class="chips">${D.stages.map(st => `<a class="chip" href="assets/printables/stage-${st.id}.pdf" target="_blank" rel="noopener">🖨️ Stage ${st.id}</a>`).join('')}</div>
     </div>
     <div class="card panel"><h3>Backup</h3>
@@ -1029,7 +1076,7 @@ VIEWS.parent = main => {
       <div class="row"><button class="btn small" id="bk-copy">Copy backup</button><button class="btn small ghost" id="bk-load">Restore pasted backup</button></div>
     </div>
     <div class="card panel"><h3>Learners</h3>
-      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrcFor(p)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span><span class="pill">${styleOf(p) === 'anime' ? '⚡ Anime' : '🧸 Cute'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
+      ${S.profiles.map(p => `<div class="row" style="justify-content:space-between"><div class="row" style="gap:8px"><img src="${avatarSrcFor(p)}" alt="" style="width:34px"><b>${esc(p.name)}</b><span class="pill ko">${p.family === 'boy' ? '형 · 누나' : '오빠 · 언니'}</span></div><div class="row" style="gap:6px"><button class="btn small ghost" data-reset="${p.id}">Reset</button><button class="btn small ghost" data-del="${p.id}">Remove</button></div></div>`).join('') || '<p class="muted">None yet.</p>'}
       <p class="muted" style="font-size:.85rem">Tap a button twice to confirm.</p>
     </div>
   </div>`;
@@ -1043,7 +1090,11 @@ VIEWS.parent = main => {
   $('#s-voice', main).onchange = e => { set('voiceURI', e.target.value); koVoice = null; pickVoice(); speechBroken = false; go('parent'); };
   $('#s-romvoice', main).onchange = e => { set('romVoice', e.target.checked); go('parent'); };
   $('#s-novoice', main).onchange = e => { set('noVoice', e.target.checked); if (!e.target.checked) speechBroken = false; go('parent'); };
+  $$('[data-print]', main).forEach(b => b.onclick = () => printPDF(`assets/printables/${b.dataset.print}.pdf`));
+  $('#s-l2', main).onchange = e => { set('l2Early', e.target.checked); toast(e.target.checked ? 'Level 2 is now open' : 'Level 2 locked again'); };
   $('#s-refresh', main).onclick = () => { koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Voice list refreshed'); };
+  const ub = $('#s-usebest', main);
+  if (ub) ub.onclick = () => { set('voiceURI', best.voiceURI); koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Switched to ' + best.name); setTimeout(() => say('안녕하세요! 한국어를 배워요.'), 350); };
   const dump = () => JSON.stringify(S);
   $('#bk-copy', main).onclick = async () => { $('#bk-text', main).value = dump(); try { await navigator.clipboard.writeText(dump()); toast('Backup copied'); } catch (e) { $('#bk-text', main).select(); toast('Backup is in the box. Copy it from there.'); } };
   if (0) () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dump()], { type: 'application/json' })); a.download = `hangul-quest-backup-${todayStr()}.json`; document.body.appendChild(a); a.click(); a.remove(); };
@@ -1093,7 +1144,7 @@ function speech(pose, html) { return `<div class="speech"><img src="${tiger(pose
 const STEP = {};
 STEP.intro = (box, st) => {
   box.innerHTML = `<span class="eyebrow">${esc(st.eyebrow || '')}</span><h1>${esc(st.title)}</h1>
-    ${st.img ? `<img class="intro-img" src="${A(`assets/mnemonics/${st.img}.webp`)}" alt="" onerror="if(this.src.includes('/assets/anime/')){this.src=this.src.replace('/assets/anime/','/assets/');}else{this.remove();}">` : ''}
+    ${st.img ? `<img class="intro-img" src="assets/mnemonics/${st.img}.webp" alt="" onerror="this.remove()">` : ''}
     ${speech('point', st.html)}`;
   foot('', '', 'Let’s go!', advance);
 };
@@ -1540,7 +1591,7 @@ function mapHTML(p) {
   const nx = nextStep(p);
   const cur = nx ? nx.stage.id : null;
   const pts = D.stamps.filter(s => s.pin).map(s => s.pin);
-  return `<div class="kmap"><img class="map-base" src="${A('assets/korea-map.webp')}" alt="Cartoon map of Korea with your learning journey">
+  return `<div class="kmap"><img class="map-base" src="assets/korea-map.webp" alt="Cartoon map of Korea with your learning journey">
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts.map(q => q.join(',')).join(' ')}" /></svg>
     ${D.stamps.filter(s => s.pin).map(s => {
       const done = stagePassed(p, s.stage), here = s.stage === cur;
@@ -1571,7 +1622,7 @@ VIEWS.passport = main => {
   const n = stampCount(p);
   main.innerHTML = `<button class="back" id="bk">← Home</button>
   <div class="passport-top">
-    <div class="pcover"><img src="${A('assets/passport-cover.webp')}" alt="Passport cover"><span class="pname">${esc(p.name)}</span></div>
+    <div class="pcover"><img src="assets/passport-cover.webp" alt="Passport cover"><span class="pname">${esc(p.name)}</span></div>
     <div style="display:grid;gap:10px;align-content:center">
       <span class="eyebrow">여권 · Passport</span>
       <h1>${esc(p.name)}’s Korea passport</h1>
@@ -1853,7 +1904,7 @@ function startMission(id) {
 }
 
 const castSrc = (m, n) => `assets/cast/${(n && n.face) || m.face || 'staff'}.webp`;
-const mScene = (m, cast) => `<div class="mscene"><img src="assets/scenes/${m.scene}.webp" alt=""><span class="mplace">${m.emoji} <span class="ko">${esc(m.place)}</span></span>${cast ? `<img class="mcast" src="${castSrc(m)}" alt="">` : ''}</div>`;
+const mScene = (m, cast) => `<div class="mscene"><img src="assets/scenes/${m.scene}.webp" alt="" onerror="this.closest('.mscene').classList.add('noart');this.remove()"><span class="mplace">${m.emoji} <span class="ko">${esc(m.place)}</span></span>${cast ? `<img class="mcast" src="${castSrc(m)}" alt="">` : ''}</div>`;
 function koLine(ko, rom, big) { return `<span class="ko${big ? ' big' : ''}">${esc(ko)}</span>${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(rom)}</span>`}`; }
 
 STEP.mIntro = (box, st) => {
@@ -1965,6 +2016,308 @@ STEP.mDone = (box, st) => {
                              : `You got through it — run the mission again and those phrases will start to stick.`}</p>
     <div class="row" style="justify-content:center"><span class="pill">✓ ${P.right}/${P.total} correct</span><span class="pill">⭐ +${P.xp} XP</span></div>
     ${nextM && nextM.id !== m.id ? `<p class="muted" style="margin-top:12px">Next up: ${nextM.emoji} ${esc(nextM.title)}</p>` : ''}`;
+  $('#p-bar').style.width = '100%';
+  foot('', '', 'Done', closePlayer);
+};
+
+function printPDF(src) {
+  const f = document.createElement('iframe');
+  f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+  f.src = src;
+  f.onload = () => {
+    try { f.contentWindow.focus(); f.contentWindow.print(); }
+    catch (e) { window.open(src, '_blank', 'noopener'); }   // some browsers block it — just open the file
+    setTimeout(() => f.remove(), 60000);
+  };
+  f.onerror = () => { f.remove(); window.open(src, '_blank', 'noopener'); };
+  document.body.appendChild(f);
+  toast('Opening the print dialogue…');
+}
+
+/* ================= Level 2: 친구와 가족 ================= */
+const L2 = window.HQ_L2 || { units: [], patterns: {}, cast: {}, words: [] };
+const CAST = L2.cast;
+const L2_GATE = 9;                       // Stage 9 must be passed before Level 2 opens
+const ACTIVE_WORDS = 250;                // how many words sit in daily review at once
+
+function l2Open(p) { return stagePassed(p, L2_GATE) || S.settings.l2Early; }
+function l2State(p) { p.l2 = p.l2 || { sets: {}, patterns: {}, dialogues: {}, units: {} }; return p.l2; }
+function unitOf(id) { return L2.units.find(u => u.id === id); }
+function setDone(p, sid) { return !!l2State(p).sets[sid]; }
+function patternDone(p, pid) { return !!l2State(p).patterns[pid]; }
+function dialogueDone(p, did) { return !!l2State(p).dialogues[did]; }
+function unitParts(u) {
+  return [...u.sets.map(s => ({ kind: 'set', id: s.id, o: s })),
+          ...u.patterns.map(pid => ({ kind: 'pattern', id: pid, o: L2.patterns[pid] })),
+          ...u.dialogues.map(d => ({ kind: 'dialogue', id: d.id, o: d }))];
+}
+function unitDoneCount(p, u) {
+  const st = l2State(p);
+  return unitParts(u).filter(x => (x.kind === 'set' ? st.sets : x.kind === 'pattern' ? st.patterns : st.dialogues)[x.id]).length;
+}
+const unitComplete = (p, u) => unitDoneCount(p, u) === unitParts(u).length;
+function unitOpen(p, u) { return u.id === 1 || unitComplete(p, unitOf(u.id - 1)); }
+function l2WordCount(p) { return L2.words.filter(w => p.words[w.ko]).length; }
+// Only a slice of the bank is in daily rotation, so review never becomes a chore.
+function activeCount(p) { return Object.values(p.words).filter(w => !w.parked).length; }
+
+/* ---------- the Learn view: Level 1 / Level 2 switch ---------- */
+VIEWS.learn = (main, arg) => {
+  const p = me();
+  const lvl = arg ? +arg : (S.settings.lvl || 1);
+  S.settings.lvl = lvl; save();
+  const tabs = `<div class="lvl-switch" role="group" aria-label="Level">
+    <button data-lvl="1" aria-pressed="${lvl === 1}"><span class="ko">가</span> Level 1 · Read</button>
+    <button data-lvl="2" aria-pressed="${lvl === 2}" ${l2Open(p) ? '' : 'class="locked"'}>💬 Level 2 · Talk${l2Open(p) ? '' : ' 🔒'}</button>
+  </div>`;
+  main.innerHTML = tabs + '<div id="lvl-body"></div>';
+  $$('[data-lvl]', main).forEach(b => b.onclick = () => go('learn', b.dataset.lvl));
+  (lvl === 2 ? renderL2 : renderL1)($('#lvl-body', main));
+};
+
+function renderL2(box) {
+  const p = me();
+  if (!l2Open(p)) {
+    box.innerHTML = `<div class="card" style="padding:20px;display:flex;gap:16px;align-items:center">
+      <img src="${tiger('think')}" alt="" style="width:110px">
+      <div><h2>Level 2 opens after Stage 9</h2>
+        <p class="muted">Level 1 teaches you to <b>read</b> Korean. Level 2 teaches you to <b>talk</b> — with friends, and with family.
+        Finish the Hangul Path first, then come back and we'll get you chatting.</p>
+        <p class="muted" style="margin-top:8px">A grown-up can open it early in <b>Grown-ups</b> if you already read Korean.</p></div></div>`;
+    return;
+  }
+  const done = L2.units.filter(u => unitComplete(p, u)).length;
+  box.innerHTML = `<div class="section-h" style="margin-top:14px">
+      <div><span class="eyebrow">Level 2 · 친구와 가족</span><h1>Talk with friends & family</h1></div>
+      <p class="muted" style="max-width:44ch">${l2WordCount(p)} of ${L2.words.length} words learned · ${done} of ${L2.units.length} units complete.
+        Every unit teaches words, one sentence pattern, and two real conversations.</p>
+    </div>
+    <div class="grid units">${L2.units.map(u => unitCard(p, u)).join('')}</div>
+    ${L2.units.length < 12 ? `<p class="muted" style="margin-top:18px">Units ${L2.units.length + 1}–12 are being written next.</p>` : ''}`;
+  $$('[data-unit]', box).forEach(b => b.onclick = () => go('unit', b.dataset.unit));
+}
+
+function unitCard(p, u) {
+  const open = unitOpen(p, u), done = unitDoneCount(p, u), total = unitParts(u).length;
+  return `<button class="card unit${open ? '' : ' locked'}${done === total ? ' done' : ''}" ${open ? `data-unit="${u.id}"` : 'disabled'}>
+    <span class="ushot"><img src="assets/units/${u.img}.webp" alt="" loading="lazy"
+        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'uemoji',textContent:'${u.emoji}'}))">
+      ${open ? '' : '<span class="mlock">🔒 Finish the unit before</span>'}
+      ${done === total ? '<span class="mtick">✓</span>' : ''}</span>
+    <span class="mbody">
+      <span class="eyebrow">Unit ${u.id} · <span class="ko">${esc(u.ko)}</span></span>
+      <h3>${esc(u.title)}</h3>
+      <span class="muted">${esc(u.blurb)}</span>
+      <span class="bar" style="margin-top:6px"><i style="width:${(done / total) * 100}%"></i></span>
+      <span class="muted" style="font-size:.85rem">${done} / ${total} parts</span>
+    </span></button>`;
+}
+
+/* ---------- one unit ---------- */
+VIEWS.unit = (main, id) => {
+  const p = me(), u = unitOf(+id); if (!u) return go('learn', 2);
+  const st = l2State(p);
+  const row = (kind, key, icon, eyebrow, title, sub, open) => {
+    const fin = (kind === 'set' ? st.sets : kind === 'pattern' ? st.patterns : st.dialogues)[key];
+    return `<button class="card lesson${open ? '' : ' locked'}" ${open ? `data-part="${kind}:${key}"` : 'disabled'}>
+      <span class="lnum ${kind}">${icon}</span>
+      <span style="flex:1;text-align:left"><span class="eyebrow">${eyebrow}</span><h3>${title}</h3><span class="muted">${sub}</span></span>
+      <span class="pill${fin ? ' done' : ''}">${fin ? '✓ Done' : open ? 'Start →' : '🔒'}</span></button>`;
+  };
+  const parts = unitParts(u);
+  let openUpTo = true;
+  const rows = parts.map((x, i) => {
+    const open = i === 0 || (parts[i - 1] && (parts[i - 1].kind === 'set' ? st.sets : parts[i - 1].kind === 'pattern' ? st.patterns : st.dialogues)[parts[i - 1].id]);
+    if (x.kind === 'set') return row('set', x.id, '📚', `Words · set ${x.id}`, esc(x.o.title), `${x.o.words.length} new words`, open);
+    if (x.kind === 'pattern') return row('pattern', x.id, '🧩', 'Sentence Lab', esc(x.o.name), `<span class="ko">${esc(x.o.ko)}</span>`, open);
+    return row('dialogue', x.id, x.o.talk === 'banmal' ? '🧒' : '👵', `Conversation · ${x.o.talk === 'banmal' ? '반말 (friend)' : '존댓말 (polite)'}`, esc(x.o.title), esc(x.o.intro), open);
+  }).join('');
+  main.innerHTML = `<button class="btn ghost small" id="bk">← All units</button>
+    <div class="section-h"><div><span class="eyebrow">Unit ${u.id} · <span class="ko">${esc(u.ko)}</span></span><h1>${u.emoji} ${esc(u.title)}</h1>
+      <p class="muted">${esc(u.blurb)}</p></div></div>
+    <div class="grid" style="gap:12px">${rows}</div>
+    <div class="card panel" style="margin-top:20px"><h3>By the end of this unit I can…</h3>
+      <ul class="can-list">${u.can.map(c => `<li>${esc(c)}</li>`).join('')}</ul></div>`;
+  $('#bk', main).onclick = () => go('learn', 2);
+  $$('[data-part]', main).forEach(b => b.onclick = () => {
+    const [kind, key] = b.dataset.part.split(':');
+    if (kind === 'set') startWordSet(u, key);
+    else if (kind === 'pattern') startPattern(u, key);
+    else startDialogue(u, key);
+  });
+};
+
+/* ---------- word set lesson ---------- */
+function startWordSet(u, sid) {
+  const set = u.sets.find(s => s.id === sid);
+  const steps = [{ type: 'intro', eyebrow: `Unit ${u.id} · words`, title: set.title,
+    html: `<b>${set.words.length} new words</b> for talking about ${esc(u.title.toLowerCase())}. You'll meet each one, then be asked a few.` }];
+  set.words.forEach(w => steps.push({ type: 'l2word', w }));
+  const quiz = shuffle(set.words).slice(0, 8);
+  quiz.forEach(w => steps.push(l2WordQ(w, set.words)));
+  steps.push({ type: 'l2done', kind: 'sets', key: sid, unit: u, title: 'Words learned!',
+    text: `<b>${set.words.length}</b> new words are in your word bank. They'll come back in your reviews and games.` });
+  openPlayer(steps, { title: set.title });
+}
+STEP.l2word = (box, st) => {
+  const w = st.w;
+  box.innerHTML = `<span class="eyebrow">New word</span>
+    <div class="l2-word"><span class="em">${w.emoji}</span>
+      <span class="ko big">${esc(w.ko)}</span>
+      ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.rom)}</span>`}
+      <span class="en">${esc(w.en)}</span>
+      <button class="btn blue" data-say="${esc(w.ko)}">🔊 Hear it</button></div>
+    ${w.note ? `<div class="tipbox">💡 ${esc(w.note)}</div>` : ''}`;
+  if (unlocked) setTimeout(() => say(w.ko), 300);
+  if (addWord(w)) P.newWords++;
+  gainXP(1); save();
+  foot('', '', 'Next word →', advance);
+};
+function l2WordQ(w, pool) {
+  const others = shuffle(pool.filter(x => x.ko !== w.ko)).slice(0, 3);
+  const opts = shuffle([w, ...others]).map(x => ({ value: x.ko, html: `<span class="en big">${esc(x.en)}</span>` }));
+  return { type: 'choice', eyebrow: 'Quick check', prompt: `What does <span class="ko">${esc(w.ko)}</span> mean?`,
+    audio: w.ko, hint: `It means “${esc(w.en)}”.`, options: opts, answer: w.ko,
+    answerText: `<b>${esc(w.en)}</b>`,
+    onResult: ok => { const p = me(); const rec = p.words[w.ko]; if (rec) { rec[ok ? 'right' : 'wrong']++; } } };
+}
+
+/* ---------- Sentence Lab ---------- */
+function startPattern(u, pid) {
+  const pat = L2.patterns[pid];
+  const steps = [
+    { type: 'intro', eyebrow: `Unit ${u.id} · Sentence Lab`, title: pat.name,
+      html: `Today's pattern: <b class="ko">${esc(pat.ko)}</b><br><br>${pat.teach}` },
+    { type: 'l2examples', pat },
+    { type: 'l2build', pat },
+    { type: 'l2done', kind: 'patterns', key: pid, unit: u, title: 'Pattern unlocked!',
+      text: `You can now use <b class="ko">${esc(pat.ko)}</b> in your own sentences. Listen for it in the conversations.` }
+  ];
+  openPlayer(steps, { title: pat.name });
+}
+STEP.l2examples = (box, st) => {
+  const pat = st.pat;
+  box.innerHTML = `<span class="eyebrow">See it three times</span><h2 class="ko">${esc(pat.ko)}</h2>
+    <div class="ex-list">${pat.examples.map(e => `<button class="ex" data-say="${esc(e[0])}">
+      <span class="ko">${esc(e[0])}</span>${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(e[1])}</span>`}<span class="en">${esc(e[2])}</span>
+      <span class="spk">🔊</span></button>`).join('')}</div>
+    <p class="muted">Tap any sentence to hear it.</p>`;
+  if (unlocked) setTimeout(() => say(pat.examples[0][0]), 300);
+  gainXP(2);
+  foot('', '', 'Now build one ✍️', advance);
+};
+STEP.l2build = (box, st) => {
+  const pat = st.pat, want = pat.build.answer;
+  let picked = [];
+  box.innerHTML = `<span class="eyebrow">Build it</span><div class="q-prompt">${esc(pat.build.prompt)}</div>
+    <div class="slot tiles" id="slot"><span class="muted">Tap the tiles in order</span></div>
+    <div class="tile-tray" id="tray">${shuffle(pat.build.tiles).map(t => `<button class="tile ko" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+    <div class="row" style="justify-content:center"><button class="btn ghost small" id="t-undo">↺ Start again</button></div>`;
+  const slot = $('#slot', box);
+  const draw = () => {
+    slot.innerHTML = picked.length ? picked.map(t => `<span class="ko">${esc(t)}</span>`).join(' ') : '<span class="muted">Tap the tiles in order</span>';
+    foot('', '', 'Check', picked.length ? submit : null, !!picked.length);
+  };
+  $$('.tile', box).forEach(b => b.onclick = () => {
+    if (b.disabled) return;
+    b.disabled = true; picked.push(b.dataset.t); say(b.dataset.t); draw();
+  });
+  $('#t-undo', box).onclick = () => { picked = []; $$('.tile', box).forEach(b => b.disabled = false); draw(); };
+  function submit() {
+    const ok = picked.join(' ') === want.join(' ');
+    $$('.tile', box).forEach(b => b.disabled = true);
+    P.total++; if (ok) { P.right++; gainXP(4); }
+    sfx(ok ? 'good' : 'bad');
+    slot.innerHTML = `<span class="ko">${esc(want.join(' '))}</span>`;
+    say(want.join(' '));
+    foot(ok ? '✓ 완벽해요! That is exactly it.' : `✗ It should be: <span class="ko">${esc(want.join(' '))}</span>`, ok ? 'good' : 'bad', 'Continue', advance);
+  }
+  draw();
+}
+
+/* ---------- conversations ---------- */
+function startDialogue(u, did) {
+  const d = u.dialogues.find(x => x.id === did);
+  const steps = [{ type: 'l2dIntro', u, d }];
+  d.turns.forEach(t => {
+    if (t.ko) steps.push({ type: 'mLine', m: dScene(d), npc: { who: CAST[t.who].name, ko: t.ko, rom: t.rom, en: t.en, face: t.who }, alone: !t.q });
+    if (t.q) {
+      if (t.q.kind === 'reply') steps.push({ type: 'mReply', m: dScene(d), q: t.q });
+      else if (t.q.kind === 'listen') steps.push({ type: 'mListen', m: dScene(d), q: t.q });
+      else steps.push({ type: 'mSay', m: dScene(d), q: t.q });
+    }
+  });
+  steps.push({ type: 'l2replay', u, d });
+  steps.push({ type: 'l2done', kind: 'dialogues', key: did, unit: u, title: 'Conversation complete!',
+    text: `You just held a whole conversation in Korean${d.talk === 'banmal' ? ' — in <b>반말</b>, like friends do' : ' — in polite <b>존댓말</b>'}.` });
+  openPlayer(steps, { title: d.title });
+}
+// dialogues borrow the mission renderer, so they need the same shape a mission has
+const dScene = d => ({ scene: d.scene, emoji: d.talk === 'banmal' ? '🧒' : '👵', place: d.talk === 'banmal' ? '반말' : '존댓말', face: d.with[0] });
+
+STEP.l2dIntro = (box, st) => {
+  const d = st.d;
+  box.innerHTML = `<span class="eyebrow">Unit ${st.u.id} · conversation</span><h1>${esc(d.title)}</h1>
+    ${mScene(dScene(d), true)}
+    <div class="who-row">${d.with.map(c => `<span class="who-chip"><img src="assets/cast/${c}.webp" alt=""><b class="ko">${esc(CAST[c].name)}</b><span class="muted">${esc(CAST[c].en)}</span></span>`).join('')}</div>
+    <div class="tipbox ${d.talk === 'banmal' ? '' : 'warn'}">${d.talk === 'banmal'
+      ? '🧒 <b>반말</b> — they are your age, so drop the 요.'
+      : '👵 <b>존댓말</b> — they are older, so every ending keeps its 요.'}</div>
+    ${speech('point', esc(d.intro))}`;
+  foot('', '', 'Start the conversation →', advance);
+};
+STEP.l2replay = (box, st) => {
+  const d = st.d;
+  const lines = [];
+  const lead = d.with[0];
+  d.turns.forEach(t => {
+    if (t.ko) lines.push({ who: CAST[t.who].name, face: t.who, ko: t.ko, rom: t.rom, en: t.en, me: false });
+    if (!t.q) return;
+    if (t.q.kind === 'say') { lines.push({ who: 'You', ko: t.q.ko, rom: t.q.rom, en: t.q.en, me: true }); return; }
+    if (t.q.kind === 'listen') {
+      // a listening question with no spoken line above it is still something they said
+      if (!t.ko) lines.push({ who: CAST[t.who || lead].name, face: t.who || lead, ko: t.q.ko, rom: t.q.rom, en: (t.q.options.find(o => o.ok) || {}).en || '', me: false });
+      return;
+    }
+    const r = (t.q.options || []).find(o => o.ok);
+    if (r && r.ko) lines.push({ who: 'You', ko: r.ko, rom: r.rom, en: r.en, me: true });
+  });
+  box.innerHTML = `<span class="eyebrow">The whole conversation</span><h2>${esc(d.title)}</h2>
+    <div class="script">${lines.map((l, i) => `<div class="sline ${l.me ? 'mine' : ''}" data-i="${i}">
+      ${l.me ? '' : `<img class="sface" src="assets/cast/${l.face}.webp" alt="">`}
+      <div class="sbubble"><span class="swho">${esc(l.who)}</span><span class="ko">${esc(l.ko)}</span>
+        ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(l.rom)}</span>`}<span class="en">${esc(l.en)}</span></div></div>`).join('')}</div>
+    <div class="row" style="justify-content:center"><button class="btn blue" id="play-all">▶ Play the whole thing</button></div>`;
+  $$('.sline', box).forEach(el => el.onclick = () => say(lines[+el.dataset.i].ko));
+  $('#play-all', box).onclick = () => {
+    let i = 0;
+    const next = () => {
+      if (i >= lines.length) return;
+      const el = $$('.sline', box)[i];
+      $$('.sline', box).forEach(x => x.classList.remove('now'));
+      el.classList.add('now'); el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      const u = say(lines[i].ko); i++;
+      if (u) u.onend = () => setTimeout(next, 420); else setTimeout(next, 1600);
+    };
+    next();
+  };
+  gainXP(3);
+  foot('', '', 'Finish', advance);
+};
+
+/* ---------- shared finish step ---------- */
+STEP.l2done = (box, st) => {
+  const p = me(), s = l2State(p);
+  s[st.kind][st.key] = { at: todayStr(), right: P.right, of: P.total };
+  const u = st.unit;
+  const finishedUnit = unitComplete(p, u);
+  if (finishedUnit) s.units[u.id] = { at: todayStr() };
+  save();
+  if (finishedUnit) { sfx('win'); burst(); } else sfx('good');
+  box.innerHTML = `<img src="${tiger(finishedUnit ? 'cheer' : 'thumbs')}" alt="" style="width:170px">
+    <h1>${finishedUnit ? `Unit ${u.id} complete! 🎉` : st.title}</h1>
+    <p class="mn-text">${finishedUnit ? `You've finished <b>${esc(u.title)}</b>. ${esc(u.can[0].charAt(0).toUpperCase() + u.can[0].slice(1))} — and three other things you couldn't do this morning.` : st.text}</p>
+    <div class="row" style="justify-content:center">${P.total ? `<span class="pill">✓ ${P.right}/${P.total}</span>` : ''}<span class="pill">⭐ +${P.xp} XP</span>${P.newWords ? `<span class="pill done">📚 +${P.newWords} words</span>` : ''}</div>`;
   $('#p-bar').style.width = '100%';
   foot('', '', 'Done', closePlayer);
 };

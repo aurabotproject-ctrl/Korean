@@ -548,7 +548,6 @@
     { id: 'alpaca', label: 'Alpaca' }, { id: 'monkey', label: 'Monkey' }
   ];
 
-  // Anime pictures that exist so far. The app only looks in assets/anime/ for these;
   // anything else quietly uses the cute picture (and no 404s in the console).
   /* ---------- Track D: Korea Missions ----------
      Role-play scenes for the real trip. Each mission is a short dialogue: a Korean
@@ -863,26 +862,6 @@
       ] }
   ];
 
-  const animeHas = [
-    'logo.webp', 'icon-192.webp',
-    'mascot/horangi-wave.webp', 'mascot/horangi-cheer.webp', 'mascot/horangi-think.webp',
-    'mascot/horangi-point.webp', 'mascot/horangi-thumbs.webp', 'mascot/horangi-sad.webp', 'mascot/horangi-sleep.webp',
-    'avatars/panda.webp', 'avatars/fox.webp', 'avatars/whitetiger.webp', 'avatars/axolotl.webp',
-    'avatars/lion.webp', 'avatars/gorilla.webp', 'avatars/alpaca.webp', 'avatars/monkey.webp',
-    'mnemonics/mn-i.webp', 'mnemonics/mn-a.webp', 'mnemonics/mn-eo.webp',
-    'mnemonics/mn-o.webp', 'mnemonics/mn-u.webp', 'mnemonics/mn-eu.webp', 'mnemonics/mn-ieung.webp',
-    'mnemonics/mn-giyeok.webp', 'mnemonics/mn-nieun.webp', 'mnemonics/mn-digeut.webp',
-    'mnemonics/mn-rieul.webp', 'mnemonics/mn-mieum.webp',
-    'mnemonics/mn-bieup.webp', 'mnemonics/mn-siot.webp',
-    'mnemonics/mn-jieut.webp', 'mnemonics/mn-hieut.webp',
-    'mnemonics/mn-kieuk.webp', 'mnemonics/mn-tieut.webp', 'mnemonics/mn-pieup.webp',
-    'mnemonics/mn-chieut.webp', 'mnemonics/tissue-test.webp',
-    'mnemonics/mn-ya.webp', 'mnemonics/mn-yeo.webp',
-    'mnemonics/mn-yo.webp', 'mnemonics/mn-yu.webp',
-    'mnemonics/concept-tense.webp', 'mnemonics/concept-mashup.webp',
-    'mnemonics/concept-batchim.webp', 'mnemonics/concept-sound-rules.webp',
-    'korea-map.webp', 'passport-cover.webp'
-  ];
 
-  window.HQ_DATA = { letters, stages, words, avatars, finals, doubleFinals, rules, stamps, missions, animeHas, WORD_GOAL: 1000 };
+  window.HQ_DATA = { letters, stages, words, avatars, finals, doubleFinals, rules, stamps, missions, WORD_GOAL: 1000 };
 })();

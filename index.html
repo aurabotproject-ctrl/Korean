@@ -573,18 +573,45 @@ function canSpeak() {
   if (!koVoice) pickVoice();
   return !!koVoice || !!S.settings.romVoice;
 }
+// Chrome quietly wedges its speech queue (an utterance collected by the garbage collector,
+// a cancel() that never clears, a pause after ~15s). Hence the kept reference, the resume
+// ticker and the one retry: without them the very first lesson sound can silence the rest.
+let curUtter = null, resumeTicker = null;
+let speakStarted = false;
+function speakNow(text, rate, korean) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.onstart = () => { speakStarted = true; };
+  if (korean) { u.lang = 'ko-KR'; if (koVoice) u.voice = koVoice; }
+  u.rate = rate;
+  u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') { speechBroken = true; showVoiceNote(); } };
+  u.onend = () => { clearInterval(resumeTicker); resumeTicker = null; };
+  curUtter = u;                       // keep a reference so it isn't garbage-collected mid-sentence
+  try {
+    if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+    speechSynthesis.resume();
+    speechSynthesis.speak(u);
+  } catch (e) {}
+  clearInterval(resumeTicker);
+  resumeTicker = setInterval(() => { try { if (speechSynthesis.speaking) speechSynthesis.resume(); else { clearInterval(resumeTicker); resumeTicker = null; } } catch (e) {} }, 6000);
+  return u;
+}
 function say(text, slow) {
   if (!('speechSynthesis' in window)) { toast('This browser can’t speak. Try Safari or Chrome.'); return; }
   if (!koVoice) pickVoice();
   const approx = !koVoice && S.settings.romVoice;
-  if (approx) text = romanize(text);
+  const spoken = approx ? romanize(text) : text;
+  const rate = approx ? (slow ? 0.6 : 0.8) : (slow ? 0.55 : S.settings.rate);
   unlockSpeech();
-  try { speechSynthesis.cancel(); if (speechSynthesis.paused) speechSynthesis.resume(); } catch (e) {}
-  const u = new SpeechSynthesisUtterance(text);
-  if (approx) { u.rate = slow ? 0.6 : 0.8; }
-  else { u.lang = 'ko-KR'; if (koVoice) u.voice = koVoice; u.rate = slow ? 0.55 : S.settings.rate; }
-  u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') { speechBroken = true; showVoiceNote(); } };
-  setTimeout(() => { try { speechSynthesis.speak(u); } catch (e) {} }, 40);
+  speakStarted = false;
+  speakNow(spoken, rate, !approx);
+  // if the queue was wedged, nothing starts at all: clear it out and try once more
+  setTimeout(() => {
+    try {
+      if (!speakStarted && !speechSynthesis.speaking && !speechSynthesis.pending) {
+        speechSynthesis.cancel(); speechSynthesis.resume(); speakNow(spoken, rate, !approx);
+      }
+    } catch (e) {}
+  }, 300);
 }
 function voiceHelp() {
   return 'No Korean voice on this device yet. On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → add Korean (Yuna), then reload this page. On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.';
@@ -1000,7 +1027,7 @@ STEP.meet = (box, st) => {
       <button class="btn ghost" data-say="${d.name}">🔊 Name: <span class="ko">${d.name}</span></button>
     </div>
     <div class="tipbox">💡 <b>Say it:</b> ${esc(d.tip)}${d.type === 'con' && st.letter !== 'ㅇ' ? ` A consonant can’t be said alone, so we practise it with ㅏ: <span class="ko">${d.sample}</span>.` : ''}</div>`;
-  setTimeout(() => say(d.sample), 350);
+  if (unlocked) setTimeout(() => say(d.sample), 350);
   gainXP(1);
   foot('', '', 'Now trace it ✍️', advance);
 };
@@ -1101,7 +1128,7 @@ STEP.choice = (box, st) => {
     </div>` : ''}
     ${st.sub || ''}
     <div class="opts">${st.options.map((o, k) => `<button class="opt" data-k="${k}">${o.html}</button>`).join('')}</div>`;
-  if (st.audio) { setTimeout(() => say(st.audio), 300); if (!canSpeak()) setTimeout(showVoiceNote, 60); }
+  if (st.audio) { if (unlocked) setTimeout(() => say(st.audio), 300); if (!canSpeak()) setTimeout(showVoiceNote, 60); }
   let chosen = null;
   $$('.opt', box).forEach(b => b.onclick = () => {
     chosen = +b.dataset.k; $$('.opt', box).forEach(x => x.classList.toggle('sel', x === b));
@@ -1129,7 +1156,7 @@ STEP.build = (box, st) => {
     <div class="parts"><span class="label">1. Pick a consonant</span>${cons.map(c => `<button class="jamo con" data-c="${c}" aria-pressed="false">${c}</button>`).join('')}</div>
     <div class="parts"><span class="label">2. Pick a vowel</span>${vows.map(v => `<button class="jamo vow" data-v="${v}" aria-pressed="false">${v}</button>`).join('')}</div>
     ${fins ? `<div class="parts"><span class="label">3. Pick a bottom letter</span>${fins.map(f => `<button class="jamo fin" data-t="${f}" aria-pressed="false">${f}</button>`).join('')}</div>` : ''}`;
-  setTimeout(() => say(st.target), 300);
+  if (unlocked) setTimeout(() => say(st.target), 300);
   const upd = () => {
     const slot = $('#slot', box);
     if (ci && vi && (!fins || ti)) { const s = compose(ci, vi, fins ? ti : ''); slot.innerHTML = `<span class="ko">${s}</span>`; say(s); foot('', '', 'Check', submit); }
@@ -1157,7 +1184,7 @@ STEP.finalcard = (box, st) => {
     ${f.family ? `<div class="tipbox"><b>All of these sound like <span class="ko c-fin">${f.f}</span> at the bottom:</b> <span class="ko c-fin" style="font-size:1.4rem;letter-spacing:.15em">${f.family}</span></div>` : ''}
     <p class="mn-text">${esc(f.tip)}</p>
     <div class="blocks">${f.words.map(([k, e]) => `<button class="card wtile" data-say="${k}"><span class="ko">${k}</span><span class="en">${esc(e)}</span><span class="muted">🔊</span></button>`).join('')}</div>`;
-  setTimeout(() => say(f.ex), 300);
+  if (unlocked) setTimeout(() => say(f.ex), 300);
   gainXP(1);
   foot('', '', 'Next', advance);
 };
@@ -1188,7 +1215,7 @@ STEP.wordcard = (box, st) => {
       <span class="muted" style="font-size:.85rem">Each block: <b class="c-con">consonant</b> + <b class="c-vow">vowel</b></span>
       ${w.note ? `<p class="note">💡 ${esc(w.note)}</p>` : ''}
     </div>`;
-  setTimeout(() => say(w.ko), 300);
+  if (unlocked) setTimeout(() => say(w.ko), 300);
   foot('', '', st.n === st.of ? 'Quiz time!' : 'Next word', advance);
 };
 STEP.result = (box, st) => {

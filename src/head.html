@@ -122,8 +122,10 @@ main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
 @media (max-width:880px){ .stat.hide-sm{display:none} .style-tog{display:none} }
 @media (max-width:760px){
   .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:space-around;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:30}
-  .tab{flex-direction:column;gap:0;font-size:.72rem;padding:6px 10px;border-radius:14px}
+  .tab{flex-direction:column;gap:0;font-size:.72rem;padding:6px 10px;border-radius:14px;flex:1 1 0;min-width:0}
   .tab .ti{font-size:1.35rem}
+  /* six tabs have to share a phone screen, so let the labels shrink rather than overflow */
+  @media (max-width:430px){ .tabs{padding-left:2px;padding-right:2px} .tab{padding:6px 2px;font-size:.62rem} .tab .ti{font-size:1.2rem} }
   .brand b{font-size:1.2rem}
   .brand img{width:62px;height:62px}
   .me img{width:52px;height:52px}
@@ -416,4 +418,48 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:760px){.two{grid-template-columns:1fr}}
 .panel{padding:20px;display:grid;gap:14px;align-content:start}
+
+/* ---- Track D: Korea Missions ---- */
+.grid.missions{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.card.mission{padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:0;border-bottom-width:5px}
+.card.mission:disabled,.card.mission.locked{opacity:.62;cursor:default}
+.mshot{position:relative;display:block;aspect-ratio:16/9;background:var(--paper-2);overflow:hidden}
+.mshot img{width:100%;height:100%;object-fit:cover;display:block}
+.card.mission.locked .mshot img{filter:grayscale(.85) brightness(.75)}
+.mlock{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.6);color:#fff;font-weight:800;font-size:.85rem;padding:6px 10px;text-align:center}
+.mtick{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:900;font-size:1.1rem;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.mbody{display:grid;gap:5px;padding:14px 16px 16px}
+.mbody h3{font-size:1.15rem}
+.mbody .muted{font-size:.92rem;line-height:1.35}
+.mscene{position:relative;width:100%;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:16/9;background:var(--paper-2)}
+.mscene img{width:100%;height:100%;object-fit:cover;display:block}
+.mplace{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.58);color:#fff;border-radius:999px;padding:5px 12px;font-weight:800;font-size:.95rem;backdrop-filter:blur(3px)}
+.npc-line{display:grid;gap:10px;justify-items:center;width:100%}
+.npc-line .who{font-family:var(--f-display);color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.82rem}
+.npc-bubble{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px 20px;display:grid;gap:4px;justify-items:center;max-width:100%}
+.npc-bubble .ko.big{font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.25}
+.npc-bubble .en{font-size:1.05rem;color:var(--muted);font-weight:700}
+.opt.mopt{font-size:1rem;min-height:92px;padding:14px 12px;gap:3px}
+.opt.mopt .ko{font-size:clamp(1.15rem,4vw,1.45rem);line-height:1.25}
+.opt.mopt .rom{font-size:.92rem}
+.opt.mopt .en{font-size:.92rem;color:var(--muted);font-weight:700;line-height:1.25}
+.opt.mopt .en.big{font-size:1.1rem;color:var(--ink)}
+.say-card{display:grid;gap:8px;justify-items:center;background:var(--plum-soft,var(--paper-2));border-radius:var(--r-lg);padding:20px 16px;width:100%}
+.say-card .ko.big{font-size:clamp(1.8rem,7vw,2.8rem);line-height:1.25;text-align:center}
+.say-card .en{font-size:1.1rem;color:var(--muted);font-weight:700;text-align:center}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+
+
+/* mission characters */
+.npc-line{grid-template-columns:auto 1fr;justify-items:stretch;align-items:end}
+.npc-line .cast{width:clamp(96px,22vw,150px);align-self:end;filter:drop-shadow(0 6px 10px rgba(0,0,0,.22));flex:none}
+.npc-said{display:grid;gap:8px;justify-items:start;min-width:0}
+.npc-line .who{justify-self:start}
+.npc-said .npc-bubble{border-radius:22px 22px 22px 6px;justify-items:start;text-align:left}
+.npc-said .npc-bubble .ko.big{text-align:left}
+.mscene .mcast{position:absolute;right:8px;bottom:0;width:26%;max-width:150px;height:auto;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}
+.mshot .mcard-cast{position:absolute;right:4px;bottom:0;width:30%;max-width:104px;height:auto;object-fit:contain;filter:drop-shadow(0 4px 7px rgba(0,0,0,.3))}
+.card.mission.locked .mcard-cast{filter:grayscale(.85) brightness(.8)}
+@media (max-width:430px){ .npc-line .cast{width:86px} }
+
 </style>

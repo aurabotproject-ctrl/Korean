@@ -130,8 +130,10 @@ main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
 @media (max-width:880px){ .stat.hide-sm{display:none} .style-tog{display:none} }
 @media (max-width:760px){
   .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;justify-content:space-around;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));z-index:30}
-  .tab{flex-direction:column;gap:0;font-size:.72rem;padding:6px 10px;border-radius:14px}
+  .tab{flex-direction:column;gap:0;font-size:.72rem;padding:6px 10px;border-radius:14px;flex:1 1 0;min-width:0}
   .tab .ti{font-size:1.35rem}
+  /* six tabs have to share a phone screen, so let the labels shrink rather than overflow */
+  @media (max-width:430px){ .tabs{padding-left:2px;padding-right:2px} .tab{padding:6px 2px;font-size:.62rem} .tab .ti{font-size:1.2rem} }
   .brand b{font-size:1.2rem}
   .brand img{width:62px;height:62px}
   .me img{width:52px;height:52px}
@@ -424,6 +426,50 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:760px){.two{grid-template-columns:1fr}}
 .panel{padding:20px;display:grid;gap:14px;align-content:start}
+
+/* ---- Track D: Korea Missions ---- */
+.grid.missions{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.card.mission{padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:0;border-bottom-width:5px}
+.card.mission:disabled,.card.mission.locked{opacity:.62;cursor:default}
+.mshot{position:relative;display:block;aspect-ratio:16/9;background:var(--paper-2);overflow:hidden}
+.mshot img{width:100%;height:100%;object-fit:cover;display:block}
+.card.mission.locked .mshot img{filter:grayscale(.85) brightness(.75)}
+.mlock{position:absolute;inset:auto 0 0 0;background:rgba(0,0,0,.6);color:#fff;font-weight:800;font-size:.85rem;padding:6px 10px;text-align:center}
+.mtick{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:900;font-size:1.1rem;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.mbody{display:grid;gap:5px;padding:14px 16px 16px}
+.mbody h3{font-size:1.15rem}
+.mbody .muted{font-size:.92rem;line-height:1.35}
+.mscene{position:relative;width:100%;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:16/9;background:var(--paper-2)}
+.mscene img{width:100%;height:100%;object-fit:cover;display:block}
+.mplace{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.58);color:#fff;border-radius:999px;padding:5px 12px;font-weight:800;font-size:.95rem;backdrop-filter:blur(3px)}
+.npc-line{display:grid;gap:10px;justify-items:center;width:100%}
+.npc-line .who{font-family:var(--f-display);color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.82rem}
+.npc-bubble{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px 20px;display:grid;gap:4px;justify-items:center;max-width:100%}
+.npc-bubble .ko.big{font-size:clamp(1.7rem,6vw,2.4rem);line-height:1.25}
+.npc-bubble .en{font-size:1.05rem;color:var(--muted);font-weight:700}
+.opt.mopt{font-size:1rem;min-height:92px;padding:14px 12px;gap:3px}
+.opt.mopt .ko{font-size:clamp(1.15rem,4vw,1.45rem);line-height:1.25}
+.opt.mopt .rom{font-size:.92rem}
+.opt.mopt .en{font-size:.92rem;color:var(--muted);font-weight:700;line-height:1.25}
+.opt.mopt .en.big{font-size:1.1rem;color:var(--ink)}
+.say-card{display:grid;gap:8px;justify-items:center;background:var(--plum-soft,var(--paper-2));border-radius:var(--r-lg);padding:20px 16px;width:100%}
+.say-card .ko.big{font-size:clamp(1.8rem,7vw,2.8rem);line-height:1.25;text-align:center}
+.say-card .en{font-size:1.1rem;color:var(--muted);font-weight:700;text-align:center}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+
+
+/* mission characters */
+.npc-line{grid-template-columns:auto 1fr;justify-items:stretch;align-items:end}
+.npc-line .cast{width:clamp(96px,22vw,150px);align-self:end;filter:drop-shadow(0 6px 10px rgba(0,0,0,.22));flex:none}
+.npc-said{display:grid;gap:8px;justify-items:start;min-width:0}
+.npc-line .who{justify-self:start}
+.npc-said .npc-bubble{border-radius:22px 22px 22px 6px;justify-items:start;text-align:left}
+.npc-said .npc-bubble .ko.big{text-align:left}
+.mscene .mcast{position:absolute;right:8px;bottom:0;width:26%;max-width:150px;height:auto;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}
+.mshot .mcard-cast{position:absolute;right:4px;bottom:0;width:30%;max-width:104px;height:auto;object-fit:contain;filter:drop-shadow(0 4px 7px rgba(0,0,0,.3))}
+.card.mission.locked .mcard-cast{filter:grayscale(.85) brightness(.8)}
+@media (max-width:430px){ .npc-line .cast{width:86px} }
+
 </style>
 </head>
 <body>
@@ -436,6 +482,7 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
       <button class="tab" data-go="path"><span class="ti ko">가</span>Hangul</button>
       <button class="tab" data-go="games"><span class="ti">🎮</span>Games</button>
       <button class="tab" data-go="words"><span class="ti">📚</span>Words</button>
+      <button class="tab" data-go="missions"><span class="ti">🇰🇷</span>Korea</button>
       <button class="tab" data-go="parent"><span class="ti">🔒</span>Grown-ups</button>
     </nav>
     <div class="spacer"></div>
@@ -515,6 +562,7 @@ function addXP(n) {
     p.streak = p.lastDay === y ? p.streak + 1 : 1;
     p.lastDay = t;
   }
+  p.days = p.days || {};
   p.days[t] = (p.days[t] || 0) + n;
   save(); updateBar();
 }
@@ -591,7 +639,7 @@ let speakStarted = false;
 function speakNow(text, rate, korean) {
   const u = new SpeechSynthesisUtterance(text);
   u.onstart = () => { speakStarted = true; };
-  if (korean) { u.lang = 'ko-KR'; if (koVoice) u.voice = koVoice; }
+  if (korean) { u.lang = 'ko-KR'; if (koVoice) { try { u.voice = koVoice; } catch (e) {} } }
   u.rate = rate;
   u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') { speechBroken = true; showVoiceNote(); } };
   u.onend = () => { clearInterval(resumeTicker); resumeTicker = null; };
@@ -835,7 +883,7 @@ VIEWS.home = main => {
     <div class="card tile"><span class="eyebrow">Letters</span><div class="v">${lettersLearned(p)}<small> / 40</small></div></div>
     <div class="card tile"><span class="eyebrow">Words</span><div class="v">${wordCount(p)}<small> / ${D.WORD_GOAL}</small></div></div>
     <div class="card tile"><span class="eyebrow">Stamps</span><div class="v">${stampCount(p)}<small> / ${D.stamps.length}</small></div></div>
-    <div class="card tile"><span class="eyebrow">Sentences</span><div class="v" style="font-size:1.1rem;padding-top:8px">${stagePassed(p, 3) ? 'Workshop coming next' : 'Unlocks after Stage 3'}</div></div>
+    <div class="card tile"><span class="eyebrow">Missions</span><div class="v">${missionsDoneCount(p)}<small> / ${D.missions.length}</small></div></div>
   </div>
   <div class="section-h"><h2>Your Korea journey</h2><span class="muted">Tap a pin to open that stage</span></div>
   <div class="journey">
@@ -852,6 +900,12 @@ VIEWS.home = main => {
   const gn = $('#go-next', main);
   if (gn && nx) gn.onclick = () => nx.kind === 'lesson' ? startLesson(nx.lesson.id) : startChallenge(nx.stage.id, false);
   $('#go-review', main).onclick = () => due && startReview();
+  const nm = D.missions.find(m => missionOpen(p, m) && !missionDone(p, m));
+  if (nm) {
+    $('.next', main).insertAdjacentHTML('beforeend',
+      `<button class="card action" id="go-mission"><span class="glyph plm">${nm.emoji}</span><span><span class="eyebrow">Korea mission · <span class="ko">${esc(nm.place)}</span></span><h3>${esc(nm.title)}</h3><span class="muted">${esc(nm.blurb)}</span></span><span class="go">→</span></button>`);
+    $('#go-mission', main).onclick = () => startMission(nm.id);
+  }
 };
 
 /* ---------- path ---------- */
@@ -1754,6 +1808,176 @@ function playSpeed() {
       text: `You read <b>${score}</b> ${pool.kind === 'words' ? 'words' : 'letters'} in 60 seconds. Best: <b>${g.best}</b>. (+${score} XP)`, again: playSpeed });
   }
 }
+
+/* ================= Track D: Korea Missions ================= */
+const WAVE_GATE = { 1: 3, 2: 6, 3: 9 };
+const WAVE_NAME = { 1: 'Getting there', 2: 'Eating & shopping', 3: 'Out and about' };
+function missionState(p) { p.missions = p.missions || {}; return p.missions; }
+function missionOpen(p, m) { return stagePassed(p, WAVE_GATE[m.wave]); }
+function missionDone(p, m) { return !!missionState(p)[m.id]; }
+function missionsDoneCount(p) { return D.missions.filter(m => missionDone(p, m)).length; }
+function missionsOpenCount(p) { return D.missions.filter(m => missionOpen(p, m)).length; }
+
+VIEWS.missions = main => {
+  const p = me(), done = missionsDoneCount(p), open = missionsOpenCount(p);
+  const card = m => {
+    const unlocked = missionOpen(p, m), fin = missionDone(p, m), sc = missionState(p)[m.id];
+    return `<button class="card mission${unlocked ? '' : ' locked'}${fin ? ' done' : ''}" ${unlocked ? `data-mission="${m.id}"` : 'disabled'}>
+      <span class="mshot"><img src="assets/scenes/${m.scene}.webp" alt="" loading="lazy">
+        <img class="mcard-cast" src="assets/cast/${m.face}.webp" alt="" loading="lazy">
+        ${unlocked ? '' : `<span class="mlock">🔒 Pass Stage ${WAVE_GATE[m.wave]}</span>`}
+        ${fin ? '<span class="mtick">✓</span>' : ''}</span>
+      <span class="mbody">
+        <span class="eyebrow">${m.emoji} <span class="ko">${esc(m.place)}</span></span>
+        <h3>${esc(m.title)}</h3>
+        <span class="muted">${esc(m.blurb)}</span>
+        <span class="row" style="gap:6px;margin-top:2px">
+          ${fin ? `<span class="pill done">✓ Completed${sc && sc.best ? ` · best ${sc.best}/${sc.of}` : ''}</span>` : unlocked ? '<span class="pill">▶ Start mission</span>' : ''}
+        </span>
+      </span></button>`;
+  };
+  main.innerHTML = `<div class="section-h" style="margin-top:0">
+      <div><span class="eyebrow">Track D</span><h1>Korea Missions</h1></div>
+      <p class="muted" style="max-width:44ch">Real situations from your trip. A Korean person talks to you, and you answer. ${done} of ${D.missions.length} missions completed.</p>
+    </div>
+    ${open === 0 ? `<div class="card" style="padding:18px;display:flex;gap:14px;align-items:center"><img src="${tiger('think')}" alt="" style="width:92px">
+      <div><h3>Missions open after Stage 3</h3><p class="muted">Keep going on the Hangul Path — once you pass Stage 3 you'll be able to read enough to survive the airport!</p></div></div>` : ''}
+    ${[1, 2, 3].map(w => `<div class="section-h"><h2>${WAVE_NAME[w]}</h2><span class="muted">Opens after Stage ${WAVE_GATE[w]}</span></div>
+      <div class="grid missions">${D.missions.filter(m => m.wave === w).map(card).join('')}</div>`).join('')}`;
+  $$('[data-mission]', main).forEach(b => b.onclick = () => startMission(b.dataset.mission));
+};
+
+function startMission(id) {
+  const m = D.missions.find(x => x.id === id); if (!m) return;
+  const steps = [{ type: 'mIntro', m }];
+  m.turns.forEach(t => {
+    if (t.npc) steps.push({ type: 'mLine', m, npc: t.npc, alone: !t.q });
+    if (t.q) {
+      if (t.q.kind === 'reply') steps.push({ type: 'mReply', m, q: t.q });
+      else if (t.q.kind === 'listen') steps.push({ type: 'mListen', m, q: t.q });
+      else steps.push({ type: 'mSay', m, q: t.q });
+    }
+  });
+  steps.push({ type: 'mDone', m });
+  openPlayer(steps, { title: m.title });
+}
+
+const castSrc = (m, n) => `assets/cast/${(n && n.face) || m.face || 'staff'}.webp`;
+const mScene = (m, cast) => `<div class="mscene"><img src="assets/scenes/${m.scene}.webp" alt=""><span class="mplace">${m.emoji} <span class="ko">${esc(m.place)}</span></span>${cast ? `<img class="mcast" src="${castSrc(m)}" alt="">` : ''}</div>`;
+function koLine(ko, rom, big) { return `<span class="ko${big ? ' big' : ''}">${esc(ko)}</span>${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(rom)}</span>`}`; }
+
+STEP.mIntro = (box, st) => {
+  const m = st.m;
+  box.innerHTML = `<span class="eyebrow">Korea Mission · ${WAVE_NAME[m.wave]}</span><h1>${m.emoji} ${esc(m.title)}</h1>
+    ${mScene(m, true)}
+    ${speech('point', `<b>${esc(m.blurb)}</b><br>Listen to what people say, then choose what <i>you</i> would say. There's no rush — you can replay every line.`)}`;
+  foot('', '', 'Start the mission →', advance);
+};
+
+STEP.mLine = (box, st) => {
+  const n = st.npc;
+  box.innerHTML = `${mScene(st.m)}
+    <div class="npc-line">
+      <img class="cast" src="${castSrc(st.m, n)}" alt="">
+      <div class="npc-said"><span class="who">${esc(n.who)}</span>
+        <div class="npc-bubble">${koLine(n.ko, n.rom, true)}<span class="en">${esc(n.en)}</span></div>
+        <button class="btn blue small" data-say="${esc(n.ko)}">🔊 Play again</button></div></div>`;
+  if (unlocked) setTimeout(() => say(n.ko), 300);
+  foot('', '', 'Continue', advance);
+};
+
+STEP.mReply = (box, st) => {
+  const q = st.q, opts = shuffle(q.options.map((o, k) => ({ o, k })));
+  box.innerHTML = `${mScene(st.m)}
+    <div class="q-prompt">${esc(q.prompt)}</div>
+    <div class="opts">${opts.map(({ o }, i) => `<button class="opt mopt" data-i="${i}">${koLine(o.ko, o.rom)}<span class="en">${esc(o.en)}</span></button>`).join('')}</div>`;
+  let chosen = null;
+  $$('.mopt', box).forEach(b => b.onclick = () => {
+    chosen = +b.dataset.i; $$('.mopt', box).forEach(x => x.classList.toggle('sel', x === b));
+    say(opts[chosen].o.ko);
+    foot('', '', 'Say it', submit);
+  });
+  function submit() {
+    const ok = !!opts[chosen].o.ok;
+    $$('.mopt', box).forEach((x, i) => { x.disabled = true; x.classList.remove('sel'); if (opts[i].o.ok) x.classList.add('right'); else if (i === chosen) x.classList.add('wrong'); });
+    P.total++; if (ok) { P.right++; gainXP(3); }
+    sfx(ok ? 'good' : 'bad');
+    const right = opts.find(x => x.o.ok).o;
+    say(right.ko);
+    if (q.tip) box.insertAdjacentHTML('beforeend', `<div class="tipbox">💡 ${q.tip}</div>`);
+    save();
+    foot(ok ? pick(['✓ 완벽해요! Perfect!', '✓ 잘했어요! Well said!', '✓ 대박! Nailed it!'])
+           : `✗ Better: <span class="ko">${esc(right.ko)}</span> — ${esc(right.en)}`, ok ? 'good' : 'bad', 'Continue', advance);
+  }
+  foot('', '', 'Say it', null, false);
+};
+
+STEP.mListen = (box, st) => {
+  const q = st.q, opts = shuffle(q.options.map((o, k) => ({ o, k })));
+  const written = !canSpeak() || S.settings.noVoice;
+  box.innerHTML = `${mScene(st.m)}
+    <div class="q-prompt">${esc(q.prompt)}</div>
+    <div class="listen-box">
+      ${written ? `<div style="width:100%">${koLine(q.ko, q.rom, true)}</div>`
+                : `<button class="btn blue listen-btn" id="q-play">🔊 Play the line</button>
+                   <button class="btn ghost small" id="q-slow">🐢 Slower</button>
+                   <button class="btn ghost small" id="q-deaf">🔇 I can't hear it</button>`}
+      <div class="tipbox warn" id="q-hint" hidden></div>
+    </div>
+    <div class="opts">${opts.map(({ o }, i) => `<button class="opt mopt" data-i="${i}"><span class="en big">${esc(o.en)}</span></button>`).join('')}</div>`;
+  if (!written) {
+    const hint = () => { const h = $('#q-hint', box); if (!h || !h.hidden) return; h.hidden = false; h.innerHTML = `🔇 <b>No sound?</b> They said: ${koLine(q.ko, q.rom)}`; };
+    const play = slow => { say(q.ko, slow); setTimeout(() => { if (!speakStarted) hint(); }, 700); };
+    $('#q-play', box).onclick = () => play(false);
+    $('#q-slow', box).onclick = () => play(true);
+    $('#q-deaf', box).onclick = hint;
+    if (unlocked) setTimeout(() => play(false), 300);
+  }
+  let chosen = null;
+  $$('.mopt', box).forEach(b => b.onclick = () => { chosen = +b.dataset.i; $$('.mopt', box).forEach(x => x.classList.toggle('sel', x === b)); foot('', '', 'Check', submit); });
+  function submit() {
+    const ok = !!opts[chosen].o.ok;
+    $$('.mopt', box).forEach((x, i) => { x.disabled = true; x.classList.remove('sel'); if (opts[i].o.ok) x.classList.add('right'); else if (i === chosen) x.classList.add('wrong'); });
+    P.total++; if (ok) { P.right++; gainXP(3); }
+    sfx(ok ? 'good' : 'bad');
+    box.insertAdjacentHTML('beforeend', `<div class="tipbox">They said ${koLine(q.ko, q.rom)} ${q.tip ? '<br>💡 ' + q.tip : ''}</div>`);
+    save();
+    foot(ok ? '✓ You understood it!' : '✗ Listen once more next time — you\'ll get it.', ok ? 'good' : 'bad', 'Continue', advance);
+  }
+  foot('', '', 'Check', null, false);
+};
+
+STEP.mSay = (box, st) => {
+  const q = st.q;
+  box.innerHTML = `${mScene(st.m)}
+    <span class="eyebrow">Your turn to speak</span>
+    <div class="say-card">${koLine(q.ko, q.rom, true)}<span class="en">${esc(q.en)}</span>
+      <button class="btn blue" data-say="${esc(q.ko)}">🔊 Hear it</button></div>
+    ${q.note ? speech('cheer', esc(q.note)) : ''}
+    <p class="muted">Say it out loud three times — loud enough that someone else in the room can hear you.</p>`;
+  if (unlocked) setTimeout(() => say(q.ko), 300);
+  gainXP(2);
+  foot('', '', 'I said it! ✓', advance);
+};
+
+STEP.mDone = (box, st) => {
+  const m = st.m, p = me(), acc = P.total ? P.right / P.total : 1;
+  const ms = missionState(p);
+  const prev = ms[m.id];
+  ms[m.id] = { done: true, best: Math.max(P.right, prev ? prev.best : 0), of: P.total, at: todayStr() };
+  save();
+  const win = acc >= 0.6;
+  if (win) { sfx('win'); burst(); }
+  const nextM = D.missions.find(x => !missionDone(p, x) && missionOpen(p, x));
+  box.innerHTML = `<img src="${tiger(win ? 'cheer' : 'thumbs')}" alt="" style="width:180px">
+    <h1>${win ? `${m.emoji} Mission complete!` : 'Good try!'}</h1>
+    <p class="mn-text">${win ? `You handled <b>${esc(m.title.toLowerCase())}</b> in Korean. When you're really there, you'll know exactly what to say.`
+                             : `You got through it — run the mission again and those phrases will start to stick.`}</p>
+    <div class="row" style="justify-content:center"><span class="pill">✓ ${P.right}/${P.total} correct</span><span class="pill">⭐ +${P.xp} XP</span></div>
+    ${nextM && nextM.id !== m.id ? `<p class="muted" style="margin-top:12px">Next up: ${nextM.emoji} ${esc(nextM.title)}</p>` : ''}`;
+  $('#p-bar').style.width = '100%';
+  foot('', '', 'Done', closePlayer);
+};
 
 /* ================= boot ================= */
 go(me() ? 'home' : 'profiles');

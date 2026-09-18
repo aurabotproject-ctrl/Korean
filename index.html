@@ -159,6 +159,7 @@ main{max-width:1040px;margin:0 auto;padding:22px 16px calc(var(--nav-h) + 40px)}
 .listen-box{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%}
 .listen-btn{font-size:1.15rem;padding:16px 28px}
 .tipbox.warn{background:var(--con-soft);color:var(--ink);font-size:.9rem}
+.tipbox.good{background:var(--green-soft);color:var(--ink);font-size:.9rem}
 .say{border:0;background:var(--vow-soft);color:var(--vow);border-radius:999px;width:44px;height:44px;display:inline-grid;place-items:center;font-size:1.25rem;flex:none}
 .say.big{width:64px;height:64px;font-size:1.8rem}
 .toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:14px;font-weight:700;z-index:100;width:max-content;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
@@ -602,10 +603,17 @@ let koVoice = null;
 function pickVoice() {
   if (!('speechSynthesis' in window)) return;
   const vs = speechSynthesis.getVoices();
+  // "Google 한국의" is far and away the most natural-sounding Korean voice, so it wins
+  // whenever it's installed. The system voices below it are the fallbacks, in order.
   koVoice = (S.settings.voiceURI && vs.find(v => v.voiceURI === S.settings.voiceURI))
-    || vs.find(v => /^ko/i.test(v.lang) && /yuna|sora|google/i.test(v.name))
+    || vs.find(isBestKo)
+    || vs.find(v => /^ko/i.test(v.lang) && /yuna|sora/i.test(v.name))
     || vs.find(v => /^ko/i.test(v.lang)) || null;
 }
+// The Google Korean voice ships with Chrome; its name is localised, so match on the vendor word
+// in a few spellings rather than the whole label.
+const isBestKo = v => /^ko/i.test(v.lang) && /google|구글/i.test(v.name);
+const hasBestKo = () => ('speechSynthesis' in window) && speechSynthesis.getVoices().some(isBestKo);
 // Rough English-letter reading, used only when the device has no Korean voice at all.
 function romanize(text) {
   return [...text].map(ch => {
@@ -680,7 +688,7 @@ function say(text, slow) {
   }, 300);
 }
 function voiceHelp() {
-  return 'No Korean voice on this device yet. On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → add Korean (Yuna), then reload this page. On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.';
+  return 'No Korean voice on this device yet. Easiest fix: open this page in Google Chrome, which comes with the “Google 한국의” voice — the best-sounding one there is. Otherwise, on a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → add Korean (Yuna), then reload this page. On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.';
 }
 function showVoiceNote() {
   const n = $('#voice-note');
@@ -1000,6 +1008,8 @@ VIEWS.parent = main => {
   }).join('');
   const all = ('speechSynthesis' in window) ? speechSynthesis.getVoices() : [];
   pickVoice();
+  const best = all.find(isBestKo) || null;                    // the Google Korean voice, if present
+  const usingBest = !!(koVoice && best && koVoice.voiceURI === best.voiceURI);
   main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Grown-ups</span><h1>Progress & settings</h1></div><button class="btn ghost small" id="lock">Lock 🔒</button></div>
   <div class="card" style="padding:8px 16px"><div class="scroll-x"><table class="ptable"><thead><tr><th>Learner</th><th>Letters</th><th>Words</th><th>Stamps</th><th>XP</th><th>XP this week</th><th>Streak</th><th>Last active</th><th>Tricky words</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="muted">No learners yet.</td></tr>'}</tbody></table></div></div>
   <div class="two" style="margin-top:16px">
@@ -1016,14 +1026,18 @@ VIEWS.parent = main => {
         <option value="0.7" ${st.rate == 0.7 ? 'selected' : ''}>Slow</option><option value="0.85" ${st.rate == 0.85 ? 'selected' : ''}>Relaxed</option><option value="1" ${st.rate == 1 ? 'selected' : ''}>Natural</option></select></div>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-sfx" ${st.sfx ? 'checked' : ''}> Sound effects</label>
       <div class="field"><label for="s-voice">Korean voice</label><select class="input" id="s-voice">
-        <option value="">Choose automatically</option>
-        ${all.map(v => `<option value="${esc(v.voiceURI)}" ${st.voiceURI === v.voiceURI ? 'selected' : ''}>${esc(v.name)} — ${esc(v.lang)}</option>`).join('')}
+        <option value="">Choose automatically ${best ? `(uses ${esc(best.name)})` : ''}</option>
+        ${all.map(v => `<option value="${esc(v.voiceURI)}" ${st.voiceURI === v.voiceURI ? 'selected' : ''}>${isBestKo(v) ? '★ ' : ''}${esc(v.name)} — ${esc(v.lang)}${isBestKo(v) ? '  (recommended)' : ''}</option>`).join('')}
       </select></div>
       <div class="row"><button class="btn small blue" data-say="안녕하세요! 한국어를 배워요.">🔊 Test a sentence</button><button class="btn small blue" data-say="아">🔊 Test one letter</button><button class="btn small ghost" id="s-refresh">↻ Refresh list</button></div>
       <p class="muted" style="font-size:.85rem">Both should speak. If only the sentence does, tell Claude — it means this Mac skips very short phrases.</p>
-      <div class="tipbox ${koVoice ? '' : 'warn'}" style="font-size:.9rem">
+      <div class="tipbox ${koVoice ? (usingBest ? 'good' : 'warn') : 'warn'}" style="font-size:.9rem">
         ${koVoice ? `✓ Korean voice ready: <b>${esc(koVoice.name)}</b>` : `⚠️ <b>No Korean voice on this device</b>, so Korean can’t be spoken. This browser offers ${all.length} voice(s), none of them Korean.`}
-        ${koVoice ? '' : `<br><br><b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → <b>Manage Voices…</b> → tick <b>Korean (Yuna)</b> → download, then reload this page.<br><b>iPad/iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Korean.<br><b>Windows:</b> Settings → Time &amp; language → Language → Add Korean → Speech.`}
+        ${usingBest ? `<br>This is the <b>recommended</b> voice — by far the most natural-sounding Korean available in a browser.` : ''}
+        ${koVoice && !usingBest && best ? `<br><br>⭐ <b>A better voice is available on this device:</b> <b>${esc(best.name)}</b>. The system voices sound robotic next to it and model pronunciation poorly.
+          <div class="row" style="margin-top:8px"><button class="btn small blue" id="s-usebest">Use ${esc(best.name)}</button></div>` : ''}
+        ${koVoice && !usingBest && !best ? `<br><br>⭐ <b>Recommended:</b> the <b>Google 한국의</b> voice, which comes with <b>Google Chrome</b> on Mac, Windows and Android. Open this app in Chrome and it appears in the list above — it sounds far more like a real person than the built-in system voices. (It's a Google service, not a file, so it can't be bundled into the app itself.)` : ''}
+        ${koVoice ? '' : `<br><br><b>Best option — Chrome:</b> open this page in <b>Google Chrome</b> and pick <b>Google 한국의</b> above. It's the most natural-sounding Korean voice and needs no download.<br><b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → <b>Manage Voices…</b> → tick <b>Korean (Yuna)</b> → download, then reload this page.<br><b>iPad/iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Korean.<br><b>Windows:</b> Settings → Time &amp; language → Language → Add Korean → Speech.`}
       </div>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-romvoice" ${st.romVoice ? 'checked' : ''}> Until then, read Korean with an English voice</label>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-novoice" ${st.noVoice ? 'checked' : ''}> Written sound questions (no listening)</label>
@@ -1054,6 +1068,8 @@ VIEWS.parent = main => {
   $('#s-romvoice', main).onchange = e => { set('romVoice', e.target.checked); go('parent'); };
   $('#s-novoice', main).onchange = e => { set('noVoice', e.target.checked); if (!e.target.checked) speechBroken = false; go('parent'); };
   $('#s-refresh', main).onclick = () => { koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Voice list refreshed'); };
+  const ub = $('#s-usebest', main);
+  if (ub) ub.onclick = () => { set('voiceURI', best.voiceURI); koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Switched to ' + best.name); setTimeout(() => say('안녕하세요! 한국어를 배워요.'), 350); };
   const dump = () => JSON.stringify(S);
   $('#bk-copy', main).onclick = async () => { $('#bk-text', main).value = dump(); try { await navigator.clipboard.writeText(dump()); toast('Backup copied'); } catch (e) { $('#bk-text', main).select(); toast('Backup is in the box. Copy it from there.'); } };
   $('#bk-dl', main).onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dump()], { type: 'application/json' })); a.download = `hangul-quest-backup-${todayStr()}.json`; document.body.appendChild(a); a.click(); a.remove(); };

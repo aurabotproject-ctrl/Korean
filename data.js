@@ -548,5 +548,16 @@
     { id: 'alpaca', label: 'Alpaca' }, { id: 'monkey', label: 'Monkey' }
   ];
 
-  window.HQ_DATA = { letters, stages, words, avatars, finals, doubleFinals, rules, stamps, WORD_GOAL: 1000 };
+  // Anime pictures that exist so far. The app only looks in assets/anime/ for these;
+  // anything else quietly uses the cute picture (and no 404s in the console).
+  const animeHas = [
+    'logo.webp', 'icon-192.webp',
+    'mascot/horangi-wave.webp', 'mascot/horangi-cheer.webp', 'mascot/horangi-think.webp',
+    'mascot/horangi-point.webp', 'mascot/horangi-thumbs.webp', 'mascot/horangi-sad.webp', 'mascot/horangi-sleep.webp',
+    'avatars/panda.webp', 'avatars/fox.webp', 'avatars/whitetiger.webp', 'avatars/axolotl.webp',
+    'avatars/lion.webp', 'avatars/gorilla.webp', 'avatars/alpaca.webp', 'avatars/monkey.webp',
+    'mnemonics/mn-i.webp', 'mnemonics/mn-a.webp', 'mnemonics/mn-eo.webp'
+  ];
+
+  window.HQ_DATA = { letters, stages, words, avatars, finals, doubleFinals, rules, stamps, animeHas, WORD_GOAL: 1000 };
 })();

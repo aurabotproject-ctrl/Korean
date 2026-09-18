@@ -340,6 +340,14 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 .tipbox{background:var(--fin-soft);border-radius:var(--r-md);padding:12px 16px;text-align:left;width:100%;font-size:.98rem}
 .tipbox b{color:var(--ink)}
 
+.clue{display:flex;gap:14px;align-items:center;text-align:left;background:var(--paper-2);border-radius:var(--r-md);padding:12px;margin-top:12px;width:100%}
+.clue .mn-pic{width:120px;height:120px;flex:none;aspect-ratio:auto;background:var(--card)}
+.clue .mn-pic .em{font-size:3.4rem}
+.clue-text{display:grid;gap:2px}
+.clue-text .ko{font-size:2.2rem;line-height:1}
+.clue-text p{font-size:.88rem}
+@media (max-width:480px){.clue{flex-direction:column;text-align:center}.clue-text{justify-items:center}}
+
 /* trace */
 .trace-wrap{position:relative;width:min(340px,100%);aspect-ratio:1;max-width:100%}
 .trace-wrap canvas{position:absolute;inset:0;width:100%;height:100%;border-radius:var(--r-lg);touch-action:none}
@@ -693,6 +701,13 @@ function mnImg(letter) {
   return `<div class="mn-pic"><img alt="Picture clue for ${esc(letter)}" src="${A(`assets/mnemonics/${d.img}.webp`)}" data-alt="${A(`assets/mnemonics/${d.img}.png`)}" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt='';}else{this.replaceWith(Object.assign(document.createElement('span'),{className:'em',textContent:'${d.emoji}'}));}"></div>`;
 }
 
+// The picture clue: the same mnemonic image from the lesson, shown beside the letter.
+function clueHTML(letter) {
+  const d = L[letter]; if (!d) return '';
+  const cls = d.type === 'vow' ? 'c-vow' : 'c-con';
+  return `<div class="clue">${mnImg(letter)}<div class="clue-text"><span class="ko ${cls}">${letter}</span>
+    <b>“${esc(d.rom)}”</b><p class="muted">${esc(d.mnemonic)}</p></div></div>`;
+}
 function updateBar() {
   const p = me();
   $('#tabs').hidden = !p; $('#mebar').hidden = !p; $('#style-tog').hidden = !p;
@@ -1141,7 +1156,9 @@ STEP.choice = (box, st) => {
       <div class="tipbox warn" id="voice-note" hidden></div>
     </div>` : ''}
     ${st.sub || ''}
-    <div class="opts">${st.options.map((o, k) => `<button class="opt" data-k="${k}">${o.html}</button>`).join('')}</div>`;
+    ${st.clueLetter && st.clueBefore ? `<button class="btn ghost small" id="q-clue">🖼️ Picture clue</button>` : ''}
+    <div class="opts">${st.options.map((o, k) => `<button class="opt" data-k="${k}">${o.html}</button>`).join('')}</div>
+    <div id="q-clue-box" style="width:100%"></div>`;
   if (st.audio) {
     const hint = () => {
       const h = $('#q-hint', box); if (!h || !h.hidden) return;
@@ -1157,6 +1174,8 @@ STEP.choice = (box, st) => {
     if (unlocked) setTimeout(() => play(false), 300);
     if (!canSpeak()) { setTimeout(showVoiceNote, 60); setTimeout(hint, 80); }
   }
+  const showClue = () => { const c = $('#q-clue-box', box); if (c && !c.innerHTML) c.innerHTML = clueHTML(st.clueLetter); };
+  const cb = $('#q-clue', box); if (cb) cb.onclick = showClue;
   let chosen = null;
   $$('.opt', box).forEach(b => b.onclick = () => {
     chosen = +b.dataset.k; $$('.opt', box).forEach(x => x.classList.toggle('sel', x === b));
@@ -1169,6 +1188,7 @@ STEP.choice = (box, st) => {
     P.total++; if (ok) { P.right++; gainXP(2); }
     sfx(ok ? 'good' : 'bad');
     st.onResult && st.onResult(ok);
+    if (st.clueLetter) showClue();   // always show the picture once they've answered
     save();
     foot(ok ? pick(['✓ 잘했어요! Well done!', '✓ 맞아요! Correct!', '✓ 대박! Awesome!']) : `✗ The answer is ${st.answerText || ''}`, ok ? 'good' : 'bad', 'Continue', advance);
   }
@@ -1199,6 +1219,10 @@ STEP.build = (box, st) => {
     P.total++; if (ok) { P.right++; gainXP(2); }
     sfx(ok ? 'good' : 'bad');
     $('#slot', box).innerHTML = blockHTML(st.target);
+    const cbx = document.createElement('div');
+    cbx.style.width = '100%';
+    cbx.innerHTML = clueHTML(target.i) + clueHTML(target.v);
+    box.appendChild(cbx);
     foot(ok ? '✓ Perfect block!' : `✗ It’s <span class="ko">${st.target}</span> = <span class="ko">${target.i} + ${target.v}${target.t ? ' + ' + target.t : ''}</span>`, ok ? 'good' : 'bad', 'Continue', advance);
   }
   foot('', '', 'Check', null, false);
@@ -1275,18 +1299,18 @@ const glyphHTML = x => `<span class="ko ${L[x].type === 'vow' ? 'c-vow' : 'c-con
 function hearQ(letter, pool, eyebrow) {
   if (!canSpeak()) {
     // silent device: ask for the sound in writing instead, so the question is still answerable
-    return { type: 'choice', eyebrow: eyebrow || 'Sounds', prompt: `Which letter makes the “<span style="color:var(--plum)">${esc(romSyl(L[letter].sample))}</span>” sound?`,
+    return { type: 'choice', clueLetter: letter, eyebrow: eyebrow || 'Sounds', prompt: `Which letter makes the “<span style="color:var(--plum)">${esc(romSyl(L[letter].sample))}</span>” sound?`,
       sub: '<p class="muted">Say it out loud, then pick the letter.</p>', answer: letter, answerText: `<span class="ko">${letter}</span>`,
       options: letterOpts(letter, pool, glyphHTML), onResult: ok => markLetter(letter, ok) };
   }
-  return { type: 'choice', eyebrow: eyebrow || 'Listen', prompt: 'Which letter makes this sound?',
+  return { type: 'choice', clueLetter: letter, eyebrow: eyebrow || 'Listen', prompt: 'Which letter makes this sound?',
     sub: '<p class="muted">Listen, then tap the letter you heard.</p>', audio: L[letter].sample,
     hint: `The sound is “<b>${esc(romSyl(L[letter].sample))}</b>” — pick the letter that makes it.`,
     answer: letter, answerText: `<span class="ko">${letter}</span>`,
     options: letterOpts(letter, pool, glyphHTML), onResult: ok => markLetter(letter, ok) };
 }
 function soundQ(letter, pool) {
-  return { type: 'choice', eyebrow: 'What sound?', prompt: `What sound does <span class="ko ${L[letter].type === 'vow' ? 'c-vow' : 'c-con'}" style="font-size:3rem;vertical-align:middle">${letter}</span> make?`, answer: letter, answerText: `“${L[letter].rom}”`,
+  return { type: 'choice', clueLetter: letter, clueBefore: true, eyebrow: 'What sound?', prompt: `What sound does <span class="ko ${L[letter].type === 'vow' ? 'c-vow' : 'c-con'}" style="font-size:3rem;vertical-align:middle">${letter}</span> make?`, answer: letter, answerText: `“${L[letter].rom}”`,
     options: letterOpts(letter, pool, x => `<span>${esc(L[x].rom)}</span>`), onResult: ok => markLetter(letter, ok) };
 }
 function markLetter(x, ok) { const p = me(); const r = p.letters[x] = Object.assign({ right: 0, wrong: 0 }, p.letters[x]); ok ? r.right++ : r.wrong++; }

@@ -65,7 +65,7 @@ function blockHTML(ch) {
 
 /* ================= storage ================= */
 const KEY = 'hangulQuest.v1';
-const defaults = () => ({ profiles: [], currentId: null, settings: { tripDate: '', tripPlace: 'Korea', rom: 'auto', rate: 0.85, sfx: true } });
+const defaults = () => ({ profiles: [], currentId: null, settings: { tripDate: '', tripPlace: 'Korea', rom: 'auto', rate: 0.85, sfx: true, voiceURI: '', romVoice: false } });
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)) || defaults(); } catch (e) { S = defaults(); }
 S.settings = Object.assign(defaults().settings, S.settings || {});
@@ -125,7 +125,19 @@ let koVoice = null;
 function pickVoice() {
   if (!('speechSynthesis' in window)) return;
   const vs = speechSynthesis.getVoices();
-  koVoice = vs.find(v => /^ko/i.test(v.lang) && /yuna|sora|google/i.test(v.name)) || vs.find(v => /^ko/i.test(v.lang)) || null;
+  koVoice = (S.settings.voiceURI && vs.find(v => v.voiceURI === S.settings.voiceURI))
+    || vs.find(v => /^ko/i.test(v.lang) && /yuna|sora|google/i.test(v.name))
+    || vs.find(v => /^ko/i.test(v.lang)) || null;
+}
+// Rough English-letter reading, used only when the device has no Korean voice at all.
+function romanize(text) {
+  return [...text].map(ch => {
+    const d = decompose(ch);
+    if (!d) return ch;
+    let r = ROM_I[d.i] + ROM_V[d.v] + (ROM_F[d.t] || '');
+    if (d.i === 'ㅅ' && d.v === 'ㅣ') r = 'shee';
+    return r.replace(/eo/g, 'aw').replace(/eu/g, 'uh').replace(/ae/g, 'eh');
+  }).join(' ');
 }
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 let speechBroken = false, unlocked = false;
@@ -140,16 +152,18 @@ document.addEventListener('keydown', unlockSpeech, true);
 function canSpeak() {
   if (!('speechSynthesis' in window) || speechBroken) return false;
   if (!koVoice) pickVoice();
-  return !!koVoice;
+  return !!koVoice || !!S.settings.romVoice;
 }
 function say(text, slow) {
   if (!('speechSynthesis' in window)) { toast('This browser can’t speak. Try Safari or Chrome.'); return; }
   if (!koVoice) pickVoice();
+  const approx = !koVoice && S.settings.romVoice;
+  if (approx) text = romanize(text);
   unlockSpeech();
   try { speechSynthesis.cancel(); if (speechSynthesis.paused) speechSynthesis.resume(); } catch (e) {}
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ko-KR'; if (koVoice) u.voice = koVoice;
-  u.rate = slow ? 0.55 : S.settings.rate;
+  if (approx) { u.rate = slow ? 0.6 : 0.8; }
+  else { u.lang = 'ko-KR'; if (koVoice) u.voice = koVoice; u.rate = slow ? 0.55 : S.settings.rate; }
   u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') { speechBroken = true; showVoiceNote(); } };
   setTimeout(() => { try { speechSynthesis.speak(u); } catch (e) {} }, 40);
 }
@@ -453,7 +467,8 @@ VIEWS.parent = main => {
     const week = Object.entries(p.days).filter(([d]) => d >= todayStr(new Date(Date.now() - 6 * DAY))).reduce((a, [, v]) => a + v, 0);
     return `<tr><td><div class="row" style="gap:8px;flex-wrap:nowrap"><img src="${avatarSrcFor(p)}" alt="" style="width:30px"><b>${esc(p.name)}</b></div></td><td>${lettersLearned(p)}/40</td><td>${wordCount(p)}</td><td>${stampCount(p)}/${D.stamps.length}</td><td>${p.xp}</td><td>${week}</td><td>${p.streak}🔥</td><td>${p.lastDay || '—'}</td><td class="ko">${weak.join(', ') || '—'}</td></tr>`;
   }).join('');
-  const voices = ('speechSynthesis' in window) ? speechSynthesis.getVoices().filter(v => /^ko/i.test(v.lang)) : [];
+  const all = ('speechSynthesis' in window) ? speechSynthesis.getVoices() : [];
+  pickVoice();
   main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Grown-ups</span><h1>Progress & settings</h1></div><button class="btn ghost small" id="lock">Lock 🔒</button></div>
   <div class="card" style="padding:8px 16px"><div class="scroll-x"><table class="ptable"><thead><tr><th>Learner</th><th>Letters</th><th>Words</th><th>Stamps</th><th>XP</th><th>XP this week</th><th>Streak</th><th>Last active</th><th>Tricky words</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="muted">No learners yet.</td></tr>'}</tbody></table></div></div>
   <div class="two" style="margin-top:16px">
@@ -469,8 +484,17 @@ VIEWS.parent = main => {
       <div class="field"><label for="s-rate">Voice speed</label><select class="input" id="s-rate">
         <option value="0.7" ${st.rate == 0.7 ? 'selected' : ''}>Slow</option><option value="0.85" ${st.rate == 0.85 ? 'selected' : ''}>Relaxed</option><option value="1" ${st.rate == 1 ? 'selected' : ''}>Natural</option></select></div>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-sfx" ${st.sfx ? 'checked' : ''}> Sound effects</label>
-      <div class="row"><button class="btn small blue" data-say="안녕하세요! 한국어를 배워요.">🔊 Test voice</button><span class="muted" style="font-size:.85rem">${koVoice ? '✓ Using: ' + esc(koVoice.name) : voices.length ? voices.length + ' Korean voice(s) found' : '⚠️ No Korean voice found — the app switches to written sound questions'}</span></div>
-      <p class="muted" style="font-size:.85rem">No voice? On a Mac: System Settings → Accessibility → Spoken Content → System voice → Manage Voices → Korean (Yuna). On iPad: Settings → Accessibility → Spoken Content → Voices → Korean.</p>
+      <div class="field"><label for="s-voice">Korean voice</label><select class="input" id="s-voice">
+        <option value="">Choose automatically</option>
+        ${all.map(v => `<option value="${esc(v.voiceURI)}" ${st.voiceURI === v.voiceURI ? 'selected' : ''}>${esc(v.name)} — ${esc(v.lang)}</option>`).join('')}
+      </select></div>
+      <div class="row"><button class="btn small blue" data-say="안녕하세요! 한국어를 배워요.">🔊 Test voice</button><button class="btn small ghost" id="s-refresh">↻ Refresh list</button></div>
+      <div class="tipbox ${koVoice ? '' : 'warn'}" style="font-size:.9rem">
+        ${koVoice ? `✓ Korean voice ready: <b>${esc(koVoice.name)}</b>` : `⚠️ <b>No Korean voice on this device</b>, so Korean can’t be spoken. This browser offers ${all.length} voice(s), none of them Korean.`}
+        ${koVoice ? '' : `<br><br><b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → <b>Manage Voices…</b> → tick <b>Korean (Yuna)</b> → download, then reload this page.<br><b>iPad/iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Korean.<br><b>Windows:</b> Settings → Time &amp; language → Language → Add Korean → Speech.`}
+      </div>
+      <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-romvoice" ${st.romVoice ? 'checked' : ''}> Until then, read Korean with an English voice</label>
+      <p class="muted" style="font-size:.85rem">A rough stand-in (<span class="ko">안녕</span> → “an nyawng”). It keeps the listening games working, but it is <b>not</b> how Korean really sounds, so turn it off once a Korean voice is installed.</p>
     </div>
     <div class="card panel"><h3>Backup</h3>
       <p class="muted" style="font-size:.9rem">Progress is saved in this browser only. Copy a backup to move to another device, or before clearing the browser.</p>
@@ -489,6 +513,9 @@ VIEWS.parent = main => {
   $('#s-rom', main).onchange = e => set('rom', e.target.value);
   $('#s-rate', main).onchange = e => set('rate', +e.target.value);
   $('#s-sfx', main).onchange = e => set('sfx', e.target.checked);
+  $('#s-voice', main).onchange = e => { set('voiceURI', e.target.value); koVoice = null; pickVoice(); speechBroken = false; go('parent'); };
+  $('#s-romvoice', main).onchange = e => { set('romVoice', e.target.checked); go('parent'); };
+  $('#s-refresh', main).onclick = () => { koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Voice list refreshed'); };
   const dump = () => JSON.stringify(S);
   $('#bk-copy', main).onclick = async () => { $('#bk-text', main).value = dump(); try { await navigator.clipboard.writeText(dump()); toast('Backup copied'); } catch (e) { $('#bk-text', main).select(); toast('Backup is in the box. Copy it from there.'); } };
   $('#bk-dl', main).onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dump()], { type: 'application/json' })); a.download = `hangul-quest-backup-${todayStr()}.json`; document.body.appendChild(a); a.click(); a.remove(); };

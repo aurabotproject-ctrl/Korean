@@ -452,9 +452,12 @@ h1 .ko,h3 .ko{text-transform:none}
 .grid.units{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
 .card.unit{padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;border-bottom-width:5px}
 .card.unit.locked{opacity:.62;cursor:default}
-.ushot{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,var(--vow),var(--plum));display:grid;place-items:center}
-.ushot img{width:100%;height:100%;object-fit:cover;display:block}
-.uemoji{font-size:3.4rem;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
+/* Until a unit has its own cover picture, the card shows the unit's first scene with its
+   character standing in it — so every unit looks finished from day one. */
+.ushot{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,var(--vow),var(--plum))}
+.ushot .uscene,.ushot .ucover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ushot .ucover{z-index:2}
+.ushot .ucast{position:absolute;right:8px;bottom:0;width:34%;max-width:132px;height:auto;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));z-index:1}
 .card.unit.locked .ushot img{filter:grayscale(.85) brightness(.75)}
 .mscene.noart{background:linear-gradient(135deg,var(--vow),var(--plum));display:grid;place-items:center}
 .mscene.noart .mplace{position:static;font-size:1.05rem}
@@ -1081,8 +1084,10 @@ VIEWS.parent = main => {
           </div>
         </div>
       </div>
-      <p class="muted" style="font-size:.85rem;margin-top:14px">Or just one stage at a time:</p>
+      <p class="muted" style="font-size:.85rem;margin-top:14px"><b>Level 1</b> — handwriting sheets, one per stage:</p>
       <div class="chips">${D.stages.map(st => `<a class="chip" href="assets/printables/stage-${st.id}.pdf" target="_blank" rel="noopener">🖨️ Stage ${st.id}</a>`).join('')}</div>
+      <p class="muted" style="font-size:.85rem;margin-top:12px"><b>Level 2</b> — each unit's words, both conversation worksheets and the answer key:</p>
+      <div class="chips">${L2.units.map(u => `<a class="chip" href="assets/printables/unit-${u.id}.pdf" target="_blank" rel="noopener">🖨️ Unit ${u.id} · ${esc(u.title)}</a>`).join('')}</div>
     </div>
     <div class="card panel"><h3>Preview mode</h3>
       <p class="muted" style="font-size:.9rem">Opens every stage, unit, conversation and mission so you can look through the whole app. It changes <b>no</b> progress — switch it off and every lock goes straight back.</p>
@@ -2139,8 +2144,10 @@ function renderL2(box) {
 function unitCard(p, u) {
   const open = unitOpen(p, u), done = unitDoneCount(p, u), total = unitParts(u).length;
   return `<button class="card unit${open ? '' : ' locked'}${done === total ? ' done' : ''}" ${open ? `data-unit="${u.id}"` : 'disabled'}>
-    <span class="ushot"><img src="assets/units/${u.img}.webp" alt="" loading="lazy"
-        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'uemoji',textContent:'${u.emoji}'}))">
+    <span class="ushot">
+      <img class="uscene" src="assets/scenes/${u.dialogues[0].scene}.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img class="ucast" src="assets/cast/${u.dialogues[0].with[0]}.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img class="ucover" src="assets/units/${u.img}.webp" alt="" loading="lazy" onerror="this.remove()">
       ${open ? '' : '<span class="mlock">🔒 Finish the unit before</span>'}
       ${done === total ? '<span class="mtick">✓</span>' : ''}</span>
     <span class="mbody">

@@ -569,7 +569,7 @@ function unlockSpeech() {
 document.addEventListener('pointerdown', unlockSpeech, true);
 document.addEventListener('keydown', unlockSpeech, true);
 function canSpeak() {
-  if (!('speechSynthesis' in window) || speechBroken) return false;
+  if (!('speechSynthesis' in window) || speechBroken || S.settings.noVoice) return false;
   if (!koVoice) pickVoice();
   return !!koVoice || !!S.settings.romVoice;
 }
@@ -940,6 +940,7 @@ VIEWS.parent = main => {
         ${koVoice ? '' : `<br><br><b>Mac:</b> System Settings → Accessibility → Spoken Content → System voice → <b>Manage Voices…</b> → tick <b>Korean (Yuna)</b> → download, then reload this page.<br><b>iPad/iPhone:</b> Settings → Accessibility → Spoken Content → Voices → Korean.<br><b>Windows:</b> Settings → Time &amp; language → Language → Add Korean → Speech.`}
       </div>
       <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-romvoice" ${st.romVoice ? 'checked' : ''}> Until then, read Korean with an English voice</label>
+      <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" id="s-novoice" ${st.noVoice ? 'checked' : ''}> Written sound questions (no listening)</label>
       <p class="muted" style="font-size:.85rem">A rough stand-in (<span class="ko">안녕</span> → “an nyawng”). It keeps the listening games working, but it is <b>not</b> how Korean really sounds, so turn it off once a Korean voice is installed.</p>
     </div>
     <div class="card panel"><h3>Backup</h3>
@@ -961,6 +962,7 @@ VIEWS.parent = main => {
   $('#s-sfx', main).onchange = e => set('sfx', e.target.checked);
   $('#s-voice', main).onchange = e => { set('voiceURI', e.target.value); koVoice = null; pickVoice(); speechBroken = false; go('parent'); };
   $('#s-romvoice', main).onchange = e => { set('romVoice', e.target.checked); go('parent'); };
+  $('#s-novoice', main).onchange = e => { set('noVoice', e.target.checked); if (!e.target.checked) speechBroken = false; go('parent'); };
   $('#s-refresh', main).onclick = () => { koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Voice list refreshed'); };
   const dump = () => JSON.stringify(S);
   $('#bk-copy', main).onclick = async () => { $('#bk-text', main).value = dump(); try { await navigator.clipboard.writeText(dump()); toast('Backup copied'); } catch (e) { $('#bk-text', main).select(); toast('Backup is in the box. Copy it from there.'); } };
@@ -1121,14 +1123,30 @@ STEP.trace = (box, st) => {
 STEP.choice = (box, st) => {
   box.innerHTML = `<span class="eyebrow">${esc(st.eyebrow || 'Question')}</span><div class="q-prompt">${st.prompt}</div>
     ${st.audio ? `<div class="listen-box">
-      <button class="btn blue listen-btn" data-say="${esc(st.audio)}">🔊 Play the sound</button>
-      <button class="btn ghost small" data-say="${esc(st.audio)}" data-slow="1">🐢 Slower</button>
+      <button class="btn blue listen-btn" id="q-play">🔊 Play the sound</button>
+      <button class="btn ghost small" id="q-slow">🐢 Slower</button>
       <p class="muted" style="width:100%;font-size:.9rem">Tap to hear it as many times as you like.</p>
+      <button class="btn ghost small" id="q-deaf">🔇 I can’t hear it</button>
+      <div class="tipbox warn" id="q-hint" hidden></div>
       <div class="tipbox warn" id="voice-note" hidden></div>
     </div>` : ''}
     ${st.sub || ''}
     <div class="opts">${st.options.map((o, k) => `<button class="opt" data-k="${k}">${o.html}</button>`).join('')}</div>`;
-  if (st.audio) { if (unlocked) setTimeout(() => say(st.audio), 300); if (!canSpeak()) setTimeout(showVoiceNote, 60); }
+  if (st.audio) {
+    const hint = () => {
+      const h = $('#q-hint', box); if (!h || !h.hidden) return;
+      h.hidden = false;
+      h.innerHTML = `🔇 <b>No sound?</b> ${st.hint || 'Here’s the answer in writing.'}
+        <div class="row" style="margin-top:8px"><button class="btn small ghost" id="q-written">Use written questions from now on</button></div>`;
+      $('#q-written', box).onclick = () => { S.settings.noVoice = true; save(); toast('Switched to written sound questions'); h.innerHTML = '✓ From now on, questions will show the sound in writing instead. You can switch back in Grown-ups.'; };
+    };
+    const play = slow => { say(st.audio, slow); setTimeout(() => { if (!speakStarted) hint(); }, 700); };
+    $('#q-play', box).onclick = () => play(false);
+    $('#q-slow', box).onclick = () => play(true);
+    $('#q-deaf', box).onclick = hint;
+    if (unlocked) setTimeout(() => play(false), 300);
+    if (!canSpeak()) { setTimeout(showVoiceNote, 60); setTimeout(hint, 80); }
+  }
   let chosen = null;
   $$('.opt', box).forEach(b => b.onclick = () => {
     chosen = +b.dataset.k; $$('.opt', box).forEach(x => x.classList.toggle('sel', x === b));
@@ -1151,7 +1169,7 @@ STEP.build = (box, st) => {
   const cons = shuffle(st.cons), vows = shuffle(st.vows), fins = st.fins ? shuffle(st.fins) : null;
   let ci = null, vi = null, ti = null;
   box.innerHTML = `<span class="eyebrow">Build a block</span><div class="q-prompt">Build the block that says <span style="color:var(--plum)">“${romSyl(st.target)}”</span></div>
-    <div class="listen-box"><button class="btn blue listen-btn" data-say="${st.target}">🔊 Hear it</button></div>
+    <div class="listen-box"><button class="btn blue listen-btn" data-say="${st.target}">🔊 Hear it</button><span class="muted" style="font-size:.9rem">The block says “${esc(romSyl(st.target))}”.</span></div>
     <div class="slot" id="slot"><span class="muted">?</span></div>
     <div class="parts"><span class="label">1. Pick a consonant</span>${cons.map(c => `<button class="jamo con" data-c="${c}" aria-pressed="false">${c}</button>`).join('')}</div>
     <div class="parts"><span class="label">2. Pick a vowel</span>${vows.map(v => `<button class="jamo vow" data-v="${v}" aria-pressed="false">${v}</button>`).join('')}</div>
@@ -1252,7 +1270,9 @@ function hearQ(letter, pool, eyebrow) {
       options: letterOpts(letter, pool, glyphHTML), onResult: ok => markLetter(letter, ok) };
   }
   return { type: 'choice', eyebrow: eyebrow || 'Listen', prompt: 'Which letter makes this sound?',
-    sub: '<p class="muted">Listen, then tap the letter you heard.</p>', audio: L[letter].sample, answer: letter, answerText: `<span class="ko">${letter}</span>`,
+    sub: '<p class="muted">Listen, then tap the letter you heard.</p>', audio: L[letter].sample,
+    hint: `The sound is “<b>${esc(romSyl(L[letter].sample))}</b>” — pick the letter that makes it.`,
+    answer: letter, answerText: `<span class="ko">${letter}</span>`,
     options: letterOpts(letter, pool, glyphHTML), onResult: ok => markLetter(letter, ok) };
 }
 function soundQ(letter, pool) {
@@ -1274,14 +1294,19 @@ function wordQ(w, pool, mode) {
   const onResult = ok => { const p = me(); const r = p.words[w.ko]; if (r) { ok ? r.right++ : r.wrong++; } };
   if (mode === 'meaning') return { type: 'choice', eyebrow: 'Read it', prompt: `<span class="ko" style="font-size:3.4rem">${esc(w.ko)}</span>`, sub: '<p class="muted">What does this mean?</p>', answer: w.ko, answerText: `${w.emoji} ${esc(w.en)}`,
     options: opts.map(o => ({ value: o.ko, html: `<span class="em">${o.emoji}</span><span>${esc(o.en)}</span>` })), onResult };
-  if (mode === 'listen') return { type: 'choice', eyebrow: 'Listen', prompt: 'Which word do you hear?', sub: '<p class="muted">Listen, then tap the word you heard.</p>', audio: w.ko, answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`,
+  if (mode === 'listen') return { type: 'choice', eyebrow: 'Listen', prompt: 'Which word do you hear?', sub: '<p class="muted">Listen, then tap the word you heard.</p>', audio: w.ko,
+    hint: `The word sounds like “<b>${esc(w.rom)}</b>” and means <b>${esc(w.en)}</b> ${w.emoji}.`,
+    answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`,
     options: opts.map(o => ({ value: o.ko, html: `<span class="ko">${esc(o.ko)}</span>` })), onResult };
   return { type: 'choice', eyebrow: 'Find the Korean', prompt: `<span style="font-size:3rem">${w.emoji}</span><br>${esc(w.en)}`, answer: w.ko, answerText: `<span class="ko">${esc(w.ko)}</span>`, optAudio: true,
     options: opts.map(o => ({ value: o.ko, html: `<span class="ko">${esc(o.ko)}</span>` })), onResult };
 }
 function finalListenQ(set) {
   const a = pick(set);
-  return { type: 'choice', eyebrow: 'Listen to the ending', prompt: 'Which block do you hear?', sub: '<p class="muted">Listen for the sound at the END of the block.</p>', audio: a, answer: a, answerText: `<span class="ko">${a}</span>`,
+  const fin = decompose(a).t;
+  return { type: 'choice', eyebrow: 'Listen to the ending', prompt: 'Which block do you hear?', sub: '<p class="muted">Listen for the sound at the END of the block.</p>', audio: a,
+    hint: `The block ends with a “<b>${FIN_ROM[fin] || fin}</b>” sound.`,
+    answer: a, answerText: `<span class="ko">${a}</span>`,
     options: shuffle(set).map(x => ({ value: x, html: `<span class="ko">${x}</span>` })) };
 }
 function finalAskQ([syl, ans]) {
@@ -1301,7 +1326,9 @@ function finalBuildQ(target) {
 function ruleQ(ruleId, [w, said, en, wrong]) {
   const r = D.rules[ruleId];
   return { type: 'choice', eyebrow: `Sound rule · ${r.name}`, prompt: `<span class="ko" style="font-size:3rem">${w}</span>`,
-    sub: `<p class="muted">${esc(en)}. How is it really said?</p>`, audio: w, answer: said, answerText: `<span class="ko">[${said}]</span>`,
+    sub: `<p class="muted">${esc(en)}. How is it really said?</p>`, audio: w,
+    hint: `${r.name} (<span class="ko">${r.ko}</span>): ${r.text}`,
+    answer: said, answerText: `<span class="ko">[${said}]</span>`,
     options: shuffle([said, ...wrong]).map(x => ({ value: x, html: `<span class="ko" style="font-size:1.5rem">[${x}]</span>` })) };
 }
 function startLesson(id) {

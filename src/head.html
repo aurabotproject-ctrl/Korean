@@ -283,6 +283,8 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 .lessons{display:grid;gap:12px}
 .lesson{display:flex;gap:14px;align-items:center;padding:14px 16px;text-align:left;border:1px solid var(--line);width:100%}
 .lesson .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-ko);font-weight:900;font-size:1.3rem;background:var(--paper-2);flex:none}
+.lesson.print-row{text-decoration:none;color:inherit}
+.chips a.chip{text-decoration:none}
 .lesson.locked{opacity:.55;box-shadow:none}
 .stars{color:var(--gold);letter-spacing:2px;white-space:nowrap}
 .stars .off{color:var(--line)}
@@ -331,6 +333,14 @@ textarea.input{min-height:110px;font-family:ui-monospace,Menlo,monospace;font-si
 .mn-text{font-size:1.15rem;font-weight:700;max-width:52ch}
 .tipbox{background:var(--fin-soft);border-radius:var(--r-md);padding:12px 16px;text-align:left;width:100%;font-size:.98rem}
 .tipbox b{color:var(--ink)}
+
+.clue{display:flex;gap:14px;align-items:center;text-align:left;background:var(--paper-2);border-radius:var(--r-md);padding:12px;margin-top:12px;width:100%}
+.clue .mn-pic{width:120px;height:120px;flex:none;aspect-ratio:auto;background:var(--card)}
+.clue .mn-pic .em{font-size:3.4rem}
+.clue-text{display:grid;gap:2px}
+.clue-text .ko{font-size:2.2rem;line-height:1}
+.clue-text p{font-size:.88rem}
+@media (max-width:480px){.clue{flex-direction:column;text-align:center}.clue-text{justify-items:center}}
 
 /* trace */
 .trace-wrap{position:relative;width:min(340px,100%);aspect-ratio:1;max-width:100%}

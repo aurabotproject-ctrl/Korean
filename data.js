@@ -863,5 +863,5 @@
   ];
 
 
-  window.HQ_DATA = { letters, stages, words, avatars, finals, doubleFinals, rules, stamps, missions, WORD_GOAL: 1000 };
+  window.HQ_DATA = { letters, stages, words, avatars, finals, doubleFinals, rules, stamps, missions, WORD_GOAL: 1200 };
 })();

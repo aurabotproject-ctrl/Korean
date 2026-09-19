@@ -502,6 +502,32 @@ h1 .ko,h3 .ko{text-transform:none}
 .booklet>div{display:grid;gap:4px}
 @media (max-width:480px){ .booklet{flex-direction:column;align-items:center;text-align:center} .booklet .row{justify-content:center} }
 
+
+/* ---- Essentials ---- */
+.lvl-switch{grid-template-columns:repeat(3,1fr)}
+@media (max-width:620px){ .lvl-switch{grid-template-columns:1fr} }
+.ess-group{margin-top:26px}
+.ess-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.ess-emoji{font-size:2.4rem;line-height:1;flex:none}
+.ess-head h2{margin-top:2px}
+.ess-head p{max-width:60ch;font-size:.94rem}
+.grid.ess{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card.ess-card{display:flex;align-items:center;gap:14px;padding:14px 16px;text-align:left;border-bottom-width:4px}
+.card.ess-card.done{border-color:var(--green)}
+.ess-icon{font-size:1.9rem;line-height:1;flex:none;width:46px;height:46px;border-radius:12px;background:var(--plum-soft);display:grid;place-items:center}
+.card.ess-card h3{font-size:1.05rem;margin:1px 0}
+.card.ess-card .muted{font-size:.86rem}
+.ess-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.card.ess-word{display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left;position:relative}
+.card.ess-word .em{font-size:1.6rem;line-height:1;flex:none}
+.card.ess-word .wtext{display:grid;gap:1px;min-width:0;flex:1}
+.card.ess-word .ko{font-size:1.3rem;line-height:1.25}
+.card.ess-word .rom{font-size:.85rem}
+.card.ess-word .en{font-size:.95rem;font-weight:700;color:var(--muted)}
+.card.ess-word .note{font-size:.8rem;color:var(--muted);font-style:italic;line-height:1.3}
+.card.ess-word .spk{opacity:.5;flex:none}
+.card.ess-word .pill{position:absolute;top:6px;right:6px;font-size:.66rem}
+
 </style>
 </head>
 <body>
@@ -529,12 +555,19 @@ h1 .ko,h3 .ko{text-transform:none}
 <div id="player-root"></div>
 <script src="data.js"></script>
 <script src="level2.js"></script>
+<script src="essentials.js"></script>
 <script>
 (() => {
 'use strict';
 const D = window.HQ_DATA;
 // Level 2's words join the shared bank, so reviews, games and the word list cover both levels.
 if (window.HQ_L2) D.words = D.words.concat(window.HQ_L2.words);
+// Essentials repeats a lot on purpose; only its genuinely new words join the bank.
+if (window.HQ_ESS) {
+  const have = new Set(D.words.map(w => w.ko));
+  D.words = D.words.concat(window.HQ_ESS.words.filter(w => !have.has(w.ko))
+    .map(w => Object.assign({ lvl: 0, stage: 90 }, w)));
+}
 const L = D.letters;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -804,7 +837,7 @@ function updateBar() {
   if (!p) return;
   $('#st-xp').textContent = p.xp; $('#st-streak').textContent = p.streak;
   $('#me-av').src = avatarSrc(p.avatar); $('#me-name').textContent = p.name;
-  const tabFor = { stage: 'learn', path: 'learn', unit: 'learn', passport: 'home' }[route.name] || route.name;
+  const tabFor = { stage: 'learn', path: 'learn', unit: 'learn', essSection: 'learn', passport: 'home' }[route.name] || route.name;
   $$('.tab').forEach(t => t.setAttribute('aria-current', t.dataset.go === tabFor ? 'page' : 'false'));
 }
 
@@ -2108,15 +2141,16 @@ function activeCount(p) { return Object.values(p.words).filter(w => !w.parked).l
 /* ---------- the Learn view: Level 1 / Level 2 switch ---------- */
 VIEWS.learn = (main, arg) => {
   const p = me();
-  const lvl = arg ? +arg : (S.settings.lvl || 1);
+  const lvl = arg ? (arg === 'ess' ? 'ess' : +arg) : (S.settings.lvl || 1);
   S.settings.lvl = lvl; save();
   const tabs = `<div class="lvl-switch" role="group" aria-label="Level">
     <button data-lvl="1" aria-pressed="${lvl === 1}"><span class="ko">가</span> Level 1 · Read</button>
     <button data-lvl="2" aria-pressed="${lvl === 2}" ${l2Open(p) ? '' : 'class="locked"'}>💬 Level 2 · Talk${l2Open(p) ? '' : ' 🔒'}</button>
+    <button data-lvl="ess" aria-pressed="${lvl === 'ess'}">🧰 Essentials</button>
   </div>`;
   main.innerHTML = tabs + '<div id="lvl-body"></div>';
   $$('[data-lvl]', main).forEach(b => b.onclick = () => go('learn', b.dataset.lvl));
-  (lvl === 2 ? renderL2 : renderL1)($('#lvl-body', main));
+  (lvl === 'ess' ? renderEssentials : lvl === 2 ? renderL2 : renderL1)($('#lvl-body', main));
 };
 
 function renderL2(box) {
@@ -2364,6 +2398,100 @@ STEP.l2done = (box, st) => {
     <h1>${finishedUnit ? `Unit ${u.id} complete! 🎉` : st.title}</h1>
     <p class="mn-text">${finishedUnit ? `You've finished <b>${esc(u.title)}</b>. ${esc(u.can[0].charAt(0).toUpperCase() + u.can[0].slice(1))} — and three other things you couldn't do this morning.` : st.text}</p>
     <div class="row" style="justify-content:center">${P.total ? `<span class="pill">✓ ${P.right}/${P.total}</span>` : ''}<span class="pill">⭐ +${P.xp} XP</span>${P.newWords ? `<span class="pill done">📚 +${P.newWords} words</span>` : ''}</div>`;
+  $('#p-bar').style.width = '100%';
+  foot('', '', 'Done', closePlayer);
+};
+
+/* ================= Essentials: the survival vocabulary ================= */
+const ESS = window.HQ_ESS || { groups: [], sections: [], words: [] };
+const essSection = id => ESS.sections.find(s => s.id === id);
+function essState(p) { p.ess = p.ess || {}; return p.ess; }
+const essDone = (p, id) => !!essState(p)[id];
+const essDoneCount = p => ESS.sections.filter(s => essDone(p, s.id)).length;
+function essKnown(p, s) { return s.words.filter(w => p.words[w.ko]).length; }
+
+function renderEssentials(box) {
+  const p = me();
+  box.innerHTML = `<div class="section-h" style="margin-top:14px">
+      <div><span class="eyebrow">Essentials · <span class="ko">꼭 필요한 말</span></span><h1>The words you actually need</h1></div>
+      <p class="muted" style="max-width:44ch">Every survival word, sorted by the job it does in a sentence. Nothing is locked —
+        dip in whenever you like, in any order. ${essDoneCount(p)} of ${ESS.sections.length} lists practised.</p>
+    </div>
+    ${ESS.groups.map(g => `
+      <div class="ess-group">
+        <div class="ess-head"><span class="ess-emoji">${g.emoji}</span>
+          <div><span class="eyebrow">${esc(g.sub)}</span><h2>${esc(g.title)}</h2>
+          <p class="muted">${esc(g.blurb)}</p></div></div>
+        <div class="grid ess">${g.sections.map(s => {
+          const known = essKnown(p, s), fin = essDone(p, s.id);
+          return `<button class="card ess-card${fin ? ' done' : ''}" data-ess="${s.id}">
+            <span class="ess-icon">${s.emoji}</span>
+            <span style="flex:1;text-align:left">
+              <span class="eyebrow">${esc(s.kind)}</span>
+              <h3>${esc(s.title)}</h3>
+              <span class="muted">${s.words.length} words${known ? ` · ${known} already in your word bank` : ''}</span>
+            </span>
+            <span class="pill${fin ? ' done' : ''}">${fin ? '✓' : '→'}</span></button>`;
+        }).join('')}</div>
+      </div>`).join('')}
+    <div class="card panel" style="margin-top:20px;display:flex;gap:16px;align-items:center">
+      <img src="${tiger('point')}" alt="" style="width:96px;flex:none">
+      <div><h3>Print the whole lot</h3>
+        <p class="muted" style="font-size:.92rem">Every essential word on paper, grouped exactly like this, with room to write each one.</p>
+        <div class="row" style="margin-top:8px">
+          <a class="btn small red" href="assets/printables/essentials.pdf" download>⬇︎ Download PDF</a>
+          <button class="btn small blue" data-print="essentials">🖨️ Print</button>
+        </div></div>
+    </div>`;
+  $$('[data-ess]', box).forEach(b => b.onclick = () => go('essSection', b.dataset.ess));
+  $$('[data-print]', box).forEach(b => b.onclick = () => printPDF(`assets/printables/${b.dataset.print}.pdf`));
+}
+
+/* ---------- one list: read it, hear it, then practise it ---------- */
+VIEWS.essSection = (main, id) => {
+  const p = me(), s = essSection(id);
+  if (!s) return go('learn', 'ess');
+  main.innerHTML = `<button class="btn ghost small" id="bk">← All essentials</button>
+    <div class="section-h"><div><span class="eyebrow">${esc(s.groupTitle)} · ${esc(s.kind)}</span>
+      <h1>${s.emoji} ${esc(s.title)}</h1></div>
+      <button class="btn red" id="practise">Practise these →</button></div>
+    ${s.note ? `<div class="tipbox">💡 ${esc(s.note)}</div>` : ''}
+    <div class="ess-list">${s.words.map(w => `
+      <button class="card ess-word" data-say="${esc(w.ko)}">
+        <span class="em">${w.emoji}</span>
+        <span class="wtext"><span class="ko">${esc(w.ko)}</span>
+          ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.rom)}</span>`}
+          <span class="en">${esc(w.en)}</span>
+          ${w.note ? `<span class="note">${esc(w.note)}</span>` : ''}</span>
+        <span class="spk">🔊</span>
+        ${p.words[w.ko] ? '<span class="pill done">in your bank</span>' : ''}
+      </button>`).join('')}</div>
+    <p class="muted" style="margin-top:16px;text-align:center">Tap any word to hear it.</p>`;
+  $('#bk', main).onclick = () => go('learn', 'ess');
+  $('#practise', main).onclick = () => startEssentials(s.id);
+};
+
+function startEssentials(id) {
+  const s = essSection(id);
+  const steps = [{ type: 'intro', eyebrow: `Essentials · ${s.kind}`, title: s.title,
+    html: `<b>${s.words.length} words.</b> ${esc(s.note || '')}<br><br>Meet them one at a time, then a quick check on eight of them.` }];
+  s.words.forEach(w => steps.push({ type: 'l2word', w }));
+  shuffle(s.words).slice(0, 8).forEach(w => steps.push(l2WordQ(w, s.words)));
+  steps.push({ type: 'essDone', section: s });
+  openPlayer(steps, { title: s.title });
+}
+
+STEP.essDone = (box, st) => {
+  const p = me(), s = st.section;
+  essState(p)[s.id] = { at: todayStr(), right: P.right, of: P.total };
+  save();
+  sfx('win'); burst();
+  const left = ESS.sections.filter(x => !essDone(p, x.id));
+  box.innerHTML = `<img src="${tiger('cheer')}" alt="" style="width:170px">
+    <h1>${esc(s.title)} ✓</h1>
+    <p class="mn-text">That is <b>${s.words.length}</b> more essential words you can use anywhere — in a shop, on a train, at a dinner table.</p>
+    <div class="row" style="justify-content:center">${P.total ? `<span class="pill">✓ ${P.right}/${P.total}</span>` : ''}<span class="pill">⭐ +${P.xp} XP</span>${P.newWords ? `<span class="pill done">📚 +${P.newWords} words</span>` : ''}</div>
+    ${left.length ? `<p class="muted" style="margin-top:12px">Next up if you like: ${esc(left[0].title)}</p>` : '<p class="muted" style="margin-top:12px">Every essential list done. That is the survival kit complete. 🎉</p>'}`;
   $('#p-bar').style.width = '100%';
   foot('', '', 'Done', closePlayer);
 };

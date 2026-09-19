@@ -2137,7 +2137,7 @@ function renderL2(box) {
         Every unit teaches words, one sentence pattern, and two real conversations.</p>
     </div>
     <div class="grid units">${L2.units.map(u => unitCard(p, u)).join('')}</div>
-    ${L2.units.length < 12 ? `<p class="muted" style="margin-top:18px">Units ${L2.units.length + 1}–12 are being written next.</p>` : ''}`;
+    ${L2.units.length < 12 ? `<p class="muted" style="margin-top:18px">Units ${L2.units.length + 1}–12 are being written next.</p>` : `<p class="muted" style="margin-top:18px">Finish all twelve and you can hold a real conversation with a Korean child your own age. <span class="ko">화이팅!</span></p>`}`;
   $$('[data-unit]', box).forEach(b => b.onclick = () => go('unit', b.dataset.unit));
 }
 
@@ -2146,7 +2146,7 @@ function unitCard(p, u) {
   return `<button class="card unit${open ? '' : ' locked'}${done === total ? ' done' : ''}" ${open ? `data-unit="${u.id}"` : 'disabled'}>
     <span class="ushot">
       <img class="uscene" src="assets/scenes/${u.dialogues[0].scene}.webp" alt="" loading="lazy" onerror="this.remove()">
-      <img class="ucast" src="assets/cast/${u.dialogues[0].with[0]}.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img class="ucast" src="assets/cast/${u.face || u.dialogues[0].with[0]}.webp" alt="" loading="lazy" onerror="this.remove()">
       <img class="ucover" src="assets/units/${u.img}.webp" alt="" loading="lazy" onerror="this.remove()">
       ${open ? '' : '<span class="mlock">🔒 Finish the unit before</span>'}
       ${done === total ? '<span class="mtick">✓</span>' : ''}</span>

@@ -444,9 +444,12 @@ h1 .ko,h3 .ko{text-transform:none}
 .grid.units{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
 .card.unit{padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;border-bottom-width:5px}
 .card.unit.locked{opacity:.62;cursor:default}
-.ushot{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,var(--vow),var(--plum));display:grid;place-items:center}
-.ushot img{width:100%;height:100%;object-fit:cover;display:block}
-.uemoji{font-size:3.4rem;filter:drop-shadow(0 3px 6px rgba(0,0,0,.35))}
+/* Until a unit has its own cover picture, the card shows the unit's first scene with its
+   character standing in it — so every unit looks finished from day one. */
+.ushot{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(135deg,var(--vow),var(--plum))}
+.ushot .uscene,.ushot .ucover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ushot .ucover{z-index:2}
+.ushot .ucast{position:absolute;right:8px;bottom:0;width:34%;max-width:132px;height:auto;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));z-index:1}
 .card.unit.locked .ushot img{filter:grayscale(.85) brightness(.75)}
 .mscene.noart{background:linear-gradient(135deg,var(--vow),var(--plum));display:grid;place-items:center}
 .mscene.noart .mplace{position:static;font-size:1.05rem}
@@ -587,8 +590,12 @@ function addXP(n) {
 const stageOf = id => D.stages.find(s => s.id === id);
 const lessonById = id => { for (const s of D.stages) for (const l of (s.lessons || [])) if (l.id === id) return { stage: s, lesson: l }; return null; };
 const stagePassed = (p, id) => !!(p.stages[id] && p.stages[id].passed);
-const stageOpen = (p, id) => { const s = stageOf(id); return !!s && !s.soon && (id === 1 || stagePassed(p, id - 1)); };
-function lessonOpen(p, stage, idx) { if (!stageOpen(p, stage.id)) return false; return idx === 0 || !!p.lessons[stage.lessons[idx - 1].id]; }
+// Preview mode: a grown-up can open every stage, unit and mission to look around.
+// It changes no progress — turning it off puts every lock back exactly as it was.
+const PREVIEW_PASS = 'JesusLoveMe3';   // grown-ups only: opens every lock for a look around
+const preview = () => !!S.settings.previewAll;
+const stageOpen = (p, id) => { const s = stageOf(id); return !!s && !s.soon && (preview() || id === 1 || stagePassed(p, id - 1)); };
+function lessonOpen(p, stage, idx) { if (!stageOpen(p, stage.id)) return false; return preview() || idx === 0 || !!p.lessons[stage.lessons[idx - 1].id]; }
 const allLessonsDone = (p, stage) => (stage.lessons || []).every(l => p.lessons[l.id]);
 function knownLetters(uptoStage) { const out = []; D.stages.forEach(s => { if (s.id <= uptoStage && !s.soon) out.push(...s.letters); }); return out; }
 function wordsFor(p, stageId) { return D.words.filter(w => w.stage === stageId && (!w.for || w.for === p.family)); }
@@ -1067,8 +1074,22 @@ VIEWS.parent = main => {
           </div>
         </div>
       </div>
-      <p class="muted" style="font-size:.85rem;margin-top:14px">Or just one stage at a time:</p>
+      <p class="muted" style="font-size:.85rem;margin-top:14px"><b>Level 1</b> — handwriting sheets, one per stage:</p>
       <div class="chips">${D.stages.map(st => `<a class="chip" href="assets/printables/stage-${st.id}.pdf" target="_blank" rel="noopener">🖨️ Stage ${st.id}</a>`).join('')}</div>
+      <p class="muted" style="font-size:.85rem;margin-top:12px"><b>Level 2</b> — each unit's words, both conversation worksheets and the answer key:</p>
+      <div class="chips">${L2.units.map(u => `<a class="chip" href="assets/printables/unit-${u.id}.pdf" target="_blank" rel="noopener">🖨️ Unit ${u.id} · ${esc(u.title)}</a>`).join('')}</div>
+    </div>
+    <div class="card panel"><h3>Preview mode</h3>
+      <p class="muted" style="font-size:.9rem">Opens every stage, unit, conversation and mission so you can look through the whole app. It changes <b>no</b> progress — switch it off and every lock goes straight back.</p>
+      ${st.previewAll
+        ? `<div class="tipbox good">🔓 <b>Preview mode is on.</b> Everything is unlocked for every learner on this device.</div>
+           <div class="row"><button class="btn small ghost" id="pv-off">Turn preview off</button></div>`
+        : `<div class="row"><button class="btn small blue" id="pv-ask">🔓 Unlock everything</button></div>
+           <form class="row" id="pv-form" hidden style="margin-top:10px">
+             <input class="input" id="pv-pass" type="password" placeholder="Password" autocomplete="off" style="max-width:220px">
+             <button class="btn small red" type="submit">Unlock</button>
+             <button class="btn small ghost" type="button" id="pv-cancel">Cancel</button>
+           </form>`}
     </div>
     <div class="card panel"><h3>Backup</h3>
       <p class="muted" style="font-size:.9rem">Progress is saved in this browser only. Copy a backup to move to another device, or before clearing the browser.</p>
@@ -1090,6 +1111,19 @@ VIEWS.parent = main => {
   $('#s-voice', main).onchange = e => { set('voiceURI', e.target.value); koVoice = null; pickVoice(); speechBroken = false; go('parent'); };
   $('#s-romvoice', main).onchange = e => { set('romVoice', e.target.checked); go('parent'); };
   $('#s-novoice', main).onchange = e => { set('noVoice', e.target.checked); if (!e.target.checked) speechBroken = false; go('parent'); };
+  const pvAsk = $('#pv-ask', main);
+  if (pvAsk) {
+    const form = $('#pv-form', main);
+    pvAsk.onclick = () => { form.hidden = false; pvAsk.disabled = true; $('#pv-pass', main).focus(); };
+    $('#pv-cancel', main).onclick = () => { form.hidden = true; pvAsk.disabled = false; $('#pv-pass', main).value = ''; };
+    form.onsubmit = e => {
+      e.preventDefault();
+      if ($('#pv-pass', main).value === PREVIEW_PASS) { set('previewAll', true); toast('🔓 Preview mode on — everything is unlocked'); go('parent'); }
+      else { $('#pv-pass', main).value = ''; toast('That password isn’t right.'); }
+    };
+  }
+  const pvOff = $('#pv-off', main);
+  if (pvOff) pvOff.onclick = () => { set('previewAll', false); toast('Preview mode off — locks restored'); go('parent'); };
   $$('[data-print]', main).forEach(b => b.onclick = () => printPDF(`assets/printables/${b.dataset.print}.pdf`));
   $('#s-l2', main).onchange = e => { set('l2Early', e.target.checked); toast(e.target.checked ? 'Level 2 is now open' : 'Level 2 locked again'); };
   $('#s-refresh', main).onclick = () => { koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Voice list refreshed'); };
@@ -1641,22 +1675,22 @@ VIEWS.passport = main => {
 
 /* ================= games ================= */
 function gamePool(p) {
-  const ws = D.words.filter(w => p.words[w.ko] && (!w.for || w.for === p.family));
+  const ws = D.words.filter(w => (preview() || p.words[w.ko]) && (!w.for || w.for === p.family));
   if (ws.length >= 6) return { kind: 'words', items: ws.map(w => ({ key: w.ko, ko: w.ko, en: w.en, emoji: w.emoji, rom: w.rom, say: w.ko, word: w })) };
-  let ls = Object.keys(L).filter(x => p.letters[x] && p.letters[x].seen);
+  let ls = Object.keys(L).filter(x => preview() || (p.letters[x] && p.letters[x].seen));
   if (ls.length < 6) ls = D.stages[0].letters.concat(D.stages[1].letters);
   return { kind: 'letters', items: ls.map(x => ({ key: x, ko: x, en: '“' + L[x].rom + '”', emoji: L[x].emoji, rom: L[x].rom, say: L[x].sample })) };
 }
 VIEWS.games = main => {
   const p = me(), g = gameStats(p), pool = gamePool(p);
-  const src = pool.kind === 'words' ? `your ${pool.items.length} words` : 'the letters you’ve met';
+  const src = preview() ? `all ${pool.items.length} words (preview mode)` : pool.kind === 'words' ? `your ${pool.items.length} words` : 'the letters you’ve met';
   const card = (id, emoji, title, blurb, stat, st) => `<div class="card game">
     <div class="gicon">${emoji}</div>
     <div style="flex:1;display:grid;gap:4px"><h3>${title}</h3><p class="muted">${blurb}</p>
       <div class="row" style="gap:8px"><span class="pill">${stat}</span><span class="pill ${stampEarned(p, st) ? 'done' : ''}">${stampEarned(p, st) ? '✓ Stamp earned' : '🎯 ' + esc(st.how)}</span></div></div>
     <img class="gstamp ${stampEarned(p, st) ? 'got' : ''}" src="assets/stamps/${st.id}.webp" alt="">
     <button class="btn red" data-game="${id}">Play</button></div>`;
-  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Practice</span><h1>Games</h1></div><p class="muted" style="max-width:42ch">Games use ${src}. Learn more words on the Hangul Path to fill the decks!</p></div>
+  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Practice</span><h1>Games</h1></div><p class="muted" style="max-width:42ch">Games use ${src}.${preview() ? '' : ' Learn more words on the Hangul Path to fill the decks!'}</p></div>
   <div class="grid">
     ${card('memory', '🃏', 'Memory Match', 'Flip two cards and find the pairs: Korean ↔ meaning.', `🏆 ${g.memory.wins} wins · best ${g.memory.best ? g.memory.best + ' moves' : '—'}`, D.stamps.find(s => s.game === 'memory'))}
     ${card('swipe', '👆', 'Swipe Cards', 'Flip a cue card. Swipe right if you knew it, left if you’re still learning.', `✓ ${g.swipe.known} cards known`, D.stamps.find(s => s.game === 'swipe'))}
@@ -1854,7 +1888,7 @@ function playSpeed() {
 const WAVE_GATE = { 1: 3, 2: 6, 3: 9 };
 const WAVE_NAME = { 1: 'Getting there', 2: 'Eating & shopping', 3: 'Out and about' };
 function missionState(p) { p.missions = p.missions || {}; return p.missions; }
-function missionOpen(p, m) { return stagePassed(p, WAVE_GATE[m.wave]); }
+function missionOpen(p, m) { return preview() || stagePassed(p, WAVE_GATE[m.wave]); }
 function missionDone(p, m) { return !!missionState(p)[m.id]; }
 function missionsDoneCount(p) { return D.missions.filter(m => missionDone(p, m)).length; }
 function missionsOpenCount(p) { return D.missions.filter(m => missionOpen(p, m)).length; }
@@ -2040,7 +2074,7 @@ const CAST = L2.cast;
 const L2_GATE = 9;                       // Stage 9 must be passed before Level 2 opens
 const ACTIVE_WORDS = 250;                // how many words sit in daily review at once
 
-function l2Open(p) { return stagePassed(p, L2_GATE) || S.settings.l2Early; }
+function l2Open(p) { return preview() || stagePassed(p, L2_GATE) || S.settings.l2Early; }
 function l2State(p) { p.l2 = p.l2 || { sets: {}, patterns: {}, dialogues: {}, units: {} }; return p.l2; }
 function unitOf(id) { return L2.units.find(u => u.id === id); }
 function setDone(p, sid) { return !!l2State(p).sets[sid]; }
@@ -2056,7 +2090,7 @@ function unitDoneCount(p, u) {
   return unitParts(u).filter(x => (x.kind === 'set' ? st.sets : x.kind === 'pattern' ? st.patterns : st.dialogues)[x.id]).length;
 }
 const unitComplete = (p, u) => unitDoneCount(p, u) === unitParts(u).length;
-function unitOpen(p, u) { return u.id === 1 || unitComplete(p, unitOf(u.id - 1)); }
+function unitOpen(p, u) { return preview() || u.id === 1 || unitComplete(p, unitOf(u.id - 1)); }
 function l2WordCount(p) { return L2.words.filter(w => p.words[w.ko]).length; }
 // Only a slice of the bank is in daily rotation, so review never becomes a chore.
 function activeCount(p) { return Object.values(p.words).filter(w => !w.parked).length; }
@@ -2093,15 +2127,17 @@ function renderL2(box) {
         Every unit teaches words, one sentence pattern, and two real conversations.</p>
     </div>
     <div class="grid units">${L2.units.map(u => unitCard(p, u)).join('')}</div>
-    ${L2.units.length < 12 ? `<p class="muted" style="margin-top:18px">Units ${L2.units.length + 1}–12 are being written next.</p>` : ''}`;
+    ${L2.units.length < 12 ? `<p class="muted" style="margin-top:18px">Units ${L2.units.length + 1}–12 are being written next.</p>` : `<p class="muted" style="margin-top:18px">Finish all twelve and you can hold a real conversation with a Korean child your own age. <span class="ko">화이팅!</span></p>`}`;
   $$('[data-unit]', box).forEach(b => b.onclick = () => go('unit', b.dataset.unit));
 }
 
 function unitCard(p, u) {
   const open = unitOpen(p, u), done = unitDoneCount(p, u), total = unitParts(u).length;
   return `<button class="card unit${open ? '' : ' locked'}${done === total ? ' done' : ''}" ${open ? `data-unit="${u.id}"` : 'disabled'}>
-    <span class="ushot"><img src="assets/units/${u.img}.webp" alt="" loading="lazy"
-        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'uemoji',textContent:'${u.emoji}'}))">
+    <span class="ushot">
+      <img class="uscene" src="assets/scenes/${u.dialogues[0].scene}.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img class="ucast" src="assets/cast/${u.face || u.dialogues[0].with[0]}.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img class="ucover" src="assets/units/${u.img}.webp" alt="" loading="lazy" onerror="this.remove()">
       ${open ? '' : '<span class="mlock">🔒 Finish the unit before</span>'}
       ${done === total ? '<span class="mtick">✓</span>' : ''}</span>
     <span class="mbody">
@@ -2127,7 +2163,7 @@ VIEWS.unit = (main, id) => {
   const parts = unitParts(u);
   let openUpTo = true;
   const rows = parts.map((x, i) => {
-    const open = i === 0 || (parts[i - 1] && (parts[i - 1].kind === 'set' ? st.sets : parts[i - 1].kind === 'pattern' ? st.patterns : st.dialogues)[parts[i - 1].id]);
+    const open = preview() || i === 0 || (parts[i - 1] && (parts[i - 1].kind === 'set' ? st.sets : parts[i - 1].kind === 'pattern' ? st.patterns : st.dialogues)[parts[i - 1].id]);
     if (x.kind === 'set') return row('set', x.id, '📚', `Words · set ${x.id}`, esc(x.o.title), `${x.o.words.length} new words`, open);
     if (x.kind === 'pattern') return row('pattern', x.id, '🧩', 'Sentence Lab', esc(x.o.name), `<span class="ko">${esc(x.o.ko)}</span>`, open);
     return row('dialogue', x.id, x.o.talk === 'banmal' ? '🧒' : '👵', `Conversation · ${x.o.talk === 'banmal' ? '반말 (friend)' : '존댓말 (polite)'}`, esc(x.o.title), esc(x.o.intro), open);

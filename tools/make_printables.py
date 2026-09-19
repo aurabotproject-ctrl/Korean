@@ -4,7 +4,7 @@ Builds one printable practice sheet (PDF) per stage of 한글 Quest.
 
 Each sheet has:
   • a title block with name/date lines
-  • a letter section: model letter, stroke-order numbers, ghost letters to trace, empty boxes
+  • a letter section: model letter, ghost letters to trace, empty boxes
   • a word section: each word written once as a model, once as a ghost, then blank boxes
   • the picture clue beside each letter, so the paper matches the app
 
@@ -71,7 +71,8 @@ def glyph(c, ch, x, y, size, colour, font='KO'):
     c.drawString(x + (size - w) / 2, y + size * 0.24, ch)
 
 def stroke_numbers(c, ch, x, y, size):
-    """Little numbered dots showing where each stroke starts (same data as the app)."""
+    """Numbered dots for stroke order. Not used on the sheets any more — the numbers made the
+    rows too busy to write in — but kept here in case a stroke-order page is ever wanted."""
     d = DATA['letters'].get(ch)
     if not d: return
     for i, s in enumerate(d['strokes']):
@@ -172,7 +173,7 @@ def letter_row(c, ch, y):
     for i in range(n):
         box(c, x, top)
         if i == 0:
-            glyph(c, ch, x, top, BOX, col); stroke_numbers(c, ch, x, top, BOX)
+            glyph(c, ch, x, top, BOX, col)
         elif i < 4:
             glyph(c, ch, x, top, BOX, GHOST)
         x += BOX + GAP

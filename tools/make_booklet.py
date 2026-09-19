@@ -3,7 +3,8 @@
 Assembles every practice sheet into one printable booklet.
 
   cover  →  contents  →  Part 1: the nine Hangul Path sheets
-         →  Part 2: Level 2 unit sheets (as units are built)
+         →  Part 2: Level 2 unit sheets
+         →  Part 3: the Essentials workbook
          →  back page: the "Can I…?" confidence checklist
 
 Run:  python3 tools/make_booklet.py     (after make_printables.py)
@@ -150,18 +151,25 @@ def build():
         p = os.path.join(OUT, f"unit-{u['id']}.pdf")
         if os.path.exists(p):
             parts.append(('l2', f"Unit {u['id']}", u['title'], p, pages_in(p)))
+    p = os.path.join(OUT, 'essentials.pdf')
+    if os.path.exists(p):
+        parts.append(('ess', 'Essentials', 'the survival vocabulary workbook', p, pages_in(p)))
 
     # page numbers: cover(1) + contents(n) come first, so work out the contents length first
-    rows_n = len(parts) + 2 + (1 if any(k == 'l2' for k, *_ in parts) else 0)
+    rows_n = len(parts) + 2 + sum(1 for kind in ('l2', 'ess') if any(k == kind for k, *_ in parts))
     contents_pages = 1 if rows_n <= 32 else 2
     page = 1 + contents_pages + 1               # cover + contents, 1-indexed for the first sheet
     rows = [('PART 1 — Hangul Path: letters and words', '', '')]
+    seen_parts = set()
+    heads = {'l2': 'PART 2 — Talking with friends and family',
+             'ess': 'PART 3 — Essentials: the words you always need'}
     for kind, label, title, path, n in parts:
-        if kind == 'l2' and rows[-1][0] != 'PART 2 — Talking with friends and family':
-            rows.append(('PART 2 — Talking with friends and family', '', ''))
+        if kind in heads and kind not in seen_parts:
+            rows.append((heads[kind], '', ''))
+            seen_parts.add(kind)
         rows.append((label, '· ' + title, page))
         page += n
-    rows.append(('PART 3 — Check yourself', '', ''))
+    rows.append(('PART 4 — Check yourself', '', ''))
     rows.append(('Can I…? checklist', '', page))
 
     front = io.BytesIO()

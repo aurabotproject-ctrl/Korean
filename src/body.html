@@ -22,12 +22,19 @@
 <div id="player-root"></div>
 <script src="data.js"></script>
 <script src="level2.js"></script>
+<script src="essentials.js"></script>
 <script>
 (() => {
 'use strict';
 const D = window.HQ_DATA;
 // Level 2's words join the shared bank, so reviews, games and the word list cover both levels.
 if (window.HQ_L2) D.words = D.words.concat(window.HQ_L2.words);
+// Essentials repeats a lot on purpose; only its genuinely new words join the bank.
+if (window.HQ_ESS) {
+  const have = new Set(D.words.map(w => w.ko));
+  D.words = D.words.concat(window.HQ_ESS.words.filter(w => !have.has(w.ko))
+    .map(w => Object.assign({ lvl: 0, stage: 90 }, w)));
+}
 const L = D.letters;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -93,8 +100,12 @@ function addXP(n) {
 const stageOf = id => D.stages.find(s => s.id === id);
 const lessonById = id => { for (const s of D.stages) for (const l of (s.lessons || [])) if (l.id === id) return { stage: s, lesson: l }; return null; };
 const stagePassed = (p, id) => !!(p.stages[id] && p.stages[id].passed);
-const stageOpen = (p, id) => { const s = stageOf(id); return !!s && !s.soon && (id === 1 || stagePassed(p, id - 1)); };
-function lessonOpen(p, stage, idx) { if (!stageOpen(p, stage.id)) return false; return idx === 0 || !!p.lessons[stage.lessons[idx - 1].id]; }
+// Preview mode: a grown-up can open every stage, unit and mission to look around.
+// It changes no progress — turning it off puts every lock back exactly as it was.
+const PREVIEW_PASS = 'JesusLoveMe3';   // grown-ups only: opens every lock for a look around
+const preview = () => !!S.settings.previewAll;
+const stageOpen = (p, id) => { const s = stageOf(id); return !!s && !s.soon && (preview() || id === 1 || stagePassed(p, id - 1)); };
+function lessonOpen(p, stage, idx) { if (!stageOpen(p, stage.id)) return false; return preview() || idx === 0 || !!p.lessons[stage.lessons[idx - 1].id]; }
 const allLessonsDone = (p, stage) => (stage.lessons || []).every(l => p.lessons[l.id]);
 function knownLetters(uptoStage) { const out = []; D.stages.forEach(s => { if (s.id <= uptoStage && !s.soon) out.push(...s.letters); }); return out; }
 function wordsFor(p, stageId) { return D.words.filter(w => w.stage === stageId && (!w.for || w.for === p.family)); }
@@ -293,13 +304,14 @@ function updateBar() {
   if (!p) return;
   $('#st-xp').textContent = p.xp; $('#st-streak').textContent = p.streak;
   $('#me-av').src = avatarSrc(p.avatar); $('#me-name').textContent = p.name;
-  const tabFor = { stage: 'learn', path: 'learn', unit: 'learn', passport: 'home' }[route.name] || route.name;
+  const tabFor = { stage: 'learn', path: 'learn', unit: 'learn', essSection: 'learn', passport: 'home' }[route.name] || route.name;
   $$('.tab').forEach(t => t.setAttribute('aria-current', t.dataset.go === tabFor ? 'page' : 'false'));
 }
 
 /* ================= router ================= */
 let route = { name: 'profiles', arg: null };
 function go(name, arg = null) {
+  if (name !== 'landing') document.body.classList.remove('on-landing');
   if (!me() && !['profiles', 'newProfile'].includes(name)) name = 'profiles';
   route = { name, arg };
   const main = $('#main');
@@ -310,6 +322,7 @@ function go(name, arg = null) {
 }
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 $('#brand').addEventListener('click', () => go(me() ? 'home' : 'profiles'));
+$('#brand').addEventListener('dblclick', () => go('landing'));
 $('#me-btn').addEventListener('click', () => go('profiles'));
 
 const VIEWS = {};
@@ -573,8 +586,22 @@ VIEWS.parent = main => {
           </div>
         </div>
       </div>
-      <p class="muted" style="font-size:.85rem;margin-top:14px">Or just one stage at a time:</p>
+      <p class="muted" style="font-size:.85rem;margin-top:14px"><b>Level 1</b> — handwriting sheets, one per stage:</p>
       <div class="chips">${D.stages.map(st => `<a class="chip" href="assets/printables/stage-${st.id}.pdf" target="_blank" rel="noopener">🖨️ Stage ${st.id}</a>`).join('')}</div>
+      <p class="muted" style="font-size:.85rem;margin-top:12px"><b>Level 2</b> — each unit's words, both conversation worksheets and the answer key:</p>
+      <div class="chips">${L2.units.map(u => `<a class="chip" href="assets/printables/unit-${u.id}.pdf" target="_blank" rel="noopener">🖨️ Unit ${u.id} · ${esc(u.title)}</a>`).join('')}</div>
+    </div>
+    <div class="card panel"><h3>Preview mode</h3>
+      <p class="muted" style="font-size:.9rem">Opens every stage, unit, conversation and mission so you can look through the whole app. It changes <b>no</b> progress — switch it off and every lock goes straight back.</p>
+      ${st.previewAll
+        ? `<div class="tipbox good">🔓 <b>Preview mode is on.</b> Everything is unlocked for every learner on this device.</div>
+           <div class="row"><button class="btn small ghost" id="pv-off">Turn preview off</button></div>`
+        : `<div class="row"><button class="btn small blue" id="pv-ask">🔓 Unlock everything</button></div>
+           <form class="row" id="pv-form" hidden style="margin-top:10px">
+             <input class="input" id="pv-pass" type="password" placeholder="Password" autocomplete="off" style="max-width:220px">
+             <button class="btn small red" type="submit">Unlock</button>
+             <button class="btn small ghost" type="button" id="pv-cancel">Cancel</button>
+           </form>`}
     </div>
     <div class="card panel"><h3>Backup</h3>
       <p class="muted" style="font-size:.9rem">Progress is saved in this browser only. Copy a backup to move to another device, or before clearing the browser.</p>
@@ -596,6 +623,19 @@ VIEWS.parent = main => {
   $('#s-voice', main).onchange = e => { set('voiceURI', e.target.value); koVoice = null; pickVoice(); speechBroken = false; go('parent'); };
   $('#s-romvoice', main).onchange = e => { set('romVoice', e.target.checked); go('parent'); };
   $('#s-novoice', main).onchange = e => { set('noVoice', e.target.checked); if (!e.target.checked) speechBroken = false; go('parent'); };
+  const pvAsk = $('#pv-ask', main);
+  if (pvAsk) {
+    const form = $('#pv-form', main);
+    pvAsk.onclick = () => { form.hidden = false; pvAsk.disabled = true; $('#pv-pass', main).focus(); };
+    $('#pv-cancel', main).onclick = () => { form.hidden = true; pvAsk.disabled = false; $('#pv-pass', main).value = ''; };
+    form.onsubmit = e => {
+      e.preventDefault();
+      if ($('#pv-pass', main).value === PREVIEW_PASS) { set('previewAll', true); toast('🔓 Preview mode on — everything is unlocked'); go('parent'); }
+      else { $('#pv-pass', main).value = ''; toast('That password isn’t right.'); }
+    };
+  }
+  const pvOff = $('#pv-off', main);
+  if (pvOff) pvOff.onclick = () => { set('previewAll', false); toast('Preview mode off — locks restored'); go('parent'); };
   $$('[data-print]', main).forEach(b => b.onclick = () => printPDF(`assets/printables/${b.dataset.print}.pdf`));
   $('#s-l2', main).onchange = e => { set('l2Early', e.target.checked); toast(e.target.checked ? 'Level 2 is now open' : 'Level 2 locked again'); };
   $('#s-refresh', main).onclick = () => { koVoice = null; pickVoice(); speechBroken = false; go('parent'); toast('Voice list refreshed'); };
@@ -1076,11 +1116,19 @@ function startReview() {
 
 
 /* ================= passport & map ================= */
-function gameStats(p) { p.games = p.games || { memory: { plays: 0, wins: 0, best: 0 }, swipe: { plays: 0, known: 0 }, speed: { plays: 0, best: 0 } }; return p.games; }
+function gameStats(p) {
+  p.games = p.games || {};
+  const dflt = { memory: { plays: 0, wins: 0, best: 0 }, swipe: { plays: 0, known: 0 }, speed: { plays: 0, best: 0 },
+    bubbles: { plays: 0, wins: 0, best: 0 }, shop: { plays: 0, paid: 0, streak: 0 } };
+  for (const k in dflt) if (!p.games[k]) p.games[k] = dflt[k];
+  return p.games;
+}
 function stampProgress(p, st) {
   if (st.stage) return stagePassed(p, st.stage) ? 1 : 0;
   const g = gameStats(p)[st.game];
-  const v = st.game === 'memory' ? g.wins : st.game === 'swipe' ? g.known : g.best;
+  if (!g) return 0;
+  const v = st.game === 'memory' ? g.wins : st.game === 'swipe' ? g.known
+    : st.game === 'bubbles' ? g.wins : st.game === 'shop' ? g.paid : g.best;
   return Math.min(1, v / st.goal);
 }
 const stampEarned = (p, st) => stampProgress(p, st) >= 1;
@@ -1147,28 +1195,38 @@ VIEWS.passport = main => {
 
 /* ================= games ================= */
 function gamePool(p) {
-  const ws = D.words.filter(w => p.words[w.ko] && (!w.for || w.for === p.family));
+  const ws = D.words.filter(w => (preview() || p.words[w.ko]) && (!w.for || w.for === p.family));
   if (ws.length >= 6) return { kind: 'words', items: ws.map(w => ({ key: w.ko, ko: w.ko, en: w.en, emoji: w.emoji, rom: w.rom, say: w.ko, word: w })) };
-  let ls = Object.keys(L).filter(x => p.letters[x] && p.letters[x].seen);
+  let ls = Object.keys(L).filter(x => preview() || (p.letters[x] && p.letters[x].seen));
   if (ls.length < 6) ls = D.stages[0].letters.concat(D.stages[1].letters);
   return { kind: 'letters', items: ls.map(x => ({ key: x, ko: x, en: '“' + L[x].rom + '”', emoji: L[x].emoji, rom: L[x].rom, say: L[x].sample })) };
 }
+function bubBest(g) {
+  const b = g.bests || {};
+  const ks = Object.keys(b);
+  if (!ks.length) return '⏱ no time yet';
+  const k = ks.sort((a, x) => (+x.split('-')[1]) - (+a.split('-')[1]))[0];
+  const s = b[k], top = k.split('-')[1];
+  return `⏱ 1–${top} in ${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+}
 VIEWS.games = main => {
   const p = me(), g = gameStats(p), pool = gamePool(p);
-  const src = pool.kind === 'words' ? `your ${pool.items.length} words` : 'the letters you’ve met';
+  const src = preview() ? `all ${pool.items.length} words (preview mode)` : pool.kind === 'words' ? `your ${pool.items.length} words` : 'the letters you’ve met';
   const card = (id, emoji, title, blurb, stat, st) => `<div class="card game">
     <div class="gicon">${emoji}</div>
     <div style="flex:1;display:grid;gap:4px"><h3>${title}</h3><p class="muted">${blurb}</p>
       <div class="row" style="gap:8px"><span class="pill">${stat}</span><span class="pill ${stampEarned(p, st) ? 'done' : ''}">${stampEarned(p, st) ? '✓ Stamp earned' : '🎯 ' + esc(st.how)}</span></div></div>
     <img class="gstamp ${stampEarned(p, st) ? 'got' : ''}" src="assets/stamps/${st.id}.webp" alt="">
     <button class="btn red" data-game="${id}">Play</button></div>`;
-  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Practice</span><h1>Games</h1></div><p class="muted" style="max-width:42ch">Games use ${src}. Learn more words on the Hangul Path to fill the decks!</p></div>
+  main.innerHTML = `<div class="section-h" style="margin-top:0"><div><span class="eyebrow">Practice</span><h1>Games</h1></div><p class="muted" style="max-width:42ch">Games use ${src}.${preview() ? '' : ' Learn more words on the Hangul Path to fill the decks!'}</p></div>
   <div class="grid">
     ${card('memory', '🃏', 'Memory Match', 'Flip two cards and find the pairs: Korean ↔ meaning.', `🏆 ${g.memory.wins} wins · best ${g.memory.best ? g.memory.best + ' moves' : '—'}`, D.stamps.find(s => s.game === 'memory'))}
     ${card('swipe', '👆', 'Swipe Cards', 'Flip a cue card. Swipe right if you knew it, left if you’re still learning.', `✓ ${g.swipe.known} cards known`, D.stamps.find(s => s.game === 'swipe'))}
     ${card('speed', '⚡', 'Speed Read', 'How many Korean words can you read in 60 seconds?', `⭐ best ${g.speed.best}`, D.stamps.find(s => s.game === 'speed'))}
+    ${card('bubbles', '🫧', 'Count to 100', 'Pop the floating bubbles in order — 하나, 둘, 셋… all the way to 백. Beat your best time!', bubBest(g.bubbles), D.stamps.find(s => s.game === 'bubbles'))}
+    ${card('shop', '🧺', 'Shop · 가게', 'The shopkeeper says the price out loud. Hand over exactly the right notes and coins.', `💵 ${g.shop.paid} paid right${g.shop.streak > 1 ? ` · ${g.shop.streak} in a row` : ''}`, D.stamps.find(s => s.game === 'shop'))}
   </div>`;
-  $$('[data-game]', main).forEach(b => b.onclick = () => ({ memory: playMemory, swipe: playSwipe, speed: playSpeed })[b.dataset.game]());
+  $$('[data-game]', main).forEach(b => b.onclick = () => ({ memory: playMemory, swipe: playSwipe, speed: playSpeed, bubbles: playBubbles, shop: playShop })[b.dataset.game]());
 };
 let G = null;
 function openGame(title) {
@@ -1356,11 +1414,333 @@ function playSpeed() {
   }
 }
 
+/* ================= Korean numbers ================= */
+/* Sino-Korean (일 이 삼) — used for money, dates, phone numbers, floors. */
+const SINO_D = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+const SINO_ROM = { '영': 'yeong', '일': 'il', '이': 'i', '삼': 'sam', '사': 'sa', '오': 'o', '육': 'yuk', '칠': 'chil', '팔': 'pal', '구': 'gu', '십': 'sip', '백': 'baek', '천': 'cheon', '만': 'man', '원': 'won' };
+function sinoUnder10k(n) {
+  let s = '', r = n;
+  [['천', 1000], ['백', 100], ['십', 10]].forEach(([ch, v]) => { const q = Math.floor(r / v); if (q) { s += (q === 1 ? '' : SINO_D[q]) + ch; r %= v; } });
+  if (r) s += SINO_D[r];
+  return s;
+}
+function sinoKo(n) {
+  if (n === 0) return '영';
+  let s = '';
+  const man = Math.floor(n / 10000), rest = n % 10000;
+  if (man) s += (man === 1 ? '' : sinoUnder10k(man)) + '만';
+  if (rest) s += (s ? ' ' : '') + sinoUnder10k(rest);
+  return s;
+}
+/* Native Korean (하나 둘 셋) — used for counting things, people, age, hours. */
+const NAT_ONES = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
+const NAT_TENS = ['', '열', '스물', '서른', '마흔', '쉰', '예순', '일흔', '여든', '아흔'];
+const NAT_ROM = { '하나': 'hana', '둘': 'dul', '셋': 'set', '넷': 'net', '다섯': 'daseot', '여섯': 'yeoseot', '일곱': 'ilgop', '여덟': 'yeodeol', '아홉': 'ahop', '열': 'yeol', '스물': 'seumul', '서른': 'seoreun', '마흔': 'maheun', '쉰': 'swin', '예순': 'yesun', '일흔': 'ilheun', '여든': 'yeodeun', '아흔': 'aheun', '백': 'baek' };
+function nativeKo(n) {
+  if (n === 100) return '백';
+  return NAT_TENS[Math.floor(n / 10)] + NAT_ONES[n % 10];
+}
+/* romanise by splitting the Korean back into the number blocks we built it from */
+function romOf(ko, map) {
+  const keys = Object.keys(map).sort((a, b) => b.length - a.length);
+  const out = []; let i = 0;
+  while (i < ko.length) {
+    if (ko[i] === ' ') { out.push(' '); i++; continue; }
+    const k = keys.find(k => ko.startsWith(k, i));
+    if (!k) { i++; continue; }
+    out.push(map[k]); i += k.length;
+  }
+  return out.join('-').replace(/-? -?/g, ' ');
+}
+const numKo = (n, sys) => sys === 'native' ? nativeKo(n) : sinoKo(n);
+const numRom = (n, sys) => sys === 'native' ? romOf(nativeKo(n), NAT_ROM) : romOf(sinoKo(n), SINO_ROM);
+
+/* --- Count to 100 (bubble pop) --- */
+const BUB_TOPS = [20, 50, 100];
+function playBubbles(opts) {
+  const p = me(), g = gameStats(p).bubbles;
+  g.bests = g.bests || {};
+  const box = G ? $('#g-in') : openGame('Count to 100');
+  const o = opts || { top: 100, sys: 'native' };
+  const key = o.sys + '-' + o.top;
+  const bestOf = k => g.bests[k] || 0;
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  if (G.cleanup) G.cleanup();
+
+  $('#g-stat').textContent = bestOf(key) ? `best ${fmt(bestOf(key))}` : '';
+  box.innerHTML = `<div class="bub-intro">
+    <img src="${tiger('point')}" alt="" style="width:130px">
+    <h2>Pop them in order!</h2>
+    <p class="muted" style="max-width:40ch">Bubbles float past with Korean numbers on them. Pop <b>1, 2, 3…</b> all the way up — in the right order. The clock is running!</p>
+    <div>
+      <p class="muted" style="font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px">Which numbers?</p>
+      <div class="pickrow" id="bb-sys">
+        <button class="pk ${o.sys === 'native' ? 'on' : ''}" data-sys="native"><span class="ko">하나 둘 셋</span><small>Counting</small></button>
+        <button class="pk ${o.sys === 'sino' ? 'on' : ''}" data-sys="sino"><span class="ko">일 이 삼</span><small>Money &amp; time</small></button>
+      </div>
+    </div>
+    <div>
+      <p class="muted" style="font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px">How far?</p>
+      <div class="pickrow" id="bb-top">${BUB_TOPS.map(t => `<button class="pk ${o.top === t ? 'on' : ''}" data-top="${t}">1–${t}<small>${bestOf(o.sys + '-' + t) ? 'best ' + fmt(bestOf(o.sys + '-' + t)) : 'no time yet'}</small></button>`).join('')}</div>
+    </div>
+    <button class="btn red" id="bb-go" style="font-size:1.1rem;padding:14px 28px">Start!</button>
+  </div>`;
+  $$('#bb-sys .pk', box).forEach(b => b.onclick = () => playBubbles({ top: o.top, sys: b.dataset.sys }));
+  $$('#bb-top .pk', box).forEach(b => b.onclick = () => playBubbles({ top: +b.dataset.top, sys: o.sys }));
+  $('#bb-go', box).onclick = run;
+
+  function run() {
+    let cur = 1, penalty = 0, t0 = Date.now(), raf = null, tick = null, done = false;
+    const WINDOW = 6;
+    const secs = () => (Date.now() - t0) / 1000 + penalty;
+    box.innerHTML = `<div class="bub-hud">
+        <div class="bub-next"><span class="lbl">Pop</span><b id="bb-n">1</b><span class="rm" id="bb-r"></span></div>
+        <span class="pill" id="bb-t">0:00</span>
+      </div>
+      <div class="bub-wrap" id="bb-w"></div>
+      <div class="bar" style="margin-top:10px"><i id="bb-b" style="width:0%"></i></div>
+      <p class="muted" style="text-align:center;margin-top:6px;font-size:.82rem">Tap the bubble that says the next number. A wrong pop costs 3 seconds.</p>`;
+    const wrap = $('#bb-w', box);
+    let W = wrap.clientWidth, H = wrap.clientHeight, live = [];
+
+    const colours = ['#7fd4ff', '#ffd27f', '#ffb3c8', '#b9f0c4', '#d7c1ff', '#ffc9a3'];
+    /* Bubbles are given their own lane so two of them never sit on top of each
+       other — a small child tapping a drifting bubble should never hit its neighbour. */
+    const lanes = () => Math.max(2, Math.min(4, Math.floor(W / 112)));
+    function freeLane() {
+      const n = lanes(), used = live.map(b => b.lane);
+      const open = [...Array(n).keys()].filter(i => !used.includes(i));
+      return open.length ? pick(open) : Math.floor(Math.random() * n);
+    }
+    function makeBubble(n) {
+      const ko = numKo(n, o.sys), rom = numRom(n, o.sys);
+      const cols = lanes(), lane = freeLane(), lw = W / cols;
+      const size = Math.max(70, Math.min(112, Math.min(lw - 10, 60 + ko.length * 13)));
+      const el = document.createElement('button');
+      el.className = 'bub'; el.type = 'button'; el.style.width = el.style.height = size + 'px';
+      el.style.setProperty('--bubc', colours[n % colours.length]);
+      el.setAttribute('aria-label', `${ko}, ${rom}, number ${n}`);
+      el.innerHTML = `<span class="bko" style="font-size:${ko.length > 3 ? '.92rem' : ko.length > 2 ? '1.06rem' : '1.3rem'}">${esc(ko)}</span><span class="brom">${esc(rom)}</span>`;
+      const gap = Math.max(0, lw - size);
+      const low = live.filter(x => x.lane === lane).reduce((m, x) => Math.max(m, x.y + x.size), 0);
+      const b = { n, el, size, lane, base: lane * lw + gap / 2, drift: gap / 2,
+        y: Math.max(H + 20, low + 46) + Math.random() * 50, sp: 24 + Math.random() * 18, ph: Math.random() * 6.3 };
+      el.onclick = () => hit(b);
+      wrap.appendChild(el); live.push(b);
+    }
+    function spawnUpTo() {
+      const have = new Set(live.map(b => b.n));
+      for (let n = cur; n <= Math.min(o.top, cur + WINDOW - 1); n++) if (!have.has(n)) makeBubble(n);
+    }
+    function hit(b) {
+      if (done) return;
+      if (b.n !== cur) {
+        penalty += 3; sfx('bad');
+        b.el.classList.add('no'); setTimeout(() => b.el.classList.remove('no'), 420);
+        wrap.classList.add('wrong'); setTimeout(() => wrap.classList.remove('wrong'), 420);
+        return;
+      }
+      sfx('good'); say(numKo(b.n, o.sys));
+      b.el.style.setProperty('--tf', b.el.style.transform);
+      b.el.classList.add('pop'); const el = b.el;
+      setTimeout(() => el.remove(), 340);
+      live = live.filter(x => x !== b);
+      cur++;
+      if (cur > o.top) return finish();
+      spawnUpTo(); hud();
+    }
+    function hud() {
+      $('#bb-n', box).textContent = numKo(cur, o.sys);
+      $('#bb-r', box).textContent = numRom(cur, o.sys);
+      $('#bb-b', box).style.width = ((cur - 1) / o.top * 100) + '%';
+    }
+    let last = performance.now();
+    function frame(now) {
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      const t = now / 1000;
+      live.forEach(b => {
+        b.y -= b.sp * dt;
+        if (b.y < -b.size) {
+          const lane = freeLane(), cols = lanes(), lw = W / cols, gap = Math.max(0, lw - b.size);
+          const low = live.filter(x => x !== b && x.lane === lane).reduce((m, x) => Math.max(m, x.y + x.size), 0);
+          b.lane = lane; b.base = lane * lw + gap / 2; b.drift = gap / 2;
+          b.y = Math.max(H + 20, low + 46) + Math.random() * 40;
+        }
+        const x = b.base + Math.sin(t * .8 + b.ph) * b.drift;
+        b.el.style.transform = `translate(${x}px, ${b.y}px)`;
+      });
+      raf = requestAnimationFrame(frame);
+    }
+    function finish() {
+      done = true; cancelAnimationFrame(raf); clearInterval(tick);
+      const time = secs(), prev = bestOf(key), best = !prev || time < prev;
+      g.plays++; g.wins++; if (best) g.bests[key] = Math.round(time * 10) / 10;
+      const xp = o.top === 100 ? 30 : o.top === 50 ? 18 : 10;
+      addXP(xp); sfx('win'); burst();
+      gameOver(box, { title: best ? '신기록! New record!' : '백까지 다 셌어요!', pose: 'cheer',
+        text: `You popped <b>1 to ${o.top}</b> in <b>${fmt(time)}</b>${penalty ? ` (including ${penalty}s of wrong-pop penalties)` : ' with no mistakes'}.<br>Best for ${o.sys === 'native' ? '하나 둘 셋' : '일 이 삼'} 1–${o.top}: <b>${fmt(g.bests[key])}</b>. (+${xp} XP)`,
+        again: () => playBubbles(o) });
+    }
+    const onResize = () => {
+      W = wrap.clientWidth; H = wrap.clientHeight;
+      const cols = lanes(), lw = W / cols;
+      live.forEach(b => { b.lane = Math.min(b.lane, cols - 1); b.size = Math.min(b.size, lw - 10);
+        b.el.style.width = b.el.style.height = b.size + 'px';
+        const gap = Math.max(0, lw - b.size); b.base = b.lane * lw + gap / 2; b.drift = gap / 2; });
+    };
+    addEventListener('resize', onResize);
+    G.cleanup = () => { cancelAnimationFrame(raf); clearInterval(tick); removeEventListener('resize', onResize); };
+    spawnUpTo();
+    /* the first batch spawns below the tank; lift it so play starts with bubbles on screen */
+    const lift = Math.min(...live.map(b => b.y)) - H * 0.1;
+    live.forEach(b => b.y -= lift);
+    hud();
+    tick = setInterval(() => { if (!done) $('#bb-t', box).textContent = fmt(secs()); }, 200);
+    raf = requestAnimationFrame(frame);
+  }
+}
+
+/* --- Shop: pay with Korean money --- */
+const MONEY = [
+  { v: 50000, img: 'won-50000', ko: '오만 원' },
+  { v: 10000, img: 'won-10000', ko: '만 원' },
+  { v: 5000, img: 'won-5000', ko: '오천 원' },
+  { v: 1000, img: 'won-1000', ko: '천 원' },
+  { v: 500, img: 'coin-500', ko: '오백 원', coin: 1 },
+  { v: 100, img: 'coin-100', ko: '백 원', coin: 1 }
+];
+const SHOP_ITEMS = [
+  { ko: '물', rom: 'mul', en: 'water', em: '💧', won: 1000 },
+  { ko: '우유', rom: 'uyu', en: 'milk', em: '🥛', won: 1500 },
+  { ko: '빵', rom: 'ppang', en: 'bread', em: '🍞', won: 2500 },
+  { ko: '김밥', rom: 'gimbap', en: 'gimbap', em: '🍙', won: 3500 },
+  { ko: '라면', rom: 'ramyeon', en: 'ramyeon', em: '🍜', won: 1200 },
+  { ko: '사과', rom: 'sagwa', en: 'apple', em: '🍎', won: 2000 },
+  { ko: '바나나', rom: 'banana', en: 'banana', em: '🍌', won: 3000 },
+  { ko: '아이스크림', rom: 'aiseukeurim', en: 'ice cream', em: '🍦', won: 1500 },
+  { ko: '과자', rom: 'gwaja', en: 'snacks', em: '🍪', won: 2200 },
+  { ko: '떡볶이', rom: 'tteokbokki', en: 'tteokbokki', em: '🌶️', won: 5000 },
+  { ko: '연필', rom: 'yeonpil', en: 'pencil', em: '✏️', won: 500 },
+  { ko: '공책', rom: 'gongchaek', en: 'notebook', em: '📓', won: 1800 },
+  { ko: '양말', rom: 'yangmal', en: 'socks', em: '🧦', won: 3000 },
+  { ko: '열쇠고리', rom: 'yeolsoegori', en: 'keyring', em: '🔑', won: 4000 },
+  { ko: '부채', rom: 'buchae', en: 'fan', em: '🪭', won: 6500 },
+  { ko: '인형', rom: 'inhyeong', en: 'doll', em: '🧸', won: 9500 },
+  { ko: '책', rom: 'chaek', en: 'book', em: '📕', won: 11000 },
+  { ko: '모자', rom: 'moja', en: 'hat', em: '🧢', won: 12000 },
+  { ko: '티셔츠', rom: 'tisyeocheu', en: 't-shirt', em: '👕', won: 15000 },
+  { ko: '치킨', rom: 'chikin', en: 'fried chicken', em: '🍗', won: 18000 },
+  { ko: '가방', rom: 'gabang', en: 'bag', em: '🎒', won: 32000 },
+  { ko: '신발', rom: 'sinbal', en: 'shoes', em: '👟', won: 45000 }
+];
+const SHOPS = [
+  { id: 'snack-shop', keeper: 'ajumma', name: '분식집', en: 'Snack shop', max: 7000 },
+  { id: 'convenience', keeper: 'staff', name: '편의점', en: 'Convenience store', max: 12000 },
+  { id: 'market', keeper: 'ajumma', name: '시장', en: 'Market', max: 50000 }
+];
+const wonFmt = n => n.toLocaleString('en-US') + '원';
+
+function playShop(opts) {
+  const p = me(), g = gameStats(p).shop;
+  const box = G ? $('#g-in') : openGame('Shop · 가게');
+  const o = opts || { mode: 'one' };
+  if (G.cleanup) G.cleanup();
+  G.cleanup = null;
+
+  const shop = o.mode === 'basket' ? pick(SHOPS.slice(0, 2)) : pick(SHOPS);
+  const stock = shuffle(SHOP_ITEMS.filter(i => i.won <= shop.max)).slice(0, o.mode === 'basket' ? 8 : 6);
+  let basket = o.mode === 'basket' ? [] : [pick(stock)];
+  let tray = [], showPrice = false, settled = false, spoke = -1;
+
+  const total = () => basket.reduce((s, i) => s + i.won, 0);
+  const paid = () => tray.reduce((s, v) => s + v, 0);
+  const totalKo = () => sinoKo(total()) + ' 원';
+  /* 은/는 depends on whether the last syllable has a final consonant */
+  const hasJong = ko => { const c = ko.charCodeAt(ko.length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 !== 0; };
+  const topicP = ko => hasJong(ko) ? '은' : '는';
+  const askKo = () => o.mode === 'basket' ? `다 해서 ${totalKo()}이에요.` : `${esc(basket[0].ko)}${topicP(basket[0].ko)} ${totalKo()}이에요.`;
+  const askRom = () => (o.mode === 'basket' ? 'da haeseo ' : basket[0].rom + (hasJong(basket[0].ko) ? '-eun ' : '-neun ')) + romOf(sinoKo(total()), SINO_ROM) + ' won-ieyo';
+
+  draw();
+
+  function speakAsk() { say(o.mode === 'basket' ? `다 해서 ${sinoKo(total())} 원이에요.` : `${basket[0].ko}${topicP(basket[0].ko)} ${sinoKo(total())} 원이에요.`); }
+
+  function draw() {
+    const t = total(), pd = paid();
+    const ready = basket.length > 0;
+    box.innerHTML = `
+      <div class="pickrow" style="margin-bottom:10px">
+        <button class="pk ${o.mode === 'one' ? 'on' : ''}" data-mode="one">하나<small>One thing</small></button>
+        <button class="pk ${o.mode === 'basket' ? 'on' : ''}" data-mode="basket">바구니<small>Fill a basket</small></button>
+      </div>
+      <div class="shop-top" style="--bg:url('assets/scenes/${shop.id}.webp')">
+        <img class="keeper" src="assets/cast/${shop.keeper}.webp" alt="Shopkeeper">
+        <div class="shop-say">
+          <span class="ko">${ready ? askKo() : '어서 오세요! 뭐 드릴까요?'}</span>
+          <span class="rom">${ready ? askRom() : 'eoseo oseyo! mwo deurilkkayo?'}</span>
+          <span class="en">${ready ? 'That comes to ' + (showPrice ? wonFmt(t) : '… listen!') : 'Welcome! What can I get you?'}</span>
+        </div>
+      </div>
+      <div class="row" style="gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn small blue" id="sh-say">🔊 Say it again</button>
+        <button class="btn small ghost" id="sh-eye">${showPrice ? '🙈 Hide the price' : '👀 Show the price'}</button>
+        <span class="pill">${esc(shop.name)} · ${shop.en}</span>
+      </div>
+      <div class="section-h" style="margin:14px 0 0"><h3 style="margin:0">${o.mode === 'basket' ? 'Tap things to put in your 바구니' : 'Today you are buying'}</h3></div>
+      <div class="shop-items ${o.mode === 'basket' ? 'picking' : 'single'}">${(o.mode === 'basket' ? stock : basket).map(i => `<button class="sitem ${basket.includes(i) ? 'in' : ''}" data-i="${stock.indexOf(i)}">
+          <span class="em">${i.em}</span><span class="ko">${esc(i.ko)}</span><span class="rom">${esc(i.rom)}</span>
+          <span class="pr">${showPrice ? wonFmt(i.won) : '?'}</span></button>`).join('')}</div>
+      ${o.mode === 'basket' ? `<div class="basket">🧺 바구니: ${basket.length ? basket.map(i => `<span class="bi">${i.em} ${esc(i.ko)}</span>`).join('') : '<span style="font-weight:700">empty — tap some things above</span>'}</div>` : ''}
+      ${ready ? `
+      <div class="section-h" style="margin:14px 0 0"><h3 style="margin:0">Pay with this money</h3></div>
+      <div class="money-rail">${MONEY.map(m => `<button class="mbtn ${m.coin ? 'coin' : ''}" data-v="${m.v}" aria-label="${esc(m.ko)}">
+          <img src="assets/money/${m.img}.webp" alt="">${tray.filter(v => v === m.v).length ? `<span class="cnt">${tray.filter(v => v === m.v).length}</span>` : ''}</button>`).join('')}</div>
+      <div class="tray" id="sh-tray">${tray.length ? tray.map((v, k) => { const m = MONEY.find(x => x.v === v); return `<button class="tm ${m.coin ? 'coin' : ''}" data-k="${k}" aria-label="Take back ${esc(m.ko)}"><img src="assets/money/${m.img}.webp" alt=""></button>`; }).join('') : '<span class="empty">Tap the notes and coins to put them here 👆</span>'}</div>
+      <div class="tray-sum"><span class="muted">You are handing over</span><b class="${pd === t ? 'ok' : pd > t ? 'over' : ''}">${wonFmt(pd)}</b></div>
+      <div class="shop-acts">
+        <button class="btn ghost" id="sh-clr">Take it all back</button>
+        <button class="btn red" id="sh-pay" ${pd === 0 ? 'disabled' : ''}>여기요! Pay</button>
+      </div>` : ''}`;
+
+    $$('[data-mode]', box).forEach(b => b.onclick = () => playShop({ mode: b.dataset.mode }));
+    $('#sh-say', box).onclick = () => basket.length ? speakAsk() : say('어서 오세요!');
+    $('#sh-eye', box).onclick = () => { showPrice = !showPrice; draw(); };
+    $$('.sitem', box).forEach(b => b.onclick = () => {
+      if (o.mode !== 'basket' || settled) return;
+      const it = stock[+b.dataset.i];
+      basket = basket.includes(it) ? basket.filter(x => x !== it) : basket.concat([it]);
+      tray = []; say(it.ko); draw();
+    });
+    $$('.mbtn', box).forEach(b => b.onclick = () => { tray = tray.concat([+b.dataset.v]); say(MONEY.find(m => m.v === +b.dataset.v).ko); draw(); });
+    $$('.tm', box).forEach(b => b.onclick = () => { tray = tray.filter((_, k) => k !== +b.dataset.k); draw(); });
+    if ($('#sh-clr', box)) $('#sh-clr', box).onclick = () => { tray = []; draw(); };
+    if ($('#sh-pay', box)) $('#sh-pay', box).onclick = pay;
+    if (ready && !settled && spoke !== t) { spoke = t; setTimeout(speakAsk, 420); }
+  }
+
+  function pay() {
+    const t = total(), pd = paid();
+    if (pd === t) {
+      settled = true;
+      g.plays++; g.paid++; g.streak = (g.streak || 0) + 1;
+      const xp = 6 + basket.length * 2;
+      addXP(xp); sfx('win'); burst(); say('감사합니다!');
+      gameOver(box, { title: '감사합니다! Perfect change!', pose: 'cheer',
+        text: `${basket.map(i => i.em + ' ' + esc(i.ko)).join(' + ')} = <b>${wonFmt(t)}</b>, and you handed over exactly that.<br><span class="ko">${esc(sinoKo(t))} 원</span> · ${romOf(sinoKo(t), SINO_ROM)} won<br>Correct payments: <b>${g.paid}</b> · streak <b>${g.streak}</b>. (+${xp} XP)`,
+        again: () => playShop({ mode: o.mode }) });
+    } else {
+      g.streak = 0; sfx('bad'); save();
+      say(pd < t ? '조금 더 주세요.' : '너무 많아요.');
+      toast(pd < t ? `조금 더 주세요 — that’s ${wonFmt(t - pd)} short.` : `너무 많아요 — that’s ${wonFmt(pd - t)} too much.`);
+    }
+  }
+}
+
 /* ================= Track D: Korea Missions ================= */
 const WAVE_GATE = { 1: 3, 2: 6, 3: 9 };
 const WAVE_NAME = { 1: 'Getting there', 2: 'Eating & shopping', 3: 'Out and about' };
 function missionState(p) { p.missions = p.missions || {}; return p.missions; }
-function missionOpen(p, m) { return stagePassed(p, WAVE_GATE[m.wave]); }
+function missionOpen(p, m) { return preview() || stagePassed(p, WAVE_GATE[m.wave]); }
 function missionDone(p, m) { return !!missionState(p)[m.id]; }
 function missionsDoneCount(p) { return D.missions.filter(m => missionDone(p, m)).length; }
 function missionsOpenCount(p) { return D.missions.filter(m => missionOpen(p, m)).length; }
@@ -1546,7 +1926,7 @@ const CAST = L2.cast;
 const L2_GATE = 9;                       // Stage 9 must be passed before Level 2 opens
 const ACTIVE_WORDS = 250;                // how many words sit in daily review at once
 
-function l2Open(p) { return stagePassed(p, L2_GATE) || S.settings.l2Early; }
+function l2Open(p) { return preview() || stagePassed(p, L2_GATE) || S.settings.l2Early; }
 function l2State(p) { p.l2 = p.l2 || { sets: {}, patterns: {}, dialogues: {}, units: {} }; return p.l2; }
 function unitOf(id) { return L2.units.find(u => u.id === id); }
 function setDone(p, sid) { return !!l2State(p).sets[sid]; }
@@ -1562,7 +1942,7 @@ function unitDoneCount(p, u) {
   return unitParts(u).filter(x => (x.kind === 'set' ? st.sets : x.kind === 'pattern' ? st.patterns : st.dialogues)[x.id]).length;
 }
 const unitComplete = (p, u) => unitDoneCount(p, u) === unitParts(u).length;
-function unitOpen(p, u) { return u.id === 1 || unitComplete(p, unitOf(u.id - 1)); }
+function unitOpen(p, u) { return preview() || u.id === 1 || unitComplete(p, unitOf(u.id - 1)); }
 function l2WordCount(p) { return L2.words.filter(w => p.words[w.ko]).length; }
 // Only a slice of the bank is in daily rotation, so review never becomes a chore.
 function activeCount(p) { return Object.values(p.words).filter(w => !w.parked).length; }
@@ -1570,15 +1950,16 @@ function activeCount(p) { return Object.values(p.words).filter(w => !w.parked).l
 /* ---------- the Learn view: Level 1 / Level 2 switch ---------- */
 VIEWS.learn = (main, arg) => {
   const p = me();
-  const lvl = arg ? +arg : (S.settings.lvl || 1);
+  const lvl = arg ? (arg === 'ess' ? 'ess' : +arg) : (S.settings.lvl || 1);
   S.settings.lvl = lvl; save();
   const tabs = `<div class="lvl-switch" role="group" aria-label="Level">
     <button data-lvl="1" aria-pressed="${lvl === 1}"><span class="ko">가</span> Level 1 · Read</button>
     <button data-lvl="2" aria-pressed="${lvl === 2}" ${l2Open(p) ? '' : 'class="locked"'}>💬 Level 2 · Talk${l2Open(p) ? '' : ' 🔒'}</button>
+    <button data-lvl="ess" aria-pressed="${lvl === 'ess'}">🧰 Essentials</button>
   </div>`;
   main.innerHTML = tabs + '<div id="lvl-body"></div>';
   $$('[data-lvl]', main).forEach(b => b.onclick = () => go('learn', b.dataset.lvl));
-  (lvl === 2 ? renderL2 : renderL1)($('#lvl-body', main));
+  (lvl === 'ess' ? renderEssentials : lvl === 2 ? renderL2 : renderL1)($('#lvl-body', main));
 };
 
 function renderL2(box) {
@@ -1599,15 +1980,17 @@ function renderL2(box) {
         Every unit teaches words, one sentence pattern, and two real conversations.</p>
     </div>
     <div class="grid units">${L2.units.map(u => unitCard(p, u)).join('')}</div>
-    ${L2.units.length < 12 ? `<p class="muted" style="margin-top:18px">Units ${L2.units.length + 1}–12 are being written next.</p>` : ''}`;
+    ${L2.units.length < 12 ? `<p class="muted" style="margin-top:18px">Units ${L2.units.length + 1}–12 are being written next.</p>` : `<p class="muted" style="margin-top:18px">Finish all twelve and you can hold a real conversation with a Korean child your own age. <span class="ko">화이팅!</span></p>`}`;
   $$('[data-unit]', box).forEach(b => b.onclick = () => go('unit', b.dataset.unit));
 }
 
 function unitCard(p, u) {
   const open = unitOpen(p, u), done = unitDoneCount(p, u), total = unitParts(u).length;
   return `<button class="card unit${open ? '' : ' locked'}${done === total ? ' done' : ''}" ${open ? `data-unit="${u.id}"` : 'disabled'}>
-    <span class="ushot"><img src="assets/units/${u.img}.webp" alt="" loading="lazy"
-        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'uemoji',textContent:'${u.emoji}'}))">
+    <span class="ushot">
+      <img class="uscene" src="assets/scenes/${u.dialogues[0].scene}.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img class="ucast" src="assets/cast/${u.face || u.dialogues[0].with[0]}.webp" alt="" loading="lazy" onerror="this.remove()">
+      <img class="ucover" src="assets/units/${u.img}.webp" alt="" loading="lazy" onerror="this.remove()">
       ${open ? '' : '<span class="mlock">🔒 Finish the unit before</span>'}
       ${done === total ? '<span class="mtick">✓</span>' : ''}</span>
     <span class="mbody">
@@ -1633,7 +2016,7 @@ VIEWS.unit = (main, id) => {
   const parts = unitParts(u);
   let openUpTo = true;
   const rows = parts.map((x, i) => {
-    const open = i === 0 || (parts[i - 1] && (parts[i - 1].kind === 'set' ? st.sets : parts[i - 1].kind === 'pattern' ? st.patterns : st.dialogues)[parts[i - 1].id]);
+    const open = preview() || i === 0 || (parts[i - 1] && (parts[i - 1].kind === 'set' ? st.sets : parts[i - 1].kind === 'pattern' ? st.patterns : st.dialogues)[parts[i - 1].id]);
     if (x.kind === 'set') return row('set', x.id, '📚', `Words · set ${x.id}`, esc(x.o.title), `${x.o.words.length} new words`, open);
     if (x.kind === 'pattern') return row('pattern', x.id, '🧩', 'Sentence Lab', esc(x.o.name), `<span class="ko">${esc(x.o.ko)}</span>`, open);
     return row('dialogue', x.id, x.o.talk === 'banmal' ? '🧒' : '👵', `Conversation · ${x.o.talk === 'banmal' ? '반말 (friend)' : '존댓말 (polite)'}`, esc(x.o.title), esc(x.o.intro), open);
@@ -1673,6 +2056,11 @@ STEP.l2word = (box, st) => {
       ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.rom)}</span>`}
       <span class="en">${esc(w.en)}</span>
       <button class="btn blue" data-say="${esc(w.ko)}">🔊 Hear it</button></div>
+    ${w.ex ? `<button class="say-ex" data-say="${esc(w.ex.ko)}">
+      <span class="exlabel">Used in a sentence 🔊</span>
+      <span class="ko">${esc(w.ex.ko)}</span>
+      ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.ex.rom)}</span>`}
+      <span class="en">${esc(w.ex.en)}</span></button>` : ''}
     ${w.note ? `<div class="tipbox">💡 ${esc(w.note)}</div>` : ''}`;
   if (unlocked) setTimeout(() => say(w.ko), 300);
   if (addWord(w)) P.newWords++;
@@ -1828,7 +2216,179 @@ STEP.l2done = (box, st) => {
   foot('', '', 'Done', closePlayer);
 };
 
+/* ================= Essentials: the survival vocabulary ================= */
+const ESS = window.HQ_ESS || { groups: [], sections: [], words: [] };
+const essSection = id => ESS.sections.find(s => s.id === id);
+function essState(p) { p.ess = p.ess || {}; return p.ess; }
+const essDone = (p, id) => !!essState(p)[id];
+const essDoneCount = p => ESS.sections.filter(s => essDone(p, s.id)).length;
+function essKnown(p, s) { return s.words.filter(w => p.words[w.ko]).length; }
+
+function renderEssentials(box) {
+  const p = me();
+  box.innerHTML = `<div class="section-h" style="margin-top:14px">
+      <div><span class="eyebrow">Essentials · <span class="ko">꼭 필요한 말</span></span><h1>The words you actually need</h1></div>
+      <p class="muted" style="max-width:44ch">Every survival word, sorted by the job it does in a sentence. Nothing is locked —
+        dip in whenever you like, in any order. ${essDoneCount(p)} of ${ESS.sections.length} lists practised.</p>
+    </div>
+    ${ESS.groups.map(g => `
+      <div class="ess-group">
+        <div class="ess-head"><span class="ess-emoji">${g.emoji}</span>
+          <div><span class="eyebrow">${esc(g.sub)}</span><h2>${esc(g.title)}</h2>
+          <p class="muted">${esc(g.blurb)}</p></div></div>
+        <div class="grid ess">${g.sections.map(s => {
+          const known = essKnown(p, s), fin = essDone(p, s.id);
+          return `<button class="card ess-card${fin ? ' done' : ''}" data-ess="${s.id}">
+            <span class="ess-icon">${s.emoji}</span>
+            <span style="flex:1;text-align:left">
+              <span class="eyebrow">${esc(s.kind)}</span>
+              <h3>${esc(s.title)}</h3>
+              <span class="muted">${s.words.length} words${known ? ` · ${known} already in your word bank` : ''}</span>
+            </span>
+            <span class="pill${fin ? ' done' : ''}">${fin ? '✓' : '→'}</span></button>`;
+        }).join('')}</div>
+      </div>`).join('')}
+    <div class="card panel" style="margin-top:20px;display:flex;gap:16px;align-items:center">
+      <img src="${tiger('point')}" alt="" style="width:96px;flex:none">
+      <div><h3>Print the whole lot</h3>
+        <p class="muted" style="font-size:.92rem">Every essential word on paper, grouped exactly like this, with room to write each one.</p>
+        <div class="row" style="margin-top:8px">
+          <a class="btn small red" href="assets/printables/essentials.pdf" download>⬇︎ Download PDF</a>
+          <button class="btn small blue" data-print="essentials">🖨️ Print</button>
+        </div></div>
+    </div>`;
+  $$('[data-ess]', box).forEach(b => b.onclick = () => go('essSection', b.dataset.ess));
+  $$('[data-print]', box).forEach(b => b.onclick = () => printPDF(`assets/printables/${b.dataset.print}.pdf`));
+}
+
+/* ---------- one list: read it, hear it, then practise it ---------- */
+VIEWS.essSection = (main, id) => {
+  const p = me(), s = essSection(id);
+  if (!s) return go('learn', 'ess');
+  main.innerHTML = `<button class="btn ghost small" id="bk">← All essentials</button>
+    <div class="section-h"><div><span class="eyebrow">${esc(s.groupTitle)} · ${esc(s.kind)}</span>
+      <h1>${s.emoji} ${esc(s.title)}</h1></div>
+      <button class="btn red" id="practise">Practise these →</button></div>
+    ${s.note ? `<div class="tipbox">💡 ${esc(s.note)}</div>` : ''}
+    <div class="ess-list">${s.words.map(w => `
+      <div class="card ess-word">
+        <button class="ess-main" data-say="${esc(w.ko)}">
+          <span class="em">${w.emoji}</span>
+          <span class="wtext"><span class="ko">${esc(w.ko)}</span>
+            ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.rom)}</span>`}
+            <span class="en">${esc(w.en)}</span>
+            ${w.note ? `<span class="note">${esc(w.note)}</span>` : ''}</span>
+          <span class="spk">🔊</span>
+        </button>
+        ${w.ex ? `<button class="ess-ex" data-say="${esc(w.ex.ko)}">
+          <span class="exlabel">In a sentence</span>
+          <span class="ko">${esc(w.ex.ko)}</span>
+          ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.ex.rom)}</span>`}
+          <span class="en">${esc(w.ex.en)}</span>
+          <span class="spk">🔊</span></button>` : ''}
+        ${p.words[w.ko] ? '<span class="pill done">in your bank</span>' : ''}
+      </div>`).join('')}</div>
+    <p class="muted" style="margin-top:16px;text-align:center">Tap a word to hear it, or tap the sentence to hear the whole thing.</p>`;
+  $('#bk', main).onclick = () => go('learn', 'ess');
+  $('#practise', main).onclick = () => startEssentials(s.id);
+};
+
+function startEssentials(id) {
+  const s = essSection(id);
+  const steps = [{ type: 'intro', eyebrow: `Essentials · ${s.kind}`, title: s.title,
+    html: `<b>${s.words.length} words.</b> ${esc(s.note || '')}<br><br>Meet them one at a time, then a quick check on eight of them.` }];
+  s.words.forEach(w => steps.push({ type: 'l2word', w }));
+  shuffle(s.words).slice(0, 8).forEach(w => steps.push(l2WordQ(w, s.words)));
+  steps.push({ type: 'essDone', section: s });
+  openPlayer(steps, { title: s.title });
+}
+
+STEP.essDone = (box, st) => {
+  const p = me(), s = st.section;
+  essState(p)[s.id] = { at: todayStr(), right: P.right, of: P.total };
+  save();
+  sfx('win'); burst();
+  const left = ESS.sections.filter(x => !essDone(p, x.id));
+  box.innerHTML = `<img src="${tiger('cheer')}" alt="" style="width:170px">
+    <h1>${esc(s.title)} ✓</h1>
+    <p class="mn-text">That is <b>${s.words.length}</b> more essential words you can use anywhere — in a shop, on a train, at a dinner table.</p>
+    <div class="row" style="justify-content:center">${P.total ? `<span class="pill">✓ ${P.right}/${P.total}</span>` : ''}<span class="pill">⭐ +${P.xp} XP</span>${P.newWords ? `<span class="pill done">📚 +${P.newWords} words</span>` : ''}</div>
+    ${left.length ? `<p class="muted" style="margin-top:12px">Next up if you like: ${esc(left[0].title)}</p>` : '<p class="muted" style="margin-top:12px">Every essential list done. That is the survival kit complete. 🎉</p>'}`;
+  $('#p-bar').style.width = '100%';
+  foot('', '', 'Done', closePlayer);
+};
+
+/* ================= landing screen ================= */
+// The first thing anyone sees. Big, animated, and one tap from the profile picker.
+const LANDING_GLYPHS = ['가', 'ㅎ', '한', '글', 'ㅂ', '요', '말', 'ㅅ', '안', 'ㅇ', '어', 'ㅋ'];
+const LANDING_SCENES = ['playground', 'snack-shop', 'classroom', 'home-kitchen', 'street-outside', 'birthday',
+                        'park-bench', 'palace', 'subway', 'home-living'];
+
+VIEWS.landing = main => {
+  const p = me();
+  const trip = S.settings.tripDate
+    ? Math.ceil((new Date(S.settings.tripDate + 'T00:00:00') - new Date(todayStr() + 'T00:00:00')) / DAY) : null;
+  // two words, each kept whole: a title that breaks mid-word looks like a bug
+  const title = [{ cls: 'ko', chars: ['한', '글'] }, { cls: 'en', chars: ['Q', 'u', 'e', 's', 't'] }];
+  document.body.classList.add('on-landing');
+  main.innerHTML = `
+  <div class="landing">
+    <div class="lfx" aria-hidden="true">
+      <span class="lsun"></span>
+      <span class="ldots"></span>
+      ${LANDING_GLYPHS.map((g, i) => `<span class="lglyph g${i}">${g}</span>`).join('')}
+    </div>
+
+    <div class="lhero">
+      <div class="lart">
+        <img class="lmascot" src="assets/mascot/horangi-wave.webp" alt="" onerror="this.src='assets/logo.webp'">
+        <span class="lring"></span>
+        <span class="lspark s1">✦</span><span class="lspark s2">✧</span><span class="lspark s3">✦</span>
+      </div>
+
+      <div class="lcopy">
+        <span class="leyebrow">Learn Korean the fun way</span>
+        <h1 class="ltitle">${(() => { let n = 0; return title.map(word =>
+          `<span class="lword">${word.chars.map(ch =>
+            `<span class="lch ${word.cls}" style="animation-delay:${(0.18 + n++ * 0.07).toFixed(2)}s">${ch}</span>`).join('')}</span>`).join(''); })()}</h1>
+        <p class="ltag">Read it. Say it. <b>Live it.</b></p>
+        <p class="lsub">Every letter, a thousand words and two dozen real conversations —
+          built for two kids with a plane ticket to ${esc(S.settings.tripPlace || 'Korea')}.</p>
+
+        <div class="lstats">
+          <span class="lstat"><b>40</b>letters</span>
+          <span class="lstat"><b>1,200</b>words</span>
+          <span class="lstat"><b>24</b>conversations</span>
+          <span class="lstat"><b>12</b>missions</span>
+        </div>
+
+        <div class="lcta">
+          <button class="btn red lgo" id="l-start">${p ? 'Continue as ' + esc(p.name) : 'Start your quest'} <span class="larrow">→</span></button>
+          ${p ? '<button class="btn ghost" id="l-switch">Switch learner</button>' : ''}
+        </div>
+        ${trip !== null && trip > 0 ? `<p class="lday"><b>D-${trip}</b> until <span class="ko">한국</span> ✈️</p>` : ''}
+      </div>
+    </div>
+
+    <div class="lstrip" aria-hidden="true">
+      <div class="ltrack">
+        ${LANDING_SCENES.concat(LANDING_SCENES).map(s =>
+          `<img src="assets/scenes/${s}.webp" alt="" loading="lazy" onerror="this.remove()">`).join('')}
+      </div>
+    </div>
+
+    <p class="lfoot">made for <span class="ko">우리 가족</span> · tap anywhere to begin</p>
+  </div>`;
+
+  const leave = () => { document.body.classList.remove('on-landing'); go(me() ? 'home' : 'profiles'); };
+  $('#l-start', main).onclick = e => { e.stopPropagation(); unlockSpeech(); leave(); };
+  const sw = $('#l-switch', main);
+  if (sw) sw.onclick = e => { e.stopPropagation(); document.body.classList.remove('on-landing'); go('profiles'); };
+  // the whole screen is a button, but only once the entrance animation has played
+  setTimeout(() => { const l = $('.landing', main); if (l) l.onclick = leave; }, 900);
+};
+
 /* ================= boot ================= */
-go(me() ? 'home' : 'profiles');
+go('landing');
 })();
 </script>

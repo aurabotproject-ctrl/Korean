@@ -40,6 +40,40 @@ for r in DATA['rules'].values():
             chars.update(wrong)
 chars.update('한글화이팅')            # the app's name and the booklet's sign-off
 
+# Level 2 adds whole sentences, so every character in its content has to be in the subset
+import os
+if os.path.exists('/tmp/claude-0/hq-l2.json'):
+    L2 = json.load(open('/tmp/claude-0/hq-l2.json'))
+    for u in L2['units']:
+        chars.update(u['ko']); chars.update(u['title'])
+        for st in u['sets']:
+            for w in st['words']:
+                chars.update(w['ko']); chars.update(w['en']); chars.update(w.get('note') or '')
+        for d in u['dialogues']:
+            for t in d['turns']:
+                chars.update(t.get('ko') or '')
+                q = t.get('q') or {}
+                chars.update(q.get('ko') or ''); chars.update(q.get('prompt') or ''); chars.update(q.get('tip') or '')
+                for o in (q.get('options') or []):
+                    chars.update(o.get('ko') or ''); chars.update(o.get('en') or '')
+    for pat in L2['patterns'].values():
+        chars.update(pat['ko']); chars.update(pat['teach'])
+        for ex in pat['examples']:
+            chars.update(ex[0])
+        chars.update(''.join(pat['build']['tiles']))
+    for c in L2['cast'].values():
+        chars.update(c['name'])
+# Essentials repeats most of the vocabulary but adds its own headings and phrases
+if os.path.exists('/tmp/claude-0/hq-ess.json'):
+    E = json.load(open('/tmp/claude-0/hq-ess.json'))
+    for g in E['groups']:
+        for sec in g['sections']:
+            chars.update(sec.get('note') or '')
+            for w in sec['words']:
+                chars.update(w['ko']); chars.update(w['en']); chars.update(w.get('note') or '')
+chars.update('꼭 필요한 말')
+chars = set(ch for ch in chars if ch.isprintable())
+
 for src, out in [('NotoSansCJK-Regular.ttc', 'ko-regular'), ('NotoSansCJK-Bold.ttc', 'ko-bold')]:
     coll = TTCollection('/usr/share/fonts/opentype/noto/' + src)
     font = next(f for f in coll.fonts

@@ -518,7 +518,8 @@ h1 .ko,h3 .ko{text-transform:none}
 .card.ess-card h3{font-size:1.05rem;margin:1px 0}
 .card.ess-card .muted{font-size:.86rem}
 .ess-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
-.card.ess-word{display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left;position:relative}
+.card.ess-word{display:flex;flex-direction:column;padding:0;text-align:left;position:relative;overflow:hidden}
+.ess-main{display:flex;align-items:center;gap:12px;padding:12px 14px;background:none;border:0;text-align:left;width:100%}
 .card.ess-word .em{font-size:1.6rem;line-height:1;flex:none}
 .card.ess-word .wtext{display:grid;gap:1px;min-width:0;flex:1}
 .card.ess-word .ko{font-size:1.3rem;line-height:1.25}
@@ -527,7 +528,116 @@ h1 .ko,h3 .ko{text-transform:none}
 .card.ess-word .note{font-size:.8rem;color:var(--muted);font-style:italic;line-height:1.3}
 .card.ess-word .spk{opacity:.5;flex:none}
 .card.ess-word .pill{position:absolute;top:6px;right:6px;font-size:.66rem}
+/* the example sentence: the word doing its actual job */
+.ess-ex{display:grid;gap:1px;width:100%;text-align:left;background:var(--paper-2);border:0;
+  border-top:2px dashed var(--line);padding:9px 14px 11px;position:relative}
+.ess-ex .exlabel{font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--plum)}
+.ess-ex .ko{font-size:1.05rem;line-height:1.3;padding-right:20px}
+.ess-ex .rom{font-size:.8rem}
+.ess-ex .en{font-size:.86rem;font-weight:700;color:var(--muted)}
+.ess-ex .spk{position:absolute;right:10px;top:10px;font-size:.9rem;opacity:.45}
+.ess-ex:active{background:var(--plum-soft)}
+/* and the same thing inside the lesson player */
+.say-ex{display:grid;gap:2px;justify-items:center;width:100%;max-width:440px;text-align:center;
+  background:var(--plum-soft);border:2px solid var(--line);border-bottom-width:4px;border-radius:var(--r-lg);
+  padding:12px 16px 14px}
+.say-ex .exlabel{font-size:.66rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--plum)}
+.say-ex .ko{font-size:1.35rem;line-height:1.35}
+.say-ex .rom{font-size:.88rem;color:var(--muted)}
+.say-ex .en{font-size:.95rem;font-weight:700;color:var(--muted)}
 
+/* ---- Count to 100 (bubbles) ---- */
+.bub-intro{display:grid;gap:14px;justify-items:center;text-align:center}
+.pickrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pickrow .pk{border:2px solid var(--line);border-bottom-width:4px;background:var(--card);border-radius:14px;
+  padding:9px 16px;font:inherit;font-weight:800;color:var(--ink);cursor:pointer;display:grid;gap:2px;line-height:1.2}
+.pickrow .pk small{display:block;font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.pickrow .pk.on{border-color:var(--con);background:var(--con-soft);color:var(--con)}
+.bub-hud{display:flex;gap:8px;align-items:center;width:100%;margin-bottom:8px}
+.bub-next{flex:1;display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--line);
+  border-bottom-width:4px;border-radius:14px;padding:8px 14px;min-width:0}
+.bub-next .lbl{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);flex:none}
+.bub-next b{font-family:var(--f-display);font-size:1.7rem;color:var(--con);line-height:1}
+.bub-next .rm{font-size:.82rem;color:var(--muted);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bub-wrap{position:relative;width:100%;height:min(58vh,440px);border-radius:18px;overflow:hidden;
+  border:2px solid var(--line);border-bottom-width:5px;
+  background:linear-gradient(180deg,var(--vow-soft),var(--card) 55%,var(--con-soft));touch-action:manipulation}
+.bub{position:absolute;left:0;top:0;display:grid;place-items:center;gap:0;border-radius:50%;border:none;
+  cursor:pointer;padding:0;font:inherit;color:var(--ink);will-change:transform;
+  background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.95), rgba(255,255,255,.28) 42%, rgba(255,255,255,.06) 70%),
+    radial-gradient(circle at 50% 50%, var(--bubc, #7fd4ff), transparent 72%);
+  box-shadow:inset 0 -8px 16px -8px rgba(26,16,48,.35), 0 6px 14px -6px rgba(26,16,48,.45);
+  outline:2px solid rgba(255,255,255,.7);outline-offset:-3px}
+.bub .bko{font-family:var(--f-ko);font-weight:800;line-height:1.05;text-align:center;padding:0 6px;
+  text-shadow:0 1px 0 rgba(255,255,255,.85)}
+.bub .brom{font-size:.62rem;font-weight:800;color:var(--plum);opacity:.85;text-align:center;
+  max-width:92%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bub.pop{animation:bpop .32s ease-out forwards;pointer-events:none}
+@keyframes bpop{to{transform:var(--tf) scale(1.55);opacity:0}}
+.bub.no{animation:bshake .4s ease-in-out}
+@keyframes bshake{0%,100%{filter:none}25%{filter:hue-rotate(-60deg) saturate(2)}75%{filter:hue-rotate(-60deg) saturate(2)}}
+.bub-wrap.wrong{animation:wrongflash .4s ease-out}
+@keyframes wrongflash{0%{box-shadow:inset 0 0 0 0 rgba(214,49,49,.55)}40%{box-shadow:inset 0 0 0 10px rgba(214,49,49,.35)}100%{box-shadow:inset 0 0 0 0 rgba(214,49,49,0)}}
+
+/* ---- Shop (money) ---- */
+.p-in .shop-top,.p-in .shop-items,.p-in .basket,.p-in .money-rail,.p-in .tray,.p-in .tray-sum,
+.p-in .shop-acts,.p-in .bub-hud,.p-in .bub-wrap,.p-in .bub-intro{width:100%}
+.p-in .shop-items,.p-in .shop-acts,.p-in .money-rail{text-align:left}
+.shop-top{position:relative;border-radius:16px;overflow:hidden;border:2px solid var(--line);border-bottom-width:5px;
+  display:flex;align-items:flex-end;gap:10px;padding:10px 12px;min-height:118px;color:#fff}
+.shop-top::before{content:"";position:absolute;inset:0;background-size:cover;background-position:center;
+  background-image:var(--bg);z-index:0}
+.shop-top::after{content:"";position:absolute;inset:0;z-index:0;
+  background:linear-gradient(180deg,rgba(26,16,48,.15),rgba(26,16,48,.72))}
+.shop-top img.keeper{position:relative;z-index:1;width:84px;flex:none;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.shop-say{position:relative;z-index:1;flex:1;background:rgba(255,255,255,.95);color:var(--ink);
+  border-radius:14px;border-bottom-right-radius:4px;padding:9px 12px;display:grid;gap:2px;min-width:0}
+.shop-say .ko{font-size:1.15rem;line-height:1.3}
+.shop-say .rom{font-size:.78rem;color:var(--muted);font-weight:700}
+.shop-say .en{font-size:.8rem;color:var(--muted);font-weight:700}
+.shop-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:12px}
+.sitem{background:var(--card);border:2px solid var(--line);border-bottom-width:4px;border-radius:14px;
+  padding:10px 6px;display:grid;gap:2px;justify-items:center;font:inherit;cursor:pointer;color:var(--ink)}
+.sitem .em{font-size:1.9rem;line-height:1}
+.sitem .ko{font-size:1rem;font-weight:800}
+.sitem .rom{font-size:.66rem;color:var(--muted);font-weight:700}
+.sitem .pr{font-family:var(--f-display);font-size:.98rem;color:var(--con)}
+.sitem.in{border-color:var(--con);background:var(--con-soft)}
+.shop-items.picking .sitem.in::after{content:"바구니 ✓";font-size:.6rem;font-weight:800;color:var(--con);letter-spacing:.06em}
+.shop-items.single{grid-template-columns:1fr;max-width:230px;margin-inline:auto}
+.shop-items.single .sitem{padding:16px 10px;cursor:default}
+.shop-items.single .sitem .em{font-size:3.4rem}
+.shop-items.single .sitem .ko{font-size:1.5rem}
+.shop-items.single .sitem .pr{font-size:1.2rem}
+.basket{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--plum-soft);border-radius:14px;
+  padding:8px 12px;margin-top:10px;font-weight:800;font-size:.86rem;color:var(--plum)}
+.basket .bi{background:var(--card);border-radius:999px;padding:3px 9px;font-size:.82rem;border:1px solid var(--line)}
+.money-rail{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:10px}
+.mbtn{background:none;border:none;padding:0;cursor:pointer;position:relative;line-height:0;border-radius:8px}
+.mbtn img{width:100%;border-radius:6px;box-shadow:0 3px 8px -3px rgba(26,16,48,.5)}
+.mbtn.coin img{width:66%;margin:0 auto;display:block;border-radius:50%;box-shadow:0 3px 7px -2px rgba(26,16,48,.55)}
+.mbtn:active{transform:translateY(2px)}
+.mbtn .cnt{position:absolute;right:-4px;top:-6px;background:var(--con);color:#fff;font-size:.72rem;font-weight:800;
+  border-radius:999px;min-width:21px;height:21px;display:grid;place-items:center;padding:0 5px;line-height:1;
+  border:2px solid var(--card)}
+.tray{margin-top:12px;background:var(--card);border:2px dashed var(--line);border-radius:16px;padding:10px;
+  min-height:76px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.tray .empty{color:var(--muted);font-weight:700;font-size:.86rem}
+.tray .tm{background:none;border:none;padding:0;cursor:pointer;line-height:0}
+.tray .tm img{width:72px;border-radius:5px;box-shadow:0 2px 6px -2px rgba(26,16,48,.5)}
+.tray .tm.coin img{width:34px;border-radius:50%}
+.tray-sum{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px;font-weight:800}
+.tray-sum b{font-family:var(--f-display);font-size:1.4rem}
+.tray-sum b.ok{color:#128a4a}.tray-sum b.over{color:var(--con)}
+.shop-acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.shop-acts .btn{flex:1;min-width:120px}
+@media (max-width:430px){
+  .shop-items{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+  .money-rail{grid-template-columns:repeat(3,1fr)}
+  .shop-top img.keeper{width:66px}
+}
+@media (prefers-reduced-motion:reduce){ .bub{transition:none} }
 
 /* ---------- landing screen ---------- */
 body.on-landing .topbar{display:none}
@@ -1767,11 +1877,19 @@ function startReview() {
 
 
 /* ================= passport & map ================= */
-function gameStats(p) { p.games = p.games || { memory: { plays: 0, wins: 0, best: 0 }, swipe: { plays: 0, known: 0 }, speed: { plays: 0, best: 0 } }; return p.games; }
+function gameStats(p) {
+  p.games = p.games || {};
+  const dflt = { memory: { plays: 0, wins: 0, best: 0 }, swipe: { plays: 0, known: 0 }, speed: { plays: 0, best: 0 },
+    bubbles: { plays: 0, wins: 0, best: 0 }, shop: { plays: 0, paid: 0, streak: 0 } };
+  for (const k in dflt) if (!p.games[k]) p.games[k] = dflt[k];
+  return p.games;
+}
 function stampProgress(p, st) {
   if (st.stage) return stagePassed(p, st.stage) ? 1 : 0;
   const g = gameStats(p)[st.game];
-  const v = st.game === 'memory' ? g.wins : st.game === 'swipe' ? g.known : g.best;
+  if (!g) return 0;
+  const v = st.game === 'memory' ? g.wins : st.game === 'swipe' ? g.known
+    : st.game === 'bubbles' ? g.wins : st.game === 'shop' ? g.paid : g.best;
   return Math.min(1, v / st.goal);
 }
 const stampEarned = (p, st) => stampProgress(p, st) >= 1;
@@ -1844,6 +1962,14 @@ function gamePool(p) {
   if (ls.length < 6) ls = D.stages[0].letters.concat(D.stages[1].letters);
   return { kind: 'letters', items: ls.map(x => ({ key: x, ko: x, en: '“' + L[x].rom + '”', emoji: L[x].emoji, rom: L[x].rom, say: L[x].sample })) };
 }
+function bubBest(g) {
+  const b = g.bests || {};
+  const ks = Object.keys(b);
+  if (!ks.length) return '⏱ no time yet';
+  const k = ks.sort((a, x) => (+x.split('-')[1]) - (+a.split('-')[1]))[0];
+  const s = b[k], top = k.split('-')[1];
+  return `⏱ 1–${top} in ${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+}
 VIEWS.games = main => {
   const p = me(), g = gameStats(p), pool = gamePool(p);
   const src = preview() ? `all ${pool.items.length} words (preview mode)` : pool.kind === 'words' ? `your ${pool.items.length} words` : 'the letters you’ve met';
@@ -1858,8 +1984,10 @@ VIEWS.games = main => {
     ${card('memory', '🃏', 'Memory Match', 'Flip two cards and find the pairs: Korean ↔ meaning.', `🏆 ${g.memory.wins} wins · best ${g.memory.best ? g.memory.best + ' moves' : '—'}`, D.stamps.find(s => s.game === 'memory'))}
     ${card('swipe', '👆', 'Swipe Cards', 'Flip a cue card. Swipe right if you knew it, left if you’re still learning.', `✓ ${g.swipe.known} cards known`, D.stamps.find(s => s.game === 'swipe'))}
     ${card('speed', '⚡', 'Speed Read', 'How many Korean words can you read in 60 seconds?', `⭐ best ${g.speed.best}`, D.stamps.find(s => s.game === 'speed'))}
+    ${card('bubbles', '🫧', 'Count to 100', 'Pop the floating bubbles in order — 하나, 둘, 셋… all the way to 백. Beat your best time!', bubBest(g.bubbles), D.stamps.find(s => s.game === 'bubbles'))}
+    ${card('shop', '🧺', 'Shop · 가게', 'The shopkeeper says the price out loud. Hand over exactly the right notes and coins.', `💵 ${g.shop.paid} paid right${g.shop.streak > 1 ? ` · ${g.shop.streak} in a row` : ''}`, D.stamps.find(s => s.game === 'shop'))}
   </div>`;
-  $$('[data-game]', main).forEach(b => b.onclick = () => ({ memory: playMemory, swipe: playSwipe, speed: playSpeed })[b.dataset.game]());
+  $$('[data-game]', main).forEach(b => b.onclick = () => ({ memory: playMemory, swipe: playSwipe, speed: playSpeed, bubbles: playBubbles, shop: playShop })[b.dataset.game]());
 };
 let G = null;
 function openGame(title) {
@@ -2044,6 +2172,328 @@ function playSpeed() {
     if (score) { sfx('win'); if (best) burst(); }
     gameOver(box, { title: best && score ? '신기록! New record!' : `${score} correct!`, pose: score >= 10 ? 'cheer' : 'thumbs',
       text: `You read <b>${score}</b> ${pool.kind === 'words' ? 'words' : 'letters'} in 60 seconds. Best: <b>${g.best}</b>. (+${score} XP)`, again: playSpeed });
+  }
+}
+
+/* ================= Korean numbers ================= */
+/* Sino-Korean (일 이 삼) — used for money, dates, phone numbers, floors. */
+const SINO_D = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+const SINO_ROM = { '영': 'yeong', '일': 'il', '이': 'i', '삼': 'sam', '사': 'sa', '오': 'o', '육': 'yuk', '칠': 'chil', '팔': 'pal', '구': 'gu', '십': 'sip', '백': 'baek', '천': 'cheon', '만': 'man', '원': 'won' };
+function sinoUnder10k(n) {
+  let s = '', r = n;
+  [['천', 1000], ['백', 100], ['십', 10]].forEach(([ch, v]) => { const q = Math.floor(r / v); if (q) { s += (q === 1 ? '' : SINO_D[q]) + ch; r %= v; } });
+  if (r) s += SINO_D[r];
+  return s;
+}
+function sinoKo(n) {
+  if (n === 0) return '영';
+  let s = '';
+  const man = Math.floor(n / 10000), rest = n % 10000;
+  if (man) s += (man === 1 ? '' : sinoUnder10k(man)) + '만';
+  if (rest) s += (s ? ' ' : '') + sinoUnder10k(rest);
+  return s;
+}
+/* Native Korean (하나 둘 셋) — used for counting things, people, age, hours. */
+const NAT_ONES = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'];
+const NAT_TENS = ['', '열', '스물', '서른', '마흔', '쉰', '예순', '일흔', '여든', '아흔'];
+const NAT_ROM = { '하나': 'hana', '둘': 'dul', '셋': 'set', '넷': 'net', '다섯': 'daseot', '여섯': 'yeoseot', '일곱': 'ilgop', '여덟': 'yeodeol', '아홉': 'ahop', '열': 'yeol', '스물': 'seumul', '서른': 'seoreun', '마흔': 'maheun', '쉰': 'swin', '예순': 'yesun', '일흔': 'ilheun', '여든': 'yeodeun', '아흔': 'aheun', '백': 'baek' };
+function nativeKo(n) {
+  if (n === 100) return '백';
+  return NAT_TENS[Math.floor(n / 10)] + NAT_ONES[n % 10];
+}
+/* romanise by splitting the Korean back into the number blocks we built it from */
+function romOf(ko, map) {
+  const keys = Object.keys(map).sort((a, b) => b.length - a.length);
+  const out = []; let i = 0;
+  while (i < ko.length) {
+    if (ko[i] === ' ') { out.push(' '); i++; continue; }
+    const k = keys.find(k => ko.startsWith(k, i));
+    if (!k) { i++; continue; }
+    out.push(map[k]); i += k.length;
+  }
+  return out.join('-').replace(/-? -?/g, ' ');
+}
+const numKo = (n, sys) => sys === 'native' ? nativeKo(n) : sinoKo(n);
+const numRom = (n, sys) => sys === 'native' ? romOf(nativeKo(n), NAT_ROM) : romOf(sinoKo(n), SINO_ROM);
+
+/* --- Count to 100 (bubble pop) --- */
+const BUB_TOPS = [20, 50, 100];
+function playBubbles(opts) {
+  const p = me(), g = gameStats(p).bubbles;
+  g.bests = g.bests || {};
+  const box = G ? $('#g-in') : openGame('Count to 100');
+  const o = opts || { top: 100, sys: 'native' };
+  const key = o.sys + '-' + o.top;
+  const bestOf = k => g.bests[k] || 0;
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  if (G.cleanup) G.cleanup();
+
+  $('#g-stat').textContent = bestOf(key) ? `best ${fmt(bestOf(key))}` : '';
+  box.innerHTML = `<div class="bub-intro">
+    <img src="${tiger('point')}" alt="" style="width:130px">
+    <h2>Pop them in order!</h2>
+    <p class="muted" style="max-width:40ch">Bubbles float past with Korean numbers on them. Pop <b>1, 2, 3…</b> all the way up — in the right order. The clock is running!</p>
+    <div>
+      <p class="muted" style="font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px">Which numbers?</p>
+      <div class="pickrow" id="bb-sys">
+        <button class="pk ${o.sys === 'native' ? 'on' : ''}" data-sys="native"><span class="ko">하나 둘 셋</span><small>Counting</small></button>
+        <button class="pk ${o.sys === 'sino' ? 'on' : ''}" data-sys="sino"><span class="ko">일 이 삼</span><small>Money &amp; time</small></button>
+      </div>
+    </div>
+    <div>
+      <p class="muted" style="font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px">How far?</p>
+      <div class="pickrow" id="bb-top">${BUB_TOPS.map(t => `<button class="pk ${o.top === t ? 'on' : ''}" data-top="${t}">1–${t}<small>${bestOf(o.sys + '-' + t) ? 'best ' + fmt(bestOf(o.sys + '-' + t)) : 'no time yet'}</small></button>`).join('')}</div>
+    </div>
+    <button class="btn red" id="bb-go" style="font-size:1.1rem;padding:14px 28px">Start!</button>
+  </div>`;
+  $$('#bb-sys .pk', box).forEach(b => b.onclick = () => playBubbles({ top: o.top, sys: b.dataset.sys }));
+  $$('#bb-top .pk', box).forEach(b => b.onclick = () => playBubbles({ top: +b.dataset.top, sys: o.sys }));
+  $('#bb-go', box).onclick = run;
+
+  function run() {
+    let cur = 1, penalty = 0, t0 = Date.now(), raf = null, tick = null, done = false;
+    const WINDOW = 6;
+    const secs = () => (Date.now() - t0) / 1000 + penalty;
+    box.innerHTML = `<div class="bub-hud">
+        <div class="bub-next"><span class="lbl">Pop</span><b id="bb-n">1</b><span class="rm" id="bb-r"></span></div>
+        <span class="pill" id="bb-t">0:00</span>
+      </div>
+      <div class="bub-wrap" id="bb-w"></div>
+      <div class="bar" style="margin-top:10px"><i id="bb-b" style="width:0%"></i></div>
+      <p class="muted" style="text-align:center;margin-top:6px;font-size:.82rem">Tap the bubble that says the next number. A wrong pop costs 3 seconds.</p>`;
+    const wrap = $('#bb-w', box);
+    let W = wrap.clientWidth, H = wrap.clientHeight, live = [];
+
+    const colours = ['#7fd4ff', '#ffd27f', '#ffb3c8', '#b9f0c4', '#d7c1ff', '#ffc9a3'];
+    /* Bubbles are given their own lane so two of them never sit on top of each
+       other — a small child tapping a drifting bubble should never hit its neighbour. */
+    const lanes = () => Math.max(2, Math.min(4, Math.floor(W / 112)));
+    function freeLane() {
+      const n = lanes(), used = live.map(b => b.lane);
+      const open = [...Array(n).keys()].filter(i => !used.includes(i));
+      return open.length ? pick(open) : Math.floor(Math.random() * n);
+    }
+    function makeBubble(n) {
+      const ko = numKo(n, o.sys), rom = numRom(n, o.sys);
+      const cols = lanes(), lane = freeLane(), lw = W / cols;
+      const size = Math.max(70, Math.min(112, Math.min(lw - 10, 60 + ko.length * 13)));
+      const el = document.createElement('button');
+      el.className = 'bub'; el.type = 'button'; el.style.width = el.style.height = size + 'px';
+      el.style.setProperty('--bubc', colours[n % colours.length]);
+      el.setAttribute('aria-label', `${ko}, ${rom}, number ${n}`);
+      el.innerHTML = `<span class="bko" style="font-size:${ko.length > 3 ? '.92rem' : ko.length > 2 ? '1.06rem' : '1.3rem'}">${esc(ko)}</span><span class="brom">${esc(rom)}</span>`;
+      const gap = Math.max(0, lw - size);
+      const low = live.filter(x => x.lane === lane).reduce((m, x) => Math.max(m, x.y + x.size), 0);
+      const b = { n, el, size, lane, base: lane * lw + gap / 2, drift: gap / 2,
+        y: Math.max(H + 20, low + 46) + Math.random() * 50, sp: 24 + Math.random() * 18, ph: Math.random() * 6.3 };
+      el.onclick = () => hit(b);
+      wrap.appendChild(el); live.push(b);
+    }
+    function spawnUpTo() {
+      const have = new Set(live.map(b => b.n));
+      for (let n = cur; n <= Math.min(o.top, cur + WINDOW - 1); n++) if (!have.has(n)) makeBubble(n);
+    }
+    function hit(b) {
+      if (done) return;
+      if (b.n !== cur) {
+        penalty += 3; sfx('bad');
+        b.el.classList.add('no'); setTimeout(() => b.el.classList.remove('no'), 420);
+        wrap.classList.add('wrong'); setTimeout(() => wrap.classList.remove('wrong'), 420);
+        return;
+      }
+      sfx('good'); say(numKo(b.n, o.sys));
+      b.el.style.setProperty('--tf', b.el.style.transform);
+      b.el.classList.add('pop'); const el = b.el;
+      setTimeout(() => el.remove(), 340);
+      live = live.filter(x => x !== b);
+      cur++;
+      if (cur > o.top) return finish();
+      spawnUpTo(); hud();
+    }
+    function hud() {
+      $('#bb-n', box).textContent = numKo(cur, o.sys);
+      $('#bb-r', box).textContent = numRom(cur, o.sys);
+      $('#bb-b', box).style.width = ((cur - 1) / o.top * 100) + '%';
+    }
+    let last = performance.now();
+    function frame(now) {
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      const t = now / 1000;
+      live.forEach(b => {
+        b.y -= b.sp * dt;
+        if (b.y < -b.size) {
+          const lane = freeLane(), cols = lanes(), lw = W / cols, gap = Math.max(0, lw - b.size);
+          const low = live.filter(x => x !== b && x.lane === lane).reduce((m, x) => Math.max(m, x.y + x.size), 0);
+          b.lane = lane; b.base = lane * lw + gap / 2; b.drift = gap / 2;
+          b.y = Math.max(H + 20, low + 46) + Math.random() * 40;
+        }
+        const x = b.base + Math.sin(t * .8 + b.ph) * b.drift;
+        b.el.style.transform = `translate(${x}px, ${b.y}px)`;
+      });
+      raf = requestAnimationFrame(frame);
+    }
+    function finish() {
+      done = true; cancelAnimationFrame(raf); clearInterval(tick);
+      const time = secs(), prev = bestOf(key), best = !prev || time < prev;
+      g.plays++; g.wins++; if (best) g.bests[key] = Math.round(time * 10) / 10;
+      const xp = o.top === 100 ? 30 : o.top === 50 ? 18 : 10;
+      addXP(xp); sfx('win'); burst();
+      gameOver(box, { title: best ? '신기록! New record!' : '백까지 다 셌어요!', pose: 'cheer',
+        text: `You popped <b>1 to ${o.top}</b> in <b>${fmt(time)}</b>${penalty ? ` (including ${penalty}s of wrong-pop penalties)` : ' with no mistakes'}.<br>Best for ${o.sys === 'native' ? '하나 둘 셋' : '일 이 삼'} 1–${o.top}: <b>${fmt(g.bests[key])}</b>. (+${xp} XP)`,
+        again: () => playBubbles(o) });
+    }
+    const onResize = () => {
+      W = wrap.clientWidth; H = wrap.clientHeight;
+      const cols = lanes(), lw = W / cols;
+      live.forEach(b => { b.lane = Math.min(b.lane, cols - 1); b.size = Math.min(b.size, lw - 10);
+        b.el.style.width = b.el.style.height = b.size + 'px';
+        const gap = Math.max(0, lw - b.size); b.base = b.lane * lw + gap / 2; b.drift = gap / 2; });
+    };
+    addEventListener('resize', onResize);
+    G.cleanup = () => { cancelAnimationFrame(raf); clearInterval(tick); removeEventListener('resize', onResize); };
+    spawnUpTo();
+    /* the first batch spawns below the tank; lift it so play starts with bubbles on screen */
+    const lift = Math.min(...live.map(b => b.y)) - H * 0.1;
+    live.forEach(b => b.y -= lift);
+    hud();
+    tick = setInterval(() => { if (!done) $('#bb-t', box).textContent = fmt(secs()); }, 200);
+    raf = requestAnimationFrame(frame);
+  }
+}
+
+/* --- Shop: pay with Korean money --- */
+const MONEY = [
+  { v: 50000, img: 'won-50000', ko: '오만 원' },
+  { v: 10000, img: 'won-10000', ko: '만 원' },
+  { v: 5000, img: 'won-5000', ko: '오천 원' },
+  { v: 1000, img: 'won-1000', ko: '천 원' },
+  { v: 500, img: 'coin-500', ko: '오백 원', coin: 1 },
+  { v: 100, img: 'coin-100', ko: '백 원', coin: 1 }
+];
+const SHOP_ITEMS = [
+  { ko: '물', rom: 'mul', en: 'water', em: '💧', won: 1000 },
+  { ko: '우유', rom: 'uyu', en: 'milk', em: '🥛', won: 1500 },
+  { ko: '빵', rom: 'ppang', en: 'bread', em: '🍞', won: 2500 },
+  { ko: '김밥', rom: 'gimbap', en: 'gimbap', em: '🍙', won: 3500 },
+  { ko: '라면', rom: 'ramyeon', en: 'ramyeon', em: '🍜', won: 1200 },
+  { ko: '사과', rom: 'sagwa', en: 'apple', em: '🍎', won: 2000 },
+  { ko: '바나나', rom: 'banana', en: 'banana', em: '🍌', won: 3000 },
+  { ko: '아이스크림', rom: 'aiseukeurim', en: 'ice cream', em: '🍦', won: 1500 },
+  { ko: '과자', rom: 'gwaja', en: 'snacks', em: '🍪', won: 2200 },
+  { ko: '떡볶이', rom: 'tteokbokki', en: 'tteokbokki', em: '🌶️', won: 5000 },
+  { ko: '연필', rom: 'yeonpil', en: 'pencil', em: '✏️', won: 500 },
+  { ko: '공책', rom: 'gongchaek', en: 'notebook', em: '📓', won: 1800 },
+  { ko: '양말', rom: 'yangmal', en: 'socks', em: '🧦', won: 3000 },
+  { ko: '열쇠고리', rom: 'yeolsoegori', en: 'keyring', em: '🔑', won: 4000 },
+  { ko: '부채', rom: 'buchae', en: 'fan', em: '🪭', won: 6500 },
+  { ko: '인형', rom: 'inhyeong', en: 'doll', em: '🧸', won: 9500 },
+  { ko: '책', rom: 'chaek', en: 'book', em: '📕', won: 11000 },
+  { ko: '모자', rom: 'moja', en: 'hat', em: '🧢', won: 12000 },
+  { ko: '티셔츠', rom: 'tisyeocheu', en: 't-shirt', em: '👕', won: 15000 },
+  { ko: '치킨', rom: 'chikin', en: 'fried chicken', em: '🍗', won: 18000 },
+  { ko: '가방', rom: 'gabang', en: 'bag', em: '🎒', won: 32000 },
+  { ko: '신발', rom: 'sinbal', en: 'shoes', em: '👟', won: 45000 }
+];
+const SHOPS = [
+  { id: 'snack-shop', keeper: 'ajumma', name: '분식집', en: 'Snack shop', max: 7000 },
+  { id: 'convenience', keeper: 'staff', name: '편의점', en: 'Convenience store', max: 12000 },
+  { id: 'market', keeper: 'ajumma', name: '시장', en: 'Market', max: 50000 }
+];
+const wonFmt = n => n.toLocaleString('en-US') + '원';
+
+function playShop(opts) {
+  const p = me(), g = gameStats(p).shop;
+  const box = G ? $('#g-in') : openGame('Shop · 가게');
+  const o = opts || { mode: 'one' };
+  if (G.cleanup) G.cleanup();
+  G.cleanup = null;
+
+  const shop = o.mode === 'basket' ? pick(SHOPS.slice(0, 2)) : pick(SHOPS);
+  const stock = shuffle(SHOP_ITEMS.filter(i => i.won <= shop.max)).slice(0, o.mode === 'basket' ? 8 : 6);
+  let basket = o.mode === 'basket' ? [] : [pick(stock)];
+  let tray = [], showPrice = false, settled = false, spoke = -1;
+
+  const total = () => basket.reduce((s, i) => s + i.won, 0);
+  const paid = () => tray.reduce((s, v) => s + v, 0);
+  const totalKo = () => sinoKo(total()) + ' 원';
+  /* 은/는 depends on whether the last syllable has a final consonant */
+  const hasJong = ko => { const c = ko.charCodeAt(ko.length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 !== 0; };
+  const topicP = ko => hasJong(ko) ? '은' : '는';
+  const askKo = () => o.mode === 'basket' ? `다 해서 ${totalKo()}이에요.` : `${esc(basket[0].ko)}${topicP(basket[0].ko)} ${totalKo()}이에요.`;
+  const askRom = () => (o.mode === 'basket' ? 'da haeseo ' : basket[0].rom + (hasJong(basket[0].ko) ? '-eun ' : '-neun ')) + romOf(sinoKo(total()), SINO_ROM) + ' won-ieyo';
+
+  draw();
+
+  function speakAsk() { say(o.mode === 'basket' ? `다 해서 ${sinoKo(total())} 원이에요.` : `${basket[0].ko}${topicP(basket[0].ko)} ${sinoKo(total())} 원이에요.`); }
+
+  function draw() {
+    const t = total(), pd = paid();
+    const ready = basket.length > 0;
+    box.innerHTML = `
+      <div class="pickrow" style="margin-bottom:10px">
+        <button class="pk ${o.mode === 'one' ? 'on' : ''}" data-mode="one">하나<small>One thing</small></button>
+        <button class="pk ${o.mode === 'basket' ? 'on' : ''}" data-mode="basket">바구니<small>Fill a basket</small></button>
+      </div>
+      <div class="shop-top" style="--bg:url('assets/scenes/${shop.id}.webp')">
+        <img class="keeper" src="assets/cast/${shop.keeper}.webp" alt="Shopkeeper">
+        <div class="shop-say">
+          <span class="ko">${ready ? askKo() : '어서 오세요! 뭐 드릴까요?'}</span>
+          <span class="rom">${ready ? askRom() : 'eoseo oseyo! mwo deurilkkayo?'}</span>
+          <span class="en">${ready ? 'That comes to ' + (showPrice ? wonFmt(t) : '… listen!') : 'Welcome! What can I get you?'}</span>
+        </div>
+      </div>
+      <div class="row" style="gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn small blue" id="sh-say">🔊 Say it again</button>
+        <button class="btn small ghost" id="sh-eye">${showPrice ? '🙈 Hide the price' : '👀 Show the price'}</button>
+        <span class="pill">${esc(shop.name)} · ${shop.en}</span>
+      </div>
+      <div class="section-h" style="margin:14px 0 0"><h3 style="margin:0">${o.mode === 'basket' ? 'Tap things to put in your 바구니' : 'Today you are buying'}</h3></div>
+      <div class="shop-items ${o.mode === 'basket' ? 'picking' : 'single'}">${(o.mode === 'basket' ? stock : basket).map(i => `<button class="sitem ${basket.includes(i) ? 'in' : ''}" data-i="${stock.indexOf(i)}">
+          <span class="em">${i.em}</span><span class="ko">${esc(i.ko)}</span><span class="rom">${esc(i.rom)}</span>
+          <span class="pr">${showPrice ? wonFmt(i.won) : '?'}</span></button>`).join('')}</div>
+      ${o.mode === 'basket' ? `<div class="basket">🧺 바구니: ${basket.length ? basket.map(i => `<span class="bi">${i.em} ${esc(i.ko)}</span>`).join('') : '<span style="font-weight:700">empty — tap some things above</span>'}</div>` : ''}
+      ${ready ? `
+      <div class="section-h" style="margin:14px 0 0"><h3 style="margin:0">Pay with this money</h3></div>
+      <div class="money-rail">${MONEY.map(m => `<button class="mbtn ${m.coin ? 'coin' : ''}" data-v="${m.v}" aria-label="${esc(m.ko)}">
+          <img src="assets/money/${m.img}.webp" alt="">${tray.filter(v => v === m.v).length ? `<span class="cnt">${tray.filter(v => v === m.v).length}</span>` : ''}</button>`).join('')}</div>
+      <div class="tray" id="sh-tray">${tray.length ? tray.map((v, k) => { const m = MONEY.find(x => x.v === v); return `<button class="tm ${m.coin ? 'coin' : ''}" data-k="${k}" aria-label="Take back ${esc(m.ko)}"><img src="assets/money/${m.img}.webp" alt=""></button>`; }).join('') : '<span class="empty">Tap the notes and coins to put them here 👆</span>'}</div>
+      <div class="tray-sum"><span class="muted">You are handing over</span><b class="${pd === t ? 'ok' : pd > t ? 'over' : ''}">${wonFmt(pd)}</b></div>
+      <div class="shop-acts">
+        <button class="btn ghost" id="sh-clr">Take it all back</button>
+        <button class="btn red" id="sh-pay" ${pd === 0 ? 'disabled' : ''}>여기요! Pay</button>
+      </div>` : ''}`;
+
+    $$('[data-mode]', box).forEach(b => b.onclick = () => playShop({ mode: b.dataset.mode }));
+    $('#sh-say', box).onclick = () => basket.length ? speakAsk() : say('어서 오세요!');
+    $('#sh-eye', box).onclick = () => { showPrice = !showPrice; draw(); };
+    $$('.sitem', box).forEach(b => b.onclick = () => {
+      if (o.mode !== 'basket' || settled) return;
+      const it = stock[+b.dataset.i];
+      basket = basket.includes(it) ? basket.filter(x => x !== it) : basket.concat([it]);
+      tray = []; say(it.ko); draw();
+    });
+    $$('.mbtn', box).forEach(b => b.onclick = () => { tray = tray.concat([+b.dataset.v]); say(MONEY.find(m => m.v === +b.dataset.v).ko); draw(); });
+    $$('.tm', box).forEach(b => b.onclick = () => { tray = tray.filter((_, k) => k !== +b.dataset.k); draw(); });
+    if ($('#sh-clr', box)) $('#sh-clr', box).onclick = () => { tray = []; draw(); };
+    if ($('#sh-pay', box)) $('#sh-pay', box).onclick = pay;
+    if (ready && !settled && spoke !== t) { spoke = t; setTimeout(speakAsk, 420); }
+  }
+
+  function pay() {
+    const t = total(), pd = paid();
+    if (pd === t) {
+      settled = true;
+      g.plays++; g.paid++; g.streak = (g.streak || 0) + 1;
+      const xp = 6 + basket.length * 2;
+      addXP(xp); sfx('win'); burst(); say('감사합니다!');
+      gameOver(box, { title: '감사합니다! Perfect change!', pose: 'cheer',
+        text: `${basket.map(i => i.em + ' ' + esc(i.ko)).join(' + ')} = <b>${wonFmt(t)}</b>, and you handed over exactly that.<br><span class="ko">${esc(sinoKo(t))} 원</span> · ${romOf(sinoKo(t), SINO_ROM)} won<br>Correct payments: <b>${g.paid}</b> · streak <b>${g.streak}</b>. (+${xp} XP)`,
+        again: () => playShop({ mode: o.mode }) });
+    } else {
+      g.streak = 0; sfx('bad'); save();
+      say(pd < t ? '조금 더 주세요.' : '너무 많아요.');
+      toast(pd < t ? `조금 더 주세요 — that’s ${wonFmt(t - pd)} short.` : `너무 많아요 — that’s ${wonFmt(pd - t)} too much.`);
+    }
   }
 }
 
@@ -2367,6 +2817,11 @@ STEP.l2word = (box, st) => {
       ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.rom)}</span>`}
       <span class="en">${esc(w.en)}</span>
       <button class="btn blue" data-say="${esc(w.ko)}">🔊 Hear it</button></div>
+    ${w.ex ? `<button class="say-ex" data-say="${esc(w.ex.ko)}">
+      <span class="exlabel">Used in a sentence 🔊</span>
+      <span class="ko">${esc(w.ex.ko)}</span>
+      ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.ex.rom)}</span>`}
+      <span class="en">${esc(w.ex.en)}</span></button>` : ''}
     ${w.note ? `<div class="tipbox">💡 ${esc(w.note)}</div>` : ''}`;
   if (unlocked) setTimeout(() => say(w.ko), 300);
   if (addWord(w)) P.newWords++;
@@ -2577,16 +3032,24 @@ VIEWS.essSection = (main, id) => {
       <button class="btn red" id="practise">Practise these →</button></div>
     ${s.note ? `<div class="tipbox">💡 ${esc(s.note)}</div>` : ''}
     <div class="ess-list">${s.words.map(w => `
-      <button class="card ess-word" data-say="${esc(w.ko)}">
-        <span class="em">${w.emoji}</span>
-        <span class="wtext"><span class="ko">${esc(w.ko)}</span>
-          ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.rom)}</span>`}
-          <span class="en">${esc(w.en)}</span>
-          ${w.note ? `<span class="note">${esc(w.note)}</span>` : ''}</span>
-        <span class="spk">🔊</span>
+      <div class="card ess-word">
+        <button class="ess-main" data-say="${esc(w.ko)}">
+          <span class="em">${w.emoji}</span>
+          <span class="wtext"><span class="ko">${esc(w.ko)}</span>
+            ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.rom)}</span>`}
+            <span class="en">${esc(w.en)}</span>
+            ${w.note ? `<span class="note">${esc(w.note)}</span>` : ''}</span>
+          <span class="spk">🔊</span>
+        </button>
+        ${w.ex ? `<button class="ess-ex" data-say="${esc(w.ex.ko)}">
+          <span class="exlabel">In a sentence</span>
+          <span class="ko">${esc(w.ex.ko)}</span>
+          ${S.settings.rom === 'never' ? '' : `<span class="rom">${esc(w.ex.rom)}</span>`}
+          <span class="en">${esc(w.ex.en)}</span>
+          <span class="spk">🔊</span></button>` : ''}
         ${p.words[w.ko] ? '<span class="pill done">in your bank</span>' : ''}
-      </button>`).join('')}</div>
-    <p class="muted" style="margin-top:16px;text-align:center">Tap any word to hear it.</p>`;
+      </div>`).join('')}</div>
+    <p class="muted" style="margin-top:16px;text-align:center">Tap a word to hear it, or tap the sentence to hear the whole thing.</p>`;
   $('#bk', main).onclick = () => go('learn', 'ess');
   $('#practise', main).onclick = () => startEssentials(s.id);
 };

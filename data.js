@@ -538,7 +538,9 @@
     { id: 'taxi', stage: 9, label: 'Hangul graduate', pin: [61.6, 14.9] },
     { id: 'palace', game: 'memory', goal: 5, label: 'Memory master', how: 'Win Memory Match 5 times' },
     { id: 'friend', game: 'swipe', goal: 50, label: 'Card champion', how: 'Know 50 Swipe Cards' },
-    { id: 'help', game: 'speed', goal: 15, label: 'Speed reader', how: 'Score 15 in Speed Read' }
+    { id: 'help', game: 'speed', goal: 15, label: 'Speed reader', how: 'Score 15 in Speed Read' },
+    { id: 'bubbles', game: 'bubbles', goal: 1, label: 'Counted to 100', how: 'Finish Count to 100' },
+    { id: 'shop', game: 'shop', goal: 8, label: 'Shopping star', how: 'Pay correctly 8 times' }
   ];
 
   const avatars = [

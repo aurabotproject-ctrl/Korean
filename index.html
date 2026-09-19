@@ -528,6 +528,124 @@ h1 .ko,h3 .ko{text-transform:none}
 .card.ess-word .spk{opacity:.5;flex:none}
 .card.ess-word .pill{position:absolute;top:6px;right:6px;font-size:.66rem}
 
+
+/* ---------- landing screen ---------- */
+body.on-landing .topbar{display:none}
+body.on-landing main{max-width:none;padding:0}
+.landing{position:relative;min-height:100dvh;overflow:hidden;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;gap:clamp(18px,3vh,40px);padding:clamp(20px,5vh,64px) 16px 0;
+  background:
+    radial-gradient(120% 80% at 50% -10%, var(--plum-soft) 0%, transparent 60%),
+    radial-gradient(90% 70% at 110% 100%, var(--con-soft) 0%, transparent 55%),
+    radial-gradient(90% 70% at -10% 90%, var(--vow-soft) 0%, transparent 55%),
+    var(--paper);
+  cursor:pointer}
+
+/* background effects */
+.lfx{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lsun{position:absolute;left:50%;top:clamp(-260px,-18vh,-120px);width:min(150vw,1100px);aspect-ratio:1;
+  transform:translateX(-50%);opacity:.14;
+  background:repeating-conic-gradient(from 0deg, var(--con) 0deg 7deg, transparent 7deg 14deg);
+  -webkit-mask-image:radial-gradient(circle,#000 25%,transparent 68%);
+  mask-image:radial-gradient(circle,#000 25%,transparent 68%);
+  animation:lspin 64s linear infinite}
+@keyframes lspin{to{transform:translateX(-50%) rotate(360deg)}}
+.ldots{position:absolute;inset:0;opacity:.35;
+  background-image:radial-gradient(var(--plum) .9px,transparent 1px);background-size:14px 14px;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 40%,#000 70%,transparent)}
+.lglyph{position:absolute;font-family:var(--f-ko);font-weight:900;color:var(--plum);opacity:.09;
+  user-select:none;animation:ldrift linear infinite}
+@keyframes ldrift{0%{transform:translateY(14px) rotate(-6deg)}50%{transform:translateY(-16px) rotate(6deg)}100%{transform:translateY(14px) rotate(-6deg)}}
+.lglyph.g0{left:5%;top:14%;font-size:5.5rem;animation-duration:13s}
+.lglyph.g1{left:88%;top:10%;font-size:4rem;animation-duration:16s;animation-delay:-3s}
+.lglyph.g2{left:13%;top:68%;font-size:6.5rem;animation-duration:18s;animation-delay:-6s}
+.lglyph.g3{left:80%;top:62%;font-size:5rem;animation-duration:15s;animation-delay:-2s}
+.lglyph.g4{left:46%;top:6%;font-size:3.4rem;animation-duration:12s;animation-delay:-5s}
+.lglyph.g5{left:66%;top:78%;font-size:3.8rem;animation-duration:17s;animation-delay:-8s}
+.lglyph.g6{left:2%;top:40%;font-size:4.4rem;animation-duration:19s;animation-delay:-1s}
+.lglyph.g7{left:94%;top:38%;font-size:3.2rem;animation-duration:14s;animation-delay:-7s}
+.lglyph.g8{left:30%;top:86%;font-size:4rem;animation-duration:20s;animation-delay:-4s}
+.lglyph.g9{left:57%;top:30%;font-size:3rem;animation-duration:15s;animation-delay:-9s}
+.lglyph.g10{left:22%;top:26%;font-size:3.2rem;animation-duration:21s;animation-delay:-11s}
+.lglyph.g11{left:72%;top:18%;font-size:3.6rem;animation-duration:16s;animation-delay:-13s}
+@media (max-width:760px){ .lglyph.g4,.lglyph.g5,.lglyph.g9,.lglyph.g10,.lglyph.g11{display:none} }
+
+/* hero */
+.lhero{position:relative;z-index:1;display:flex;align-items:center;gap:clamp(16px,4vw,56px);
+  max-width:1080px;width:100%;flex-wrap:wrap;justify-content:center}
+.lart{position:relative;flex:none;width:clamp(180px,26vw,320px);animation:lrise .8s cubic-bezier(.2,.9,.3,1.2) both}
+.lmascot{width:100%;position:relative;z-index:1;filter:drop-shadow(0 18px 26px rgba(26,16,48,.32));
+  animation:lfloat 5.5s ease-in-out infinite}
+@keyframes lfloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-14px) rotate(1.5deg)}}
+.lring{position:absolute;left:50%;top:52%;width:118%;aspect-ratio:1;transform:translate(-50%,-50%);
+  border-radius:50%;border:3px dashed var(--gold);opacity:.5;animation:lspin 26s linear infinite}
+.lspark{position:absolute;color:var(--gold);font-size:1.4rem;opacity:0;animation:ltwinkle 3.4s ease-in-out infinite}
+.lspark.s1{left:-4%;top:14%}
+.lspark.s2{right:-2%;top:38%;animation-delay:1.1s;font-size:1.9rem}
+.lspark.s3{left:14%;bottom:4%;animation-delay:2.2s}
+@keyframes ltwinkle{0%,100%{opacity:0;transform:scale(.5)}40%{opacity:1;transform:scale(1.15)}70%{opacity:.2;transform:scale(.9)}}
+
+.lcopy{flex:1;min-width:290px;max-width:560px;text-align:left}
+.leyebrow{display:inline-block;font-size:.76rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--plum);background:var(--plum-soft);border-radius:999px;padding:5px 14px;margin-bottom:12px;
+  animation:lrise .6s .1s both}
+.ltitle{font-size:clamp(2.6rem,7.4vw,5rem);line-height:.94;letter-spacing:-.02em;margin:0 0 8px;
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .26em}
+.ltitle .lword{display:inline-flex;white-space:nowrap}
+.ltitle .lch{display:inline-block;animation:lpop .75s cubic-bezier(.2,1.3,.4,1) both}
+.ltitle .lch.ko{font-family:var(--f-ko-fun);font-weight:400;
+  background:linear-gradient(180deg,var(--con),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 0 rgba(26,16,48,.16))}
+.ltitle .lch.en{color:var(--ink)}
+@keyframes lpop{0%{opacity:0;transform:translateY(38px) rotate(-8deg) scale(.86)}
+  60%{opacity:1;transform:translateY(-5px) rotate(1.5deg) scale(1.04)}
+  100%{opacity:1;transform:none}}
+.ltag{font-family:var(--f-display);font-size:clamp(1.15rem,3.4vw,1.7rem);letter-spacing:.02em;
+  text-transform:uppercase;color:var(--plum);margin-bottom:8px;animation:lrise .6s .62s both}
+.ltag b{color:var(--con)}
+.lsub{color:var(--muted);font-weight:600;max-width:46ch;animation:lrise .6s .72s both}
+@keyframes lrise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.lstats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;animation:lrise .6s .8s both}
+.lstat{display:grid;justify-items:center;gap:0;background:var(--card);border:2px solid var(--line);
+  border-bottom-width:4px;border-radius:14px;padding:8px 14px;font-size:.72rem;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-width:74px}
+.lstat b{font-family:var(--f-display);font-size:1.45rem;color:var(--ink);letter-spacing:0}
+
+.lcta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;animation:lrise .6s .9s both}
+.btn.lgo{font-size:1.15rem;padding:16px 30px;box-shadow:0 5px 0 #8C0B36,0 0 34px -8px var(--con)}
+.btn.lgo .larrow{display:inline-block;animation:lnudge 1.6s ease-in-out infinite}
+@keyframes lnudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+.lday{margin-top:14px;font-weight:800;color:var(--muted);animation:lrise .6s 1s both}
+.lday b{color:var(--con);font-family:var(--f-display);font-size:1.25rem}
+
+/* scene strip */
+.lstrip{position:relative;z-index:1;width:100%;overflow:hidden;margin-top:auto;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  animation:lrise .8s 1.1s both}
+.ltrack{display:flex;gap:12px;width:max-content;padding:6px 0;animation:lslide 52s linear infinite}
+.ltrack img{width:clamp(150px,20vw,236px);aspect-ratio:16/9;object-fit:cover;border-radius:12px;
+  border:2px solid var(--line);box-shadow:var(--shadow)}
+@keyframes lslide{to{transform:translateX(-50%)}}
+.lstrip:hover .ltrack{animation-play-state:paused}
+.lfoot{position:relative;z-index:1;color:var(--muted);font-size:.82rem;font-weight:700;
+  padding:14px 0 calc(14px + env(safe-area-inset-bottom,0px));animation:lrise .6s 1.3s both}
+
+@media (max-width:760px){
+  .lhero{flex-direction:column;text-align:center;gap:10px}
+  .lcopy{text-align:center}
+  .ltitle,.lstats,.lcta{justify-content:center}
+  .lsub{margin-inline:auto}
+  .lart{width:clamp(150px,42vw,220px)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .landing *,.landing *::before,.landing *::after{animation:none!important}
+  .ltitle .lch,.leyebrow,.ltag,.lsub,.lstats,.lcta,.lday,.lstrip,.lfoot,.lart{opacity:1!important;transform:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -844,6 +962,7 @@ function updateBar() {
 /* ================= router ================= */
 let route = { name: 'profiles', arg: null };
 function go(name, arg = null) {
+  if (name !== 'landing') document.body.classList.remove('on-landing');
   if (!me() && !['profiles', 'newProfile'].includes(name)) name = 'profiles';
   route = { name, arg };
   const main = $('#main');
@@ -854,6 +973,7 @@ function go(name, arg = null) {
 }
 $('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
 $('#brand').addEventListener('click', () => go(me() ? 'home' : 'profiles'));
+$('#brand').addEventListener('dblclick', () => go('landing'));
 $('#me-btn').addEventListener('click', () => go('profiles'));
 
 const VIEWS = {};
@@ -2496,8 +2616,78 @@ STEP.essDone = (box, st) => {
   foot('', '', 'Done', closePlayer);
 };
 
+/* ================= landing screen ================= */
+// The first thing anyone sees. Big, animated, and one tap from the profile picker.
+const LANDING_GLYPHS = ['가', 'ㅎ', '한', '글', 'ㅂ', '요', '말', 'ㅅ', '안', 'ㅇ', '어', 'ㅋ'];
+const LANDING_SCENES = ['playground', 'snack-shop', 'classroom', 'home-kitchen', 'street-outside', 'birthday',
+                        'park-bench', 'palace', 'subway', 'home-living'];
+
+VIEWS.landing = main => {
+  const p = me();
+  const trip = S.settings.tripDate
+    ? Math.ceil((new Date(S.settings.tripDate + 'T00:00:00') - new Date(todayStr() + 'T00:00:00')) / DAY) : null;
+  // two words, each kept whole: a title that breaks mid-word looks like a bug
+  const title = [{ cls: 'ko', chars: ['한', '글'] }, { cls: 'en', chars: ['Q', 'u', 'e', 's', 't'] }];
+  document.body.classList.add('on-landing');
+  main.innerHTML = `
+  <div class="landing">
+    <div class="lfx" aria-hidden="true">
+      <span class="lsun"></span>
+      <span class="ldots"></span>
+      ${LANDING_GLYPHS.map((g, i) => `<span class="lglyph g${i}">${g}</span>`).join('')}
+    </div>
+
+    <div class="lhero">
+      <div class="lart">
+        <img class="lmascot" src="assets/mascot/horangi-wave.webp" alt="" onerror="this.src='assets/logo.webp'">
+        <span class="lring"></span>
+        <span class="lspark s1">✦</span><span class="lspark s2">✧</span><span class="lspark s3">✦</span>
+      </div>
+
+      <div class="lcopy">
+        <span class="leyebrow">Learn Korean the fun way</span>
+        <h1 class="ltitle">${(() => { let n = 0; return title.map(word =>
+          `<span class="lword">${word.chars.map(ch =>
+            `<span class="lch ${word.cls}" style="animation-delay:${(0.18 + n++ * 0.07).toFixed(2)}s">${ch}</span>`).join('')}</span>`).join(''); })()}</h1>
+        <p class="ltag">Read it. Say it. <b>Live it.</b></p>
+        <p class="lsub">Every letter, a thousand words and two dozen real conversations —
+          built for two kids with a plane ticket to ${esc(S.settings.tripPlace || 'Korea')}.</p>
+
+        <div class="lstats">
+          <span class="lstat"><b>40</b>letters</span>
+          <span class="lstat"><b>1,200</b>words</span>
+          <span class="lstat"><b>24</b>conversations</span>
+          <span class="lstat"><b>12</b>missions</span>
+        </div>
+
+        <div class="lcta">
+          <button class="btn red lgo" id="l-start">${p ? 'Continue as ' + esc(p.name) : 'Start your quest'} <span class="larrow">→</span></button>
+          ${p ? '<button class="btn ghost" id="l-switch">Switch learner</button>' : ''}
+        </div>
+        ${trip !== null && trip > 0 ? `<p class="lday"><b>D-${trip}</b> until <span class="ko">한국</span> ✈️</p>` : ''}
+      </div>
+    </div>
+
+    <div class="lstrip" aria-hidden="true">
+      <div class="ltrack">
+        ${LANDING_SCENES.concat(LANDING_SCENES).map(s =>
+          `<img src="assets/scenes/${s}.webp" alt="" loading="lazy" onerror="this.remove()">`).join('')}
+      </div>
+    </div>
+
+    <p class="lfoot">made for <span class="ko">우리 가족</span> · tap anywhere to begin</p>
+  </div>`;
+
+  const leave = () => { document.body.classList.remove('on-landing'); go(me() ? 'home' : 'profiles'); };
+  $('#l-start', main).onclick = e => { e.stopPropagation(); unlockSpeech(); leave(); };
+  const sw = $('#l-switch', main);
+  if (sw) sw.onclick = e => { e.stopPropagation(); document.body.classList.remove('on-landing'); go('profiles'); };
+  // the whole screen is a button, but only once the entrance animation has played
+  setTimeout(() => { const l = $('.landing', main); if (l) l.onclick = leave; }, 900);
+};
+
 /* ================= boot ================= */
-go(me() ? 'home' : 'profiles');
+go('landing');
 })();
 </script>
 </body>

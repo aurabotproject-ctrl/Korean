@@ -1125,6 +1125,8 @@ function gameStats(p) {
 }
 function stampProgress(p, st) {
   if (st.stage) return stagePassed(p, st.stage) ? 1 : 0;
+  if (st.unit) { const u = unitOf(st.unit); return u ? unitDoneCount(p, u) / unitParts(u).length : 0; }
+  if (st.l2) { if (!L2.units.length) return 0; return L2.units.filter(u => unitComplete(p, u)).length / L2.units.length; }
   const g = gameStats(p)[st.game];
   if (!g) return 0;
   const v = st.game === 'memory' ? g.wins : st.game === 'swipe' ? g.known
@@ -1136,8 +1138,8 @@ const stampCount = p => D.stamps.filter(st => stampEarned(p, st)).length;
 const stampForStage = id => D.stamps.find(s => s.stage === id);
 function checkGameStamps(before) {
   const p = me();
-  D.stamps.filter(st => st.game && !before.includes(st.id) && stampEarned(p, st)).forEach(st => {
-    setTimeout(() => { sfx('win'); burst(); toast(`New passport stamp: ${st.label}!`); }, 600);
+  D.stamps.filter(st => !st.stage && !before.includes(st.id) && stampEarned(p, st)).forEach((st, i) => {
+    setTimeout(() => { sfx('win'); burst(); toast(`New passport stamp: ${st.label}!`); }, 600 + i * 2200);
   });
 }
 const earnedIds = p => D.stamps.filter(st => stampEarned(p, st)).map(s => s.id);
@@ -1167,8 +1169,9 @@ function stampTile(p, st) {
   return `<div class="pstamp ${got ? 'got' : ''}">
     <div class="pimg"><img src="assets/stamps/${st.id}.webp" alt="" style="transform:rotate(${got ? tilt : 0}deg)"></div>
     <b>${esc(st.label)}</b>
-    <span class="muted">${st.stage ? `Stage ${st.stage}: ${esc(stageOf(st.stage).title)}` : esc(st.how)}</span>
-    ${!got && st.game ? `<div class="bar thin"><i style="width:${pr * 100}%"></i></div>` : ''}
+    <span class="muted">${st.stage ? `Stage ${st.stage}: ${esc(stageOf(st.stage).title)}`
+      : st.unit ? `Unit ${st.unit}: ${esc((unitOf(st.unit) || {}).title || '')}` : esc(st.how)}</span>
+    ${!got && (st.game || st.unit || st.l2) ? `<div class="bar thin"><i style="width:${pr * 100}%"></i></div>` : ''}
   </div>`;
 }
 VIEWS.passport = main => {
@@ -1180,17 +1183,20 @@ VIEWS.passport = main => {
     <div style="display:grid;gap:10px;align-content:center">
       <span class="eyebrow">여권 · Passport</span>
       <h1>${esc(p.name)}’s Korea passport</h1>
-      <p class="muted">Earn a stamp for every Hangul stage you pass, and three bonus stamps from the Games tab.</p>
+      <p class="muted">Earn a stamp for every Hangul stage you pass, one for every Level 2 unit you finish, and five bonus stamps from the Games tab.</p>
       <div class="bar"><i style="width:${n / D.stamps.length * 100}%"></i></div>
       <b>${n} of ${D.stamps.length} stamps</b>
     </div>
   </div>
   <div class="section-h"><h2>Hangul journey</h2><span class="muted">Pass a stage challenge</span></div>
   <div class="card pgrid">${D.stamps.filter(s => s.stage).map(s => stampTile(p, s)).join('')}</div>
+  <div class="section-h"><h2>친구와 가족 · Level 2</h2><button class="btn small blue" id="to-l2">Go to Level 2 →</button></div>
+  <div class="card pgrid">${D.stamps.filter(s => s.unit || s.l2).map(s => stampTile(p, s)).join('')}</div>
   <div class="section-h"><h2>Game stamps</h2><button class="btn small blue" id="to-games">Play games →</button></div>
   <div class="card pgrid">${D.stamps.filter(s => s.game).map(s => stampTile(p, s)).join('')}</div>`;
   $('#bk', main).onclick = () => go('home');
   $('#to-games', main).onclick = () => go('games');
+  $('#to-l2', main).onclick = () => go('learn', '2');
 };
 
 /* ================= games ================= */
@@ -1631,12 +1637,20 @@ const SHOP_ITEMS = [
   { ko: '티셔츠', rom: 'tisyeocheu', en: 't-shirt', em: '👕', won: 15000 },
   { ko: '치킨', rom: 'chikin', en: 'fried chicken', em: '🍗', won: 18000 },
   { ko: '가방', rom: 'gabang', en: 'bag', em: '🎒', won: 32000 },
-  { ko: '신발', rom: 'sinbal', en: 'shoes', em: '👟', won: 45000 }
+  { ko: '신발', rom: 'sinbal', en: 'shoes', em: '👟', won: 45000 },
+  // The big-ticket end — these are what make the 오만 원 note necessary
+  { ko: '헤드폰', rom: 'hedeupon', en: 'headphones', em: '🎧', won: 52000 },
+  { ko: '캐리어', rom: 'kaerieo', en: 'suitcase', em: '🧳', won: 65000 },
+  { ko: '한복', rom: 'hanbok', en: 'hanbok', em: '👘', won: 78000 },
+  { ko: '자전거', rom: 'jajeongeo', en: 'bicycle', em: '🚲', won: 89000 },
+  { ko: '기타', rom: 'gita', en: 'guitar', em: '🎸', won: 120000 }
 ];
 const SHOPS = [
   { id: 'snack-shop', keeper: 'ajumma', name: '분식집', en: 'Snack shop', max: 7000 },
   { id: 'convenience', keeper: 'staff', name: '편의점', en: 'Convenience store', max: 12000 },
-  { id: 'market', keeper: 'ajumma', name: '시장', en: 'Market', max: 50000 }
+  { id: 'market', keeper: 'ajumma', name: '시장', en: 'Market', max: 45000 },
+  // Everything here costs more than a 오만 원 note, so that note always gets used
+  { id: 'street', keeper: 'staff', name: '백화점', en: 'Department store', min: 52000, max: 999999 }
 ];
 const wonFmt = n => n.toLocaleString('en-US') + '원';
 
@@ -1647,8 +1661,10 @@ function playShop(opts) {
   if (G.cleanup) G.cleanup();
   G.cleanup = null;
 
-  const shop = o.mode === 'basket' ? pick(SHOPS.slice(0, 2)) : pick(SHOPS);
-  const stock = shuffle(SHOP_ITEMS.filter(i => i.won <= shop.max)).slice(0, o.mode === 'basket' ? 8 : 6);
+  // A basket adds up, so baskets are filled from the everyday shops only.
+  const shop = o.mode === 'basket' ? pick(SHOPS.slice(0, 3)) : pick(SHOPS);
+  const stock = shuffle(SHOP_ITEMS.filter(i => i.won <= shop.max && i.won >= (shop.min || 0)))
+    .slice(0, o.mode === 'basket' ? 8 : 6);
   let basket = o.mode === 'basket' ? [] : [pick(stock)];
   let tray = [], showPrice = false, settled = false, spoke = -1;
 
@@ -2202,6 +2218,7 @@ STEP.l2replay = (box, st) => {
 /* ---------- shared finish step ---------- */
 STEP.l2done = (box, st) => {
   const p = me(), s = l2State(p);
+  const before = earnedIds(p);
   s[st.kind][st.key] = { at: todayStr(), right: P.right, of: P.total };
   const u = st.unit;
   const finishedUnit = unitComplete(p, u);
@@ -2213,6 +2230,7 @@ STEP.l2done = (box, st) => {
     <p class="mn-text">${finishedUnit ? `You've finished <b>${esc(u.title)}</b>. ${esc(u.can[0].charAt(0).toUpperCase() + u.can[0].slice(1))} — and three other things you couldn't do this morning.` : st.text}</p>
     <div class="row" style="justify-content:center">${P.total ? `<span class="pill">✓ ${P.right}/${P.total}</span>` : ''}<span class="pill">⭐ +${P.xp} XP</span>${P.newWords ? `<span class="pill done">📚 +${P.newWords} words</span>` : ''}</div>`;
   $('#p-bar').style.width = '100%';
+  checkGameStamps(before);
   foot('', '', 'Done', closePlayer);
 };
 

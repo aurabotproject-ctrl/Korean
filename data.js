@@ -540,7 +540,21 @@
     { id: 'friend', game: 'swipe', goal: 50, label: 'Card champion', how: 'Know 50 Swipe Cards' },
     { id: 'help', game: 'speed', goal: 15, label: 'Speed reader', how: 'Score 15 in Speed Read' },
     { id: 'bubbles', game: 'bubbles', goal: 1, label: 'Counted to 100', how: 'Finish Count to 100' },
-    { id: 'shop', game: 'shop', goal: 8, label: 'Shopping star', how: 'Pay correctly 8 times' }
+    { id: 'shop', game: 'shop', goal: 8, label: 'Shopping star', how: 'Pay correctly 8 times' },
+    // Level 2 — one stamp per unit of 친구와 가족, plus a capstone for the whole level
+    { id: 'u1-hello', unit: 1, label: 'First hello' },
+    { id: 'u2-family', unit: 2, label: 'Family talk' },
+    { id: 'u3-friends', unit: 3, label: 'New friend' },
+    { id: 'u4-likes', unit: 4, label: 'Likes & loves' },
+    { id: 'u5-doing', unit: 5, label: 'On the go' },
+    { id: 'u6-play', unit: 6, label: 'Let’s play' },
+    { id: 'u7-food', unit: 7, label: 'Clean plate' },
+    { id: 'u8-where', unit: 8, label: 'Where it is' },
+    { id: 'u9-when', unit: 9, label: 'Right on time' },
+    { id: 'u10-feelings', unit: 10, label: 'How I feel' },
+    { id: 'u11-yesterday', unit: 11, label: 'Back then' },
+    { id: 'u12-tomorrow', unit: 12, label: 'Pinky promise' },
+    { id: 'banmal', l2: 'all', label: '반말 & 존댓말', how: 'Finish all 12 Level 2 units' }
   ];
 
   const avatars = [
